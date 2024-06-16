@@ -3,8 +3,8 @@ package app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LoggerUtil {
-    private static final Logger logger = LoggerFactory.getLogger(LoggerUtil.class);
+public class UciLogger {
+    private static final Logger logger = LoggerFactory.getLogger(UciLogger.class);
     public static void debug(String message) {
         logger.debug(message);
     }

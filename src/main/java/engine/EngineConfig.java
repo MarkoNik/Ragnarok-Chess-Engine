@@ -1,6 +1,6 @@
 package engine;
 
-import app.LoggerUtil;
+import app.UciLogger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class EngineConfig {
     }
     public String getOption(String name) {
         if (!configMap.containsKey(name)) {
-            LoggerUtil.warn("Option with the name: " + name + " is requested but has not been set.");
+            UciLogger.warn("Option with the name: " + name + " is requested but has not been set.");
         }
         return configMap.get(name);
     }

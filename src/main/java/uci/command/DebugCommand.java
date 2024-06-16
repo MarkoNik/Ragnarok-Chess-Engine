@@ -1,7 +1,6 @@
-package uci.command.receive;
+package uci.command;
 
-import app.LoggerUtil;
-import uci.command.Command;
+import app.UciLogger;
 
 public class DebugCommand implements Command {
     private boolean on;
@@ -12,7 +11,7 @@ public class DebugCommand implements Command {
             on = split[1].equals("on");
         }
         else {
-            LoggerUtil.error("Error parsing debug UCI command: neither on nor off specified");
+            UciLogger.error("Error parsing debug UCI command: neither on nor off specified.");
         }
     }
 

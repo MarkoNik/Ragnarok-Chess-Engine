@@ -1,10 +1,11 @@
-package uci.command.receive;
+package uci.command;
 
-import uci.command.Command;
+import app.UciLogger;
 
 public class NullCommand implements Command {
     @Override
     public int execute() {
+        UciLogger.warn("Received unrecognized command.");
         return 0;
     }
 }

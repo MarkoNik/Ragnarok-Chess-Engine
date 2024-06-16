@@ -1,8 +1,7 @@
-package uci.command.receive;
+package uci.command;
 
-import app.LoggerUtil;
+import app.UciLogger;
 import engine.EngineConfig;
-import uci.command.Command;
 
 public class SetOptionCommand implements Command {
     // default values in case value is absent or parsing goes wrong
@@ -18,7 +17,7 @@ public class SetOptionCommand implements Command {
             name = split2[1].trim();
         }
         else {
-            LoggerUtil.error("Error parsing setoption UCI command: name not specified");
+            UciLogger.error("Error parsing setoption UCI command: name not specified.");
         }
     }
 

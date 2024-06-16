@@ -1,8 +1,7 @@
 package uci;
 
-import app.LoggerUtil;
-import uci.command.Command;
-import uci.command.receive.*;
+import app.UciLogger;
+import uci.command.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -11,14 +10,16 @@ import java.io.PrintWriter;
 
 public class Cli implements Runnable {
     private static BufferedReader cliInput = new BufferedReader(new InputStreamReader(System.in));
-    public static PrintWriter cliOutput = new PrintWriter(new OutputStreamWriter(System.out), true);
+    private static PrintWriter cliOutput = new PrintWriter(new OutputStreamWriter(System.out), true);
+
     public void run() {
         try {
             String line;
             while ((line = cliInput.readLine()) != null) {
+                UciLogger.info("Received command from GUI: " + line);
                 int result = handleCommand(line);
                 if (result == -1) {
-                    LoggerUtil.info("Stopping engine!");
+                    UciLogger.info("Stopping UCI backend!");
                     break;
                 }
             }
@@ -51,5 +52,10 @@ public class Cli implements Runnable {
         }
 
         return command.execute();
+    }
+
+    public static void sendCommand(String command) {
+        UciLogger.info("Sending command to GUI: " + command);
+        cliOutput.println(command);
     }
 }

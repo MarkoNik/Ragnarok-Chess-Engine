@@ -1,7 +1,11 @@
 package app;
 
+import uci.Cli;
+
 public class Main {
     public static void main(String[] args) {
-        LoggerUtil.info("Starting engine!");
+        EngineLogger.info("Starting engine!");
+        UciLogger.info("Starting UCI backend!");
+        new Cli().run();
     }
 }

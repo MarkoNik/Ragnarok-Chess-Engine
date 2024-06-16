@@ -1,7 +1,4 @@
-package uci.command.receive;
-
-import app.LoggerUtil;
-import uci.command.Command;
+package uci.command;
 
 public class QuitCommand implements Command {
     @Override
