@@ -1,5 +1,6 @@
 package uci.command.receive;
 
+import app.LoggerUtil;
 import uci.command.Command;
 
 public class DebugCommand implements Command {
@@ -10,7 +11,9 @@ public class DebugCommand implements Command {
         if (split[1].equals("on") || split[1].equals("off")) {
             on = split[1].equals("on");
         }
-        // TODO handle error if not on nor off
+        else {
+            LoggerUtil.error("Error parsing debug UCI command: neither on nor off specified");
+        }
     }
 
     @Override

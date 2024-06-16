@@ -1,5 +1,7 @@
 package engine;
 
+import app.LoggerUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import java.util.Map;
  */
 public class EngineConfig {
     private static EngineConfig engineConfig;
+    // TODO make a set of available configuration parameters and their values
     private Map<String, String> configMap;
 
     private EngineConfig() {
@@ -25,7 +28,7 @@ public class EngineConfig {
     }
     public String getOption(String name) {
         if (!configMap.containsKey(name)) {
-            // TODO setup logging
+            LoggerUtil.warn("Option with the name: " + name + " is requested but has not been set.");
         }
         return configMap.get(name);
     }
