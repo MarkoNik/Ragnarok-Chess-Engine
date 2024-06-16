@@ -1,8 +1,8 @@
-package main.java.uci.command.receive;
+package uci.command.receive;
 
-import main.java.uci.command.Command;
+import uci.command.Command;
 
-import static main.java.uci.Cli.cliOutput;
+import static uci.Cli.cliOutput;
 
 public class IsReadyCommand implements Command {
     @Override

@@ -1,7 +1,7 @@
-package main.java.uci.command.receive;
+package uci.command.receive;
 
-import main.java.engine.EngineConfig;
-import main.java.uci.command.Command;
+import engine.EngineConfig;
+import uci.command.Command;
 
 public class SetOptionCommand implements Command {
     String name, value;

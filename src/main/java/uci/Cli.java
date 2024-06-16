@@ -1,7 +1,7 @@
-package main.java.uci;
+package uci;
 
-import main.java.uci.command.Command;
-import main.java.uci.command.receive.*;
+import uci.command.Command;
+import uci.command.receive.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -21,7 +21,6 @@ public class Cli implements Runnable {
             e.printStackTrace();
         }
     }
-
     private int handleCommand(String line) {
         Command command = new NullCommand();
 

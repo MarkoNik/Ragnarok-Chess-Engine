@@ -1,4 +1,4 @@
-package main.java.uci.command;
+package uci.command;
 
 public interface Command {
     int execute();
