@@ -1,6 +1,6 @@
-package uci.command.receive;
+package main.java.uci.command.receive;
 
-import uci.command.Command;
+import main.java.uci.command.Command;
 
 public class NullCommand implements Command {
     @Override

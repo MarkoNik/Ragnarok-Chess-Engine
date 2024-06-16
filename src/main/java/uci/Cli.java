@@ -1,7 +1,7 @@
-package uci;
+package main.java.uci;
 
-import uci.command.Command;
-import uci.command.receive.*;
+import main.java.uci.command.Command;
+import main.java.uci.command.receive.*;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

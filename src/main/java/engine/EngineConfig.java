@@ -1,13 +1,13 @@
-package engine;
+package main.java.engine;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Singleton class storing engine configuration
+ * Singleton class storing main.java.engine configuration
  * Stores a config map populated by "setoption name <id> [value <x>]" UCI command
  *
- * As the setoption command will only be invoked by the frontend while the engine is waiting,
+ * As the setoption command will only be invoked by the frontend while the main.java.engine is waiting,
  * we do not need to worry about concurrency issues.
  */
 public class EngineConfig {
