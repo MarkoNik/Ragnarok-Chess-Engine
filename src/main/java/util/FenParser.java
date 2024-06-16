@@ -2,6 +2,7 @@ package util;
 
 import engine.GameState;
 
+// TODO better parsing
 public class FenParser {
     public static GameState parseFEN(String fenString) {
         String[] parts = fenString.split(" ");

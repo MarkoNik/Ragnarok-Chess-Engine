@@ -1,7 +1,7 @@
 package uci.command;
 
 import app.UciLogger;
-import engine.EngineConfig;
+import engine.EngineState;
 
 public class SetOptionCommand implements Command {
     // default values in case value is absent or parsing goes wrong
@@ -22,8 +22,8 @@ public class SetOptionCommand implements Command {
     }
 
     @Override
-    public int execute() {
-        EngineConfig.get().setOption(name, value);
+    public int execute(EngineState engineState) {
+        engineState.setConfigOption(name, value);
         return 0;
     }
 }

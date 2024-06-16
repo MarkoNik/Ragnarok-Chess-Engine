@@ -1,6 +1,7 @@
 package uci.command;
 
 import app.UciLogger;
+import engine.EngineState;
 
 public class DebugCommand implements Command {
     private boolean on;
@@ -16,7 +17,7 @@ public class DebugCommand implements Command {
     }
 
     @Override
-    public int execute() {
+    public int execute(EngineState engineState) {
         // TODO
         return 0;
     }
