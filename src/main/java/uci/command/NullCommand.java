@@ -6,7 +6,7 @@ import engine.EngineState;
 public class NullCommand implements Command {
     @Override
     public int execute(EngineState engineState) {
-        UciLogger.warn("Received unrecognized command.");
+        UciLogger.warn("Unrecognized command.");
         return 0;
     }
 }

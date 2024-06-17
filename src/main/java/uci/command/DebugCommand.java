@@ -18,7 +18,7 @@ public class DebugCommand implements Command {
 
     @Override
     public int execute(EngineState engineState) {
-        // TODO
+        // TODO switch engine to debug state
         return 0;
     }
 }

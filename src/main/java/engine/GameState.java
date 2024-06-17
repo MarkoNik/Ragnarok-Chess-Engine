@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.List;
+
 public class GameState {
     String piecePlacement;
     char activeColor;
@@ -15,6 +17,10 @@ public class GameState {
         this.enPassantTargetSquare = enPassantTargetSquare;
         this.halfmoveClock = halfmoveClock;
         this.fullmoveNumber = fullmoveNumber;
+    }
+
+    public void playMoves(List<String> moves) {
+        // TODO play moves
     }
 
 }
