@@ -52,7 +52,7 @@ public class Cli implements Runnable {
             command = new UciNewGameCommand();
         }
         else if (line.startsWith("position")) {
-            // Handle position command
+            command = new PositionCommand(line);
         }
         else if (line.startsWith("go")) {
             // Handle go command to start searching for the best move

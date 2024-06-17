@@ -3,15 +3,15 @@ package engine;
 import java.util.List;
 
 public class GameState {
-    String piecePlacement;
-    char activeColor;
-    String castlingAvailability;
-    String enPassantTargetSquare;
-    int halfmoveClock;
-    int fullmoveNumber;
+    private Board board;
+    private char activeColor;
+    private String castlingAvailability;
+    private String enPassantTargetSquare;
+    private int halfmoveClock;
+    private int fullmoveNumber;
 
-    public GameState(String piecePlacement, char activeColor, String castlingAvailability, String enPassantTargetSquare, int halfmoveClock, int fullmoveNumber) {
-        this.piecePlacement = piecePlacement;
+    public GameState(Board board, char activeColor, String castlingAvailability, String enPassantTargetSquare, int halfmoveClock, int fullmoveNumber) {
+        this.board = board;
         this.activeColor = activeColor;
         this.castlingAvailability = castlingAvailability;
         this.enPassantTargetSquare = enPassantTargetSquare;
