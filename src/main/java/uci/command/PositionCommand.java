@@ -1,5 +1,6 @@
 package uci.command;
 
+import app.Constants;
 import app.UciLogger;
 import engine.EngineState;
 import engine.GameState;
@@ -9,7 +10,8 @@ import java.util.Arrays;
 
 public class PositionCommand implements Command {
     private String[] moves;
-    private String position = "startpos";
+    // in case fen is not found in the string, we just default to starting position
+    private String position = Constants.INITIAL_POS;
     public PositionCommand(String params) {
         String[] split = params.trim().split("moves");
         if (split.length != 2) {
