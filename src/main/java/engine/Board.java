@@ -14,13 +14,17 @@ public class Board {
         this.state = state;
     }
 
+    public void playMove(String move) {
+
+    }
+
     public void logState() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 120; i++) {
             if (i % 10 == 0) {
                 sb.append("\n");
             }
-            sb.append(state[i] + " ");
+            sb.append(state[i]).append(" ");
         }
         EngineLogger.debug(sb.toString());
     }

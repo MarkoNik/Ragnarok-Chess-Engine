@@ -20,7 +20,9 @@ public class GameState {
     }
 
     public void playMoves(List<String> moves) {
-        // TODO play moves
+        for (String move : moves) {
+            board.playMove(move);
+        }
     }
 
 }

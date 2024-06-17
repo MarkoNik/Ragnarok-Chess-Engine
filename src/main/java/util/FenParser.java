@@ -35,16 +35,15 @@ public class FenParser {
 
     private static Board parsePieces(String piecePlacement) {
         byte[] state = new byte[120];
-        // Fill the board with border piece to denote the 10x12 structure
         for (int i = 0; i < 120; i++) {
             state[i] = Piece.BorderPiece;
         }
 
         String[] rows = piecePlacement.split("/");
-        int rowIndex = 2; // Start from the third row to handle 10x12 structure
+        int rowIndex = 2;
 
         for (String row : rows) {
-            int colIndex = 1; // Start from the second column to handle 10x12 structure
+            int colIndex = 1;
             for (char c : row.toCharArray()) {
                 if (Character.isDigit(c)) {
                     int emptySquares = c - '0';
@@ -52,7 +51,8 @@ public class FenParser {
                         state[rowIndex * 10 + colIndex] = Piece.None;
                         colIndex++;
                     }
-                } else {
+                }
+                else {
                     state[rowIndex * 10 + colIndex] = pieceMap.get(c);
                     colIndex++;
                 }
