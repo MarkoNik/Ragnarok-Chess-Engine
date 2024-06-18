@@ -1,6 +1,7 @@
 package engine;
 
 import app.UciLogger;
+import uci.command.GoCommandWrapper;
 
 import java.util.Map;
 
@@ -12,6 +13,9 @@ public class EngineState {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+    public void goSearch(GoCommandWrapper goCommandWrapper) {
+
     }
 
     public String getConfigOption(String name) {
