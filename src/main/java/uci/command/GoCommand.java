@@ -1,6 +1,7 @@
 package uci.command;
 
 import engine.EngineState;
+import uci.Cli;
 
 import java.util.Arrays;
 import java.util.List;
@@ -81,6 +82,7 @@ public class GoCommand implements Command {
     @Override
     public int execute(EngineState engineState) {
         engineState.goSearch(goCommandWrapper);
+        Cli.sendCommand("bestmove d7d5");
         return 0;
     }
 }

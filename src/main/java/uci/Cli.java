@@ -36,11 +36,15 @@ public class Cli implements Runnable {
 
     private int handleCommand(String line) {
         Command command = new NullCommand();
+
         if (line.startsWith("uci")) {
             command = new UciCommand();
         }
         else if (line.startsWith("debug")) {
             command = new DebugCommand(line);
+        }
+        else if (line.startsWith("isready")) {
+            command = new IsReadyCommand();
         }
         else if (line.startsWith("setoption")) {
             command = new SetOptionCommand(line);
@@ -55,7 +59,7 @@ public class Cli implements Runnable {
             command = new PositionCommand(line);
         }
         else if (line.startsWith("go")) {
-            // Handle go command to start searching for the best move
+            command = new GoCommand(line);
         }
         else if (line.startsWith("quit")) {
             command = new QuitCommand();
