@@ -28,6 +28,7 @@ public class PositionCommand implements Command {
         if (moves != null) {
             newState.playMoves(Arrays.asList(moves));
         }
+        newState.logState();
         engineState.setGameState(newState);
         return 0;
     }

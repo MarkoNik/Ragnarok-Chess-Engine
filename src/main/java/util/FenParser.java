@@ -1,10 +1,10 @@
 package util;
 
-import engine.Board;
+import engine.core.Board;
 import engine.GameState;
-import engine.Piece;
+import engine.core.Piece;
 
-import static engine.Piece.pieceMap;
+import static engine.core.Piece.pieceMap;
 
 // TODO better parsing
 public class FenParser {
@@ -61,7 +61,6 @@ public class FenParser {
         }
 
         Board board = new Board(state);
-        board.logState();
         return board;
     }
 

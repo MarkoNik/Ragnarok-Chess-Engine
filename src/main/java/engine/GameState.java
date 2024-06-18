@@ -1,5 +1,7 @@
 package engine;
 
+import engine.core.Board;
+
 import java.util.List;
 
 public class GameState {
@@ -21,8 +23,12 @@ public class GameState {
 
     public void playMoves(List<String> moves) {
         for (String move : moves) {
-            board.playMove(move);
+            board.makeMove(move);
         }
+    }
+
+    public void logState() {
+        board.logState();
     }
 
 }
