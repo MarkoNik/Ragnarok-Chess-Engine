@@ -61,10 +61,15 @@ public class Cli implements Runnable {
         else if (line.startsWith("go")) {
             command = new GoCommand(line);
         }
+        else if (line.startsWith("stop")) {
+            command = new StopCommand();
+        }
+        else if (line.startsWith("ponderhit")) {
+            command = new PonderHitCommand();
+        }
         else if (line.startsWith("quit")) {
             command = new QuitCommand();
         }
-
         return command.execute(engineState);
     }
 
