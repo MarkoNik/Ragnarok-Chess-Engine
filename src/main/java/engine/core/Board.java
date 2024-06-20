@@ -8,26 +8,26 @@ import app.EngineLogger;
  * as it will be beneficial for faster search when doing move generation.
  */
 public class Board {
-    private byte[] state;
+    public static final int ROWS = 10;
+    public static final int COLS = 12;
+    public static final int BOARD_SIZE = ROWS * COLS;
+
+    public byte[] state;
 
     public Board(byte[] state) {
         this.state = state;
     }
 
     public void makeMove(Move move) {
-        // Translate the move from algebraic notation to 10x12 coordinates
-
         EngineLogger.debug("Moving piece: " + state[move.from] + " from square: " + move.from + " to square: " + move.to);
-
-        // Move the piece
         state[move.to] = state[move.from];
         state[move.from] = Piece.None;
     }
 
     public void logState() {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < 120; i++) {
-            if (i % 10 == 0) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            if (i % ROWS == 0) {
                 sb.append("\n");
             }
             sb.append(state[i]).append(" ");

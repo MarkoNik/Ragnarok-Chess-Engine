@@ -81,7 +81,7 @@ public class GoCommand implements Command {
 
     @Override
     public int execute(EngineState engineState) {
-        engineState.goSearch(goCommandWrapper);
+        engineState.search(goCommandWrapper);
         Cli.sendCommand("bestmove d7d5");
         return 0;
     }

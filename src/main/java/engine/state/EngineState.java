@@ -14,7 +14,7 @@ public class EngineState {
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
-    public void goSearch(GoCommandWrapper goCommandWrapper) {
+    public void search(GoCommandWrapper goCommandWrapper) {
 
     }
 

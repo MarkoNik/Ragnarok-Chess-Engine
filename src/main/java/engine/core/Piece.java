@@ -37,6 +37,10 @@ public class Piece {
     public static final byte typeMask = 0b0111;
     public static final byte colourMask = 0b1000;
 
+    public static boolean isWhitePiece(byte piece) {
+        return (piece & Piece.colourMask) == 0;
+    }
+
     public static final Map<Character, Byte> pieceMap = new HashMap<>();
 
     static {
