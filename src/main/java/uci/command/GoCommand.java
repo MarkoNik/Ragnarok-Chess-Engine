@@ -1,6 +1,6 @@
 package uci.command;
 
-import engine.EngineState;
+import engine.state.EngineState;
 import uci.Cli;
 
 import java.util.Arrays;

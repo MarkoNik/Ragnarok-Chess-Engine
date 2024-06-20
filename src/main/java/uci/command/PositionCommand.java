@@ -1,8 +1,8 @@
 package uci.command;
 
 import app.Constants;
-import engine.EngineState;
-import engine.GameState;
+import engine.state.EngineState;
+import engine.state.GameState;
 import util.FenParser;
 
 import java.util.Arrays;

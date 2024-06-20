@@ -1,4 +1,4 @@
-package engine;
+package engine.state;
 
 import app.UciLogger;
 import uci.command.GoCommandWrapper;

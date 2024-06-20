@@ -1,7 +1,7 @@
 package uci.command;
 
 import app.UciLogger;
-import engine.EngineState;
+import engine.state.EngineState;
 
 public class DebugCommand implements Command {
     private boolean on;

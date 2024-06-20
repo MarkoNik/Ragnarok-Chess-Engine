@@ -1,6 +1,6 @@
 package uci.command;
 
-import engine.EngineState;
+import engine.state.EngineState;
 
 public class UciNewGameCommand implements Command {
     @Override

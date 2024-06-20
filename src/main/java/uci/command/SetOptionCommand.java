@@ -1,7 +1,7 @@
 package uci.command;
 
 import app.UciLogger;
-import engine.EngineState;
+import engine.state.EngineState;
 
 public class SetOptionCommand implements Command {
     // default values in case value is absent or parsing goes wrong

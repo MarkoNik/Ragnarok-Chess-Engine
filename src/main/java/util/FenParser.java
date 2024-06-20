@@ -1,7 +1,7 @@
 package util;
 
 import engine.core.Board;
-import engine.GameState;
+import engine.state.GameState;
 import engine.core.Piece;
 
 import static engine.core.Piece.pieceMap;

@@ -1,4 +1,4 @@
-package engine;
+package engine.state;
 
 import engine.core.Board;
 
