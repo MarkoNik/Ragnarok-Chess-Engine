@@ -1,6 +1,7 @@
 package engine.state;
 
 import engine.core.Board;
+import engine.core.Move;
 
 import java.util.List;
 
@@ -21,8 +22,8 @@ public class GameState {
         this.fullmoveNumber = fullmoveNumber;
     }
 
-    public void playMoves(List<String> moves) {
-        for (String move : moves) {
+    public void playMoves(List<Move> moves) {
+        for (Move move : moves) {
             board.makeMove(move);
         }
     }

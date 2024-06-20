@@ -3,9 +3,10 @@ package uci.command;
 import app.Constants;
 import engine.state.EngineState;
 import engine.state.GameState;
-import util.FenParser;
+import engine.util.FenParser;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class PositionCommand implements Command {
     private String[] moves = null;
@@ -26,7 +27,7 @@ public class PositionCommand implements Command {
     public int execute(EngineState engineState) {
         GameState newState = FenParser.parseFEN(position);
         if (moves != null) {
-            newState.playMoves(Arrays.asList(moves));
+            newState.playMoves(Arrays.stream(moves).map(FenParser::algebraicMoveToMove).collect(Collectors.toList()));
         }
         newState.logState();
         engineState.setGameState(newState);

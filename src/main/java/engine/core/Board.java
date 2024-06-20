@@ -14,21 +14,14 @@ public class Board {
         this.state = state;
     }
 
-    public void makeMove(String move) {
+    public void makeMove(Move move) {
         // Translate the move from algebraic notation to 10x12 coordinates
-        int fromIndex = algebraicToIndex(move.substring(0, 2));
-        int toIndex = algebraicToIndex(move.substring(2, 4));
-        EngineLogger.debug("Moving piece: " + state[fromIndex] + " from square: " + fromIndex + " to square: " + toIndex);
+
+        EngineLogger.debug("Moving piece: " + state[move.from] + " from square: " + move.from + " to square: " + move.to);
 
         // Move the piece
-        state[toIndex] = state[fromIndex];
-        state[fromIndex] = Piece.None;
-    }
-
-    private static int algebraicToIndex(String position) {
-        int file = position.charAt(0) - 'a' + 1;
-        int rank = 10 - (position.charAt(1) - '0');
-        return rank * 10 + file;
+        state[move.to] = state[move.from];
+        state[move.from] = Piece.None;
     }
 
     public void logState() {

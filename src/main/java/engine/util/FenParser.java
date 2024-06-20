@@ -1,8 +1,9 @@
-package util;
+package engine.util;
 
 import engine.core.Board;
-import engine.state.GameState;
+import engine.core.Move;
 import engine.core.Piece;
+import engine.state.GameState;
 
 import static engine.core.Piece.pieceMap;
 
@@ -62,6 +63,18 @@ public class FenParser {
 
         Board board = new Board(state);
         return board;
+    }
+
+    public static Move algebraicMoveToMove(String move) {
+        int fromIndex = algebraicToIndex(move.substring(0, 2));
+        int toIndex = algebraicToIndex(move.substring(2, 4));
+        return new Move(fromIndex, toIndex);
+    }
+
+    public static int algebraicToIndex(String position) {
+        int file = position.charAt(0) - 'a' + 1;
+        int rank = 10 - (position.charAt(1) - '0');
+        return rank * 10 + file;
     }
 
 }
