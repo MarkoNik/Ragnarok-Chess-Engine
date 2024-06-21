@@ -18,6 +18,10 @@ public class FenParser {
 
         // Active color (w or b)
         char activeColor = parts[1].charAt(0);
+        boolean isWhiteTurn = true;
+        if (activeColor == 'b') {
+            isWhiteTurn = false;
+        }
 
         // Castling availability
         String castlingAvailability = parts[2];
@@ -31,7 +35,7 @@ public class FenParser {
         // Fullmove number
         int fullmoveNumber = Integer.parseInt(parts[5]);
 
-        return new GameState(board, activeColor, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameState(board, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
     }
 
     private static Board parsePieces(String piecePlacement) {
@@ -71,10 +75,22 @@ public class FenParser {
         return new Move(fromIndex, toIndex);
     }
 
+    public static String moveToAlgebraic(Move move) {
+        return indexToAlgebraic(move.from) + indexToAlgebraic(move.to);
+    }
+
     public static int algebraicToIndex(String position) {
         int file = position.charAt(0) - 'a' + 1;
         int rank = 10 - (position.charAt(1) - '0');
         return rank * 10 + file;
+    }
+
+    public static String indexToAlgebraic(int index) {
+        int file = index % 10;
+        int rank = 10 - (index / 10);
+        char fileChar = (char) ('a' + file - 1);
+        char rankChar = (char) ('0' + rank);
+        return "" + fileChar + rankChar;
     }
 
 }

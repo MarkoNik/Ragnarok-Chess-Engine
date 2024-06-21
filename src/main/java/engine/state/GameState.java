@@ -7,15 +7,15 @@ import java.util.List;
 
 public class GameState {
     private Board board;
-    private char activeColor;
+    private boolean isWhiteTurn = true;
     private String castlingAvailability;
     private String enPassantTargetSquare;
     private int halfmoveClock;
     private int fullmoveNumber;
 
-    public GameState(Board board, char activeColor, String castlingAvailability, String enPassantTargetSquare, int halfmoveClock, int fullmoveNumber) {
+    public GameState(Board board, boolean isWhiteTurn, String castlingAvailability, String enPassantTargetSquare, int halfmoveClock, int fullmoveNumber) {
         this.board = board;
-        this.activeColor = activeColor;
+        this.isWhiteTurn = isWhiteTurn;
         this.castlingAvailability = castlingAvailability;
         this.enPassantTargetSquare = enPassantTargetSquare;
         this.halfmoveClock = halfmoveClock;
@@ -25,11 +25,24 @@ public class GameState {
     public void playMoves(List<Move> moves) {
         for (Move move : moves) {
             board.makeMove(move);
+            isWhiteTurn = !isWhiteTurn;
         }
+    }
+
+    public void playMove(Move move) {
+        board.makeMove(move);
+        isWhiteTurn = !isWhiteTurn;
     }
 
     public void logState() {
         board.logState();
     }
 
+    public Board getBoard() {
+        return board;
+    }
+
+    public boolean isWhiteTurn() {
+        return isWhiteTurn;
+    }
 }
