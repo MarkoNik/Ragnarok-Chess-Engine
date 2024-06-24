@@ -9,14 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MoveGenerator {
-    private static final int[] KNIGHT_MOVES = {21, 19, 12, 8, -8, -12, -19, -21};
-    private static final int[] KING_QUEEN_MOVES = {10, -10, 1, -1, 11, 9, -9, -11};
-    private static final int[] BISHOP_MOVES = {11, 9, -9, -11};
-    private static final int[] ROOK_MOVES = {10, -10, 1, -1};
+    public static final int[] KNIGHT_MOVES = {21, 19, 12, 8, -8, -12, -19, -21};
+    public static final int[] KING_QUEEN_MOVES = {10, -10, 1, -1, 11, 9, -9, -11};
+    public static final int[] BISHOP_MOVES = {11, 9, -9, -11};
+    public static final int[] ROOK_MOVES = {10, -10, 1, -1};
 
     private Board board;
 
     public List<Move> generateLegalMoves(boolean isWhiteTurn) {
+        CheckHelper checkHelper = new CheckHelper();
+        checkHelper.calculateAttackedSquares(!isWhiteTurn, board);
         return generateAllMoves(isWhiteTurn);
     }
 
@@ -146,7 +148,7 @@ public class MoveGenerator {
         }
         if (isWhiteTurn) {
             int newPosition;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 8; i++) {
                 newPosition = position + KNIGHT_MOVES[i];
                 if (Piece.isWhitePiece(board.state[newPosition]) || board.state[newPosition] == Piece.BorderPiece) {
                     continue;
@@ -156,7 +158,7 @@ public class MoveGenerator {
         }
         else {
             int newPosition;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 8; i++) {
                 newPosition = position + KNIGHT_MOVES[i];
                 if (!Piece.isWhitePiece(board.state[newPosition]) || board.state[newPosition] == Piece.BorderPiece) {
                     continue;

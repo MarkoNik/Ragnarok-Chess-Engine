@@ -38,7 +38,11 @@ public class Piece {
     public static final byte colourMask = 0b1000;
 
     public static boolean isWhitePiece(byte piece) {
-        return (piece & Piece.colourMask) == 0;
+        return piece != None && piece != BorderPiece && (piece & Piece.colourMask) == 0;
+    }
+
+    public static boolean isBlackPiece(byte piece) {
+        return piece != None && piece != BorderPiece && (piece & Piece.colourMask) != 0;
     }
 
     public static final Map<Character, Byte> pieceMap = new HashMap<>();
