@@ -35,14 +35,17 @@ public class Piece {
     public static final byte BlackKing = King | Black;      // 14
 
     public static final byte typeMask = 0b0111;
-    public static final byte colourMask = 0b1000;
+    public static final byte colourFlag = 0b1000;
+    public static final byte castlesFlag = 0b10000;
+    public static final byte enPassantFlag = 0b100000;
+    public static final byte pinnedFlag = 0b1000000;
 
     public static boolean isWhitePiece(byte piece) {
-        return piece != None && piece != BorderPiece && (piece & Piece.colourMask) == 0;
+        return piece != None && piece != BorderPiece && (piece & Piece.colourFlag) == 0;
     }
 
     public static boolean isBlackPiece(byte piece) {
-        return piece != None && piece != BorderPiece && (piece & Piece.colourMask) != 0;
+        return piece != None && piece != BorderPiece && (piece & Piece.colourFlag) != 0;
     }
 
     public static final Map<Character, Byte> pieceMap = new HashMap<>();
