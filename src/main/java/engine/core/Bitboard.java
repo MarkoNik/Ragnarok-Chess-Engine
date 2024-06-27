@@ -19,6 +19,9 @@ public class Bitboard {
     private final long[] kingAttacks = new long[64];
 
     public void fillAttackTables() {
+        long blockers = 54654367547654765L;
+        logBitboard(blockers);
+        logBitboard(generateRookAttacksWithBlockers(25, blockers));
         for (int i = 0; i < 64; i++) {
             pawnAttacks[WHITE][i] = generatePawnAttacks(WHITE, i);
             pawnAttacks[BLACK][i] = generatePawnAttacks(BLACK, i);
@@ -34,12 +37,20 @@ public class Bitboard {
         long bitboard = 1L << square;
 
         if (color == WHITE) {
-            if (((bitboard >>> 7) & NOT_A_FILE_MASK) != 0) attacks |= (bitboard >>> 7);
-            if (((bitboard >>> 9) & NOT_H_FILE_MASK) != 0) attacks |= (bitboard >>> 9);
+            if (((bitboard >>> 7) & NOT_A_FILE_MASK) != 0) {
+                attacks |= (bitboard >>> 7);
+            }
+            if (((bitboard >>> 9) & NOT_H_FILE_MASK) != 0) {
+                attacks |= (bitboard >>> 9);
+            }
         }
         else {
-            if (((bitboard << 7) & NOT_H_FILE_MASK) != 0) attacks |= (bitboard << 7);
-            if (((bitboard << 9) & NOT_A_FILE_MASK) != 0) attacks |= (bitboard << 9);
+            if (((bitboard << 7) & NOT_H_FILE_MASK) != 0) {
+                attacks |= (bitboard << 7);
+            }
+            if (((bitboard << 9) & NOT_A_FILE_MASK) != 0) {
+                attacks |= (bitboard << 9);
+            }
         }
         return attacks;
     }
@@ -48,15 +59,31 @@ public class Bitboard {
         long attacks = 0L;
         long bitboard = 1L << square;
 
-        if (((bitboard >>> 17) & NOT_H_FILE_MASK) != 0) attacks |= (bitboard >>> 17);
-        if (((bitboard >>> 15) & NOT_A_FILE_MASK) != 0) attacks |= (bitboard >>> 15);
-        if (((bitboard >>> 10) & NOT_HG_FILE_MASK) != 0) attacks |= (bitboard >>> 10);
-        if (((bitboard >>> 6) & NOT_AB_FILE_MASK) != 0) attacks |= (bitboard >>> 6);
+        if (((bitboard >>> 17) & NOT_H_FILE_MASK) != 0) {
+            attacks |= (bitboard >>> 17);
+        }
+        if (((bitboard >>> 15) & NOT_A_FILE_MASK) != 0) {
+            attacks |= (bitboard >>> 15);
+        }
+        if (((bitboard >>> 10) & NOT_HG_FILE_MASK) != 0) {
+            attacks |= (bitboard >>> 10);
+        }
+        if (((bitboard >>> 6) & NOT_AB_FILE_MASK) != 0) {
+            attacks |= (bitboard >>> 6);
+        }
 
-        if (((bitboard << 17) & NOT_A_FILE_MASK) != 0) attacks |= (bitboard << 17);
-        if (((bitboard << 15) & NOT_H_FILE_MASK) != 0) attacks |= (bitboard << 15);
-        if (((bitboard << 10) & NOT_AB_FILE_MASK) != 0) attacks |= (bitboard << 10);
-        if (((bitboard << 6) & NOT_HG_FILE_MASK) != 0) attacks |= (bitboard << 6);
+        if (((bitboard << 17) & NOT_A_FILE_MASK) != 0) {
+            attacks |= (bitboard << 17);
+        }
+        if (((bitboard << 15) & NOT_H_FILE_MASK) != 0) {
+            attacks |= (bitboard << 15);
+        }
+        if (((bitboard << 10) & NOT_AB_FILE_MASK) != 0) {
+            attacks |= (bitboard << 10);
+        }
+        if (((bitboard << 6) & NOT_HG_FILE_MASK) != 0) {
+            attacks |= (bitboard << 6);
+        }
 
         return attacks;
     }
@@ -67,10 +94,52 @@ public class Bitboard {
         int tf = square % 8;
 
         int r, f;
-        for (r = tr + 1, f = tf + 1; r <= 6 && f <= 6; r++, f++) attacks |= (1L << (r * 8 + f));
-        for (r = tr - 1, f = tf + 1; r >= 1 && f <= 6; r--, f++) attacks |= (1L << (r * 8 + f));
-        for (r = tr + 1, f = tf - 1; r <= 6 && f >= 1; r++, f--) attacks |= (1L << (r * 8 + f));
-        for (r = tr - 1, f = tf - 1; r >= 1 && f >= 1; r--, f--) attacks |= (1L << (r * 8 + f));
+        for (r = tr + 1, f = tf + 1; r <= 6 && f <= 6; r++, f++) {
+            attacks |= (1L << (r * 8 + f));
+        }
+        for (r = tr - 1, f = tf + 1; r >= 1 && f <= 6; r--, f++) {
+            attacks |= (1L << (r * 8 + f));
+        }
+        for (r = tr + 1, f = tf - 1; r <= 6 && f >= 1; r++, f--) {
+            attacks |= (1L << (r * 8 + f));
+        }
+        for (r = tr - 1, f = tf - 1; r >= 1 && f >= 1; r--, f--) {
+            attacks |= (1L << (r * 8 + f));
+        }
+
+        return attacks;
+    }
+
+    private long generateBishopAttacksWithBlockers(int square, long blockers) {
+        long attacks = 0L;
+        int tr = square / 8;
+        int tf = square % 8;
+
+        int r, f;
+        for (r = tr + 1, f = tf + 1; r <= 7 && f <= 7; r++, f++) {
+            attacks |= (1L << (r * 8 + f));
+            if (((1L << (r * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (r = tr - 1, f = tf + 1; r >= 0 && f <= 7; r--, f++) {
+            attacks |= (1L << (r * 8 + f));
+            if (((1L << (r * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (r = tr + 1, f = tf - 1; r <= 7 && f >= 0; r++, f--) {
+            attacks |= (1L << (r * 8 + f));
+            if (((1L << (r * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (r = tr - 1, f = tf - 1; r >= 0 && f >= 0; r--, f--) {
+            attacks |= (1L << (r * 8 + f));
+            if (((1L << (r * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
 
         return attacks;
     }
@@ -81,13 +150,54 @@ public class Bitboard {
         int tf = square % 8;
 
         int r, f;
-        for (r = tr + 1; r <= 6; r++) attacks |= (1L << (r * 8 + tf));
-        for (r = tr - 1; r >= 1; r--) attacks |= (1L << (r * 8 + tf));
-        for (f = tf + 1; f <= 6; f++) attacks |= (1L << (tr * 8 + f));
-        for (f = tf - 1; f >= 1; f--) attacks |= (1L << (tr * 8 + f));
+        for (r = tr + 1; r <= 6; r++) {
+            attacks |= (1L << (r * 8 + tf));
+        }
+        for (r = tr - 1; r >= 1; r--) {
+            attacks |= (1L << (r * 8 + tf));
+        }
+        for (f = tf + 1; f <= 6; f++) {
+            attacks |= (1L << (tr * 8 + f));
+        }
+        for (f = tf - 1; f >= 1; f--) {
+            attacks |= (1L << (tr * 8 + f));
+        }
 
         return attacks;
+    }
 
+    private long generateRookAttacksWithBlockers(int square, long blockers) {
+        long attacks = 0L;
+        int tr = square / 8;
+        int tf = square % 8;
+
+        int r, f;
+        for (r = tr + 1; r <= 7; r++) {
+            attacks |= (1L << (r * 8 + tf));
+            if (((1L << (r * 8 + tf)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (r = tr - 1; r >= 0; r--) {
+            attacks |= (1L << (r * 8 + tf));
+            if (((1L << (r * 8 + tf)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (f = tf + 1; f <= 7; f++) {
+            attacks |= (1L << (tr * 8 + f));
+            if (((1L << (tr * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
+        for (f = tf - 1; f >= 0; f--) {
+            attacks |= (1L << (tr * 8 + f));
+            if (((1L << (tr * 8 + f)) & blockers) != 0) {
+                break;
+            }
+        }
+
+        return attacks;
     }
 
     private long generateKingAttacks(int square) {
