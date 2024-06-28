@@ -3,13 +3,35 @@ package engine.core;
 import app.EngineLogger;
 
 public class Bitboard {
+
+    /**
+    * Bitmask where every bit is set apart from bits on the A file (first column)
+    */
     private final long NOT_A_FILE_MASK = -72340172838076674L;
+
+    /**
+     * Bitmask where every bit is set apart from bits on the AB files (first and second column)
+     */
     private final long NOT_AB_FILE_MASK = -217020518514230020L;
+
+    /**
+     * Bitmask where every bit is set apart from bits on the H file (first column)
+     */
     private final long NOT_H_FILE_MASK = 9187201950435737471L;
+
+    /**
+     * Bitmask where every bit is set apart from bits on the HG files (first and second column)
+     */
     private final long NOT_HG_FILE_MASK = 4557430888798830399L;
 
     private final int WHITE = 0;
     private final int BLACK = 1;
+
+    /**
+     * The maximum number of pieces that can block a sliding piece's attack
+     * (6 in both directions for rooks and bishops)
+     */
+    private final int MAXIMUM_BLOCKING_PIECES = 12;
 
     private final long[][] pawnAttacks = new long[2][64];
     private final long[] knightAttacks = new long[64];
@@ -27,6 +49,9 @@ public class Bitboard {
             kingAttacks[i] = generateKingAttacks(i);
             logBitboard(bishopAttacks[i]);
         }
+//        for (int i = 0; i < 4096; i++) {
+//            logBitboard(getOccupancy(i, bishopAttacks[0]));
+//        }
     }
 
     /**
@@ -256,6 +281,29 @@ public class Bitboard {
         if (((bitboard << 1) & NOT_A_FILE_MASK) != 0) attacks |= (bitboard << 1);
 
         return attacks;
+    }
+
+    /**
+     * This function is used to get an occupancy bitboard for the given attack mask.
+     * If a bit is set in the attack mask, this bit will either be on or off in our occupancy mask.
+     * This is because this function will be called for every number from 0 to 2^(max bit count of the attack mask).
+     * For every such bitmask, we call this function, and then we pop the bits from the attack mask and
+     * check if it should be present in the index mask by & operator, and if it is we put it in the mask.
+     * @param index The mask used to check which bits are needed in the occupancy mask
+     * @param attackMask The mask of the squares attacked by the piece
+     * @return
+     */
+    private long getOccupancy(int index, long attackMask) {
+        long occupancy = 0L;
+        int bitCount = Long.bitCount(attackMask);
+        for (int i = 0; i < bitCount; i++) {
+            int square = getLs1bIndex(attackMask);
+            attackMask = popBit(attackMask, square);
+            if ((index & (1 << i)) != 0) {
+                occupancy |= (1L << square);
+            }
+        }
+        return occupancy;
     }
 
     public void logBitboard(long bitboard) {
