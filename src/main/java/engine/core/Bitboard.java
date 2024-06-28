@@ -19,9 +19,6 @@ public class Bitboard {
     private final long[] kingAttacks = new long[64];
 
     public void fillAttackTables() {
-        long blockers = 54654367547654765L;
-        logBitboard(blockers);
-        logBitboard(generateRookAttacksWithBlockers(25, blockers));
         for (int i = 0; i < 64; i++) {
             pawnAttacks[WHITE][i] = generatePawnAttacks(WHITE, i);
             pawnAttacks[BLACK][i] = generatePawnAttacks(BLACK, i);
@@ -32,6 +29,13 @@ public class Bitboard {
         }
     }
 
+    /**
+     * This function is used to calculate all the squares that the pawn
+     * with the given color is attacking from the given square.
+     * @param color Player color
+     * @param square Pawn square
+     * @return knight attack bitboard
+     */
     private long generatePawnAttacks(int color, int square) {
         long attacks = 0L;
         long bitboard = 1L << square;
@@ -55,6 +59,12 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the knight
+     * can jump to from the given square.
+     * @param square Knight square
+     * @return knight attack bitboard
+     */
     private long generateKnightAttacks(int square) {
         long attacks = 0L;
         long bitboard = 1L << square;
@@ -88,6 +98,12 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the bishop
+     * can see from the given square, ignoring blocekrs.
+     * @param square Bishop square
+     * @return bishop attack bitboard
+     */
     private long generateBishopAttacks(int square) {
         long attacks = 0L;
         int tr = square / 8;
@@ -110,6 +126,13 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the bishop
+     * can see from the given square, with blockers.
+     * @param square The square the bishop is on
+     * @param blockers Blockers bitboard
+     * @return bishop attack bitboard
+     */
     private long generateBishopAttacksWithBlockers(int square, long blockers) {
         long attacks = 0L;
         int tr = square / 8;
@@ -144,6 +167,12 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the rook
+     * can see from the given square, ignoring blockers.
+     * @param square The square the rook is on
+     * @return rook attack bitboard
+     */
     private long generateRookAttacks(int square) {
         long attacks = 0L;
         int tr = square / 8;
@@ -166,6 +195,13 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the rook
+     * can see from the given square, with blockers.
+     * @param square The square the rook is on
+     * @param blockers The bitboard of blocking pieces
+     * @return rook attack bitboard
+     */
     private long generateRookAttacksWithBlockers(int square, long blockers) {
         long attacks = 0L;
         int tr = square / 8;
@@ -200,6 +236,12 @@ public class Bitboard {
         return attacks;
     }
 
+    /**
+     * This function is used to calculate all the squares that the king
+     * is attacking from the given square.
+     * @param square The square the king is on
+     * @return king attack bitboard
+     */
     private long generateKingAttacks(int square) {
         long attacks = 0L;
         long bitboard = 1L << square;
@@ -239,5 +281,30 @@ public class Bitboard {
 
     private long popBit(long bitboard, int square) {
         return getBit(bitboard, square) ? bitboard ^ (1L << square) : bitboard;
+    }
+
+    private int getLs1bIndex(long bitboard) {
+        if (bitboard != 0) {
+            return Long.bitCount((bitboard & -bitboard) - 1);
+        }
+        return -1;
+    }
+
+    // Convert algebraic notation (e.g., "e4") to bitboard index (0..63)
+    public static int algToIdx(String algebraic) {
+        char file = algebraic.charAt(0);
+        char rank = algebraic.charAt(1);
+        int fileIndex = file - 'a';
+        int rankIndex = rank - '1';
+        return rankIndex * 8 + fileIndex;
+    }
+
+    // Convert bitboard index (0..63) to algebraic notation (e.g., "e4")
+    public static String idxToAlg(int index) {
+        int fileIndex = index % 8;
+        int rankIndex = index / 8;
+        char file = (char) ('a' + fileIndex);
+        char rank = (char) ('1' + rankIndex);
+        return "" + file + rank;
     }
 }
