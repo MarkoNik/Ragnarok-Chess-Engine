@@ -1,5 +1,6 @@
 package engine.core;
 
+import app.Constants;
 import app.EngineLogger;
 
 public class Bitboard {
@@ -26,32 +27,43 @@ public class Bitboard {
 
     private final int WHITE = 0;
     private final int BLACK = 1;
+    private final int BOARD_SIZE = Constants.BOARD_SIZE;
 
     /**
      * The maximum number of pieces that can block a sliding piece's attack
      * (6 in both directions for rooks and bishops)
      */
     private final int MAXIMUM_BLOCKING_PIECES = 12;
+    private final int MAXIMUM_BLOCKING_PIECES_MASK = 1 << MAXIMUM_BLOCKING_PIECES;
 
-    private final long[][] pawnAttacks = new long[2][64];
-    private final long[] knightAttacks = new long[64];
-    private final long[] bishopAttacks = new long[64];
-    private final long[] rookAttacks = new long[64];
-    private final long[] queenAttacks = new long[64];
-    private final long[] kingAttacks = new long[64];
+    private final long[][] pawnAttacks = new long[2][BOARD_SIZE];
+    private final long[] knightAttacks = new long[BOARD_SIZE];
+    private final long[] bishopAttacks = new long[BOARD_SIZE];
+    private final long[] rookAttacks = new long[BOARD_SIZE];
+    private final long[] queenAttacks = new long[BOARD_SIZE];
+    private final long[] kingAttacks = new long[BOARD_SIZE];
+
+    private final long[][] bishopOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    private final long[][] rookOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
 
     public void fillAttackTables() {
-        for (int i = 0; i < 64; i++) {
+        // precalculate attack masks for all leaper pieces
+        for (int i = 0; i < BOARD_SIZE; i++) {
             pawnAttacks[WHITE][i] = generatePawnAttacks(WHITE, i);
             pawnAttacks[BLACK][i] = generatePawnAttacks(BLACK, i);
             knightAttacks[i] = generateKnightAttacks(i);
-            bishopAttacks[i] = generateBishopAttacks(i);
             kingAttacks[i] = generateKingAttacks(i);
-            logBitboard(bishopAttacks[i]);
         }
-//        for (int i = 0; i < 4096; i++) {
-//            logBitboard(getOccupancy(i, bishopAttacks[0]));
-//        }
+
+        // precalculate occupancies for sliding pieces
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            bishopAttacks[i] = generateBishopAttacks(i);
+            rookAttacks[i] = generateRookAttacks(i);
+            for (int j = 0; j < MAXIMUM_BLOCKING_PIECES_MASK; j++) {
+                bishopOccupancies[i][j] = getOccupancy(j, bishopAttacks[i]);
+                rookOccupancies[i][j] = getOccupancy(j, rookAttacks[i]);
+            }
+        }
     }
 
     /**
