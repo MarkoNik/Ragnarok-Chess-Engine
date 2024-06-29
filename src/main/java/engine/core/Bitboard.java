@@ -3,6 +3,8 @@ package engine.core;
 import app.Constants;
 import app.EngineLogger;
 
+import java.util.Random;
+
 public class Bitboard {
 
     /**
@@ -45,6 +47,11 @@ public class Bitboard {
 
     private final long[][] bishopOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
     private final long[][] rookOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    private final long[][] bishopAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    private final long[][] rookAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+
+    private final long[] bishopMagics = new long[BOARD_SIZE];
+    private final long[] rookMagics = new long[BOARD_SIZE];
 
     public void fillAttackTables() {
         // precalculate attack masks for all leaper pieces
@@ -55,15 +62,99 @@ public class Bitboard {
             kingAttacks[i] = generateKingAttacks(i);
         }
 
-        // precalculate occupancies for sliding pieces
+        // precalculate occupancies and attacks with blockers for sliding pieces
         for (int i = 0; i < BOARD_SIZE; i++) {
             bishopAttacks[i] = generateBishopAttacks(i);
             rookAttacks[i] = generateRookAttacks(i);
             for (int j = 0; j < MAXIMUM_BLOCKING_PIECES_MASK; j++) {
                 bishopOccupancies[i][j] = getOccupancy(j, bishopAttacks[i]);
+                bishopAttacksWithBlockers[i][j] = generateBishopAttacksWithBlockers(i, bishopOccupancies[i][j]);
                 rookOccupancies[i][j] = getOccupancy(j, rookAttacks[i]);
+                rookAttacksWithBlockers[i][j] = generateRookAttacksWithBlockers(i, rookOccupancies[i][j]);
             }
         }
+
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            bishopMagics[i] = generateBishopMagic(i);
+            for (int j = 0; j < 100; j++) {
+                long newMagic = generateBishopMagic(i);
+                if (getLs1bIndex(bishopMagics[i]) > getLs1bIndex(newMagic))
+                    bishopMagics[i] = newMagic;
+            }
+        }
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            rookMagics[i] = generateRookMagic(i);
+            for (int j = 0; j < 100; j++) {
+                long newMagic = generateRookMagic(i);
+                if (getLs1bIndex(rookMagics[i]) > getLs1bIndex(newMagic))
+                    rookMagics[i] = newMagic;
+            }
+        }
+
+        System.out.println("Bishop magics\n");
+        for (int i = 0; i < 64; i++) {
+            System.out.println(bishopMagics[i]);
+        }
+
+        System.out.println("\nRook magics\n");
+        for (int i = 0; i < 64; i++) {
+            System.out.println(rookMagics[i]);
+        }
+    }
+
+    public long generateBishopMagic(int square) {
+        Random random = new Random(123456);
+        int relevantBits = Long.bitCount(bishopAttacks[square]);
+
+        for (int iterations = 0; iterations < 1e8; iterations++) {
+
+            long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
+            long[] attackMap = new long[4096];
+            boolean badCollision = false;
+
+            for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
+                int magicIndex = (int)((bishopOccupancies[square][i] * magicCandidate) >>> (64 - relevantBits));
+                if (attackMap[magicIndex] == 0L) {
+                    attackMap[magicIndex] = bishopAttacksWithBlockers[square][i];
+                }
+                else if (attackMap[magicIndex] != bishopAttacksWithBlockers[square][i]) {
+                    badCollision = true;
+                }
+            }
+
+            if (!badCollision) {
+                return magicCandidate;
+            }
+        }
+        EngineLogger.error("Could not find magic number.");
+        return -1;
+    }
+    public long generateRookMagic(int square) {
+        Random random = new Random(123456);
+        int relevantBits = Long.bitCount(rookAttacks[square]);
+
+        for (int iterations = 0; iterations < 1e9; iterations++) {
+
+            long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
+            long[] attackMap = new long[4096];
+            boolean badCollision = false;
+
+            for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
+                int magicIndex = (int)((rookOccupancies[square][i] * magicCandidate) >>> (64 - relevantBits));
+                if (attackMap[magicIndex] == 0L) {
+                    attackMap[magicIndex] = rookAttacksWithBlockers[square][i];
+                }
+                else if (attackMap[magicIndex] != rookAttacksWithBlockers[square][i]) {
+                    badCollision = true;
+                }
+            }
+
+            if (!badCollision) {
+                return magicCandidate;
+            }
+        }
+        EngineLogger.error("Could not find magic number.");
+        return -1;
     }
 
     /**
