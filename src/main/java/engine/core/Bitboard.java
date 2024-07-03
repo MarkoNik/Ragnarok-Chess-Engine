@@ -50,8 +50,8 @@ public class Bitboard {
     private final long[][] bishopAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
     private final long[][] rookAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
 
-    private final long[] bishopMagics = new long[BOARD_SIZE];
-    private final long[] rookMagics = new long[BOARD_SIZE];
+    private final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
+    private final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
 
     public void fillAttackTables() {
         // precalculate attack masks for all leaper pieces
@@ -73,43 +73,65 @@ public class Bitboard {
                 rookAttacksWithBlockers[i][j] = generateRookAttacksWithBlockers(i, rookOccupancies[i][j]);
             }
         }
+        // The generated magic numbers are hardcoded
+        //generateMagics();
 
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            bishopMagics[i] = generateBishopMagic(i);
-            for (int j = 0; j < 100; j++) {
-                long newMagic = generateBishopMagic(i);
-                if (getLs1bIndex(bishopMagics[i]) > getLs1bIndex(newMagic))
-                    bishopMagics[i] = newMagic;
-            }
-        }
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            rookMagics[i] = generateRookMagic(i);
-            for (int j = 0; j < 100; j++) {
-                long newMagic = generateRookMagic(i);
-                if (getLs1bIndex(rookMagics[i]) > getLs1bIndex(newMagic))
-                    rookMagics[i] = newMagic;
-            }
-        }
-
-        System.out.println("Bishop magics\n");
-        for (int i = 0; i < 64; i++) {
-            System.out.println(bishopMagics[i]);
-        }
-
-        System.out.println("\nRook magics\n");
-        for (int i = 0; i < 64; i++) {
-            System.out.println(rookMagics[i]);
-        }
+        // Fill in magic containers from hardcoded magic constants
+        fillMagicContainers();
     }
 
-    public long generateBishopMagic(int square) {
-        Random random = new Random(123456);
+    public void fillMagicContainers() {
+        for (int square = 0; square < BOARD_SIZE; square++) {
+            long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
+            int relevantBits = Long.bitCount(bishopAttacks[square]);
+            for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
+                int magicIndex = (int)((bishopOccupancies[square][i] * MagicConstants.bishopMagics[square]) >>> (64 - relevantBits));
+                attackMap[magicIndex] = bishopAttacksWithBlockers[square][i];
+            }
+            bishopMagics[square] = new MagicContainer(MagicConstants.bishopMagics[square], attackMap);
+        }
+
+        for (int square = 0; square < BOARD_SIZE; square++) {
+            long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
+            int relevantBits = Long.bitCount(rookAttacks[square]);
+            for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
+                int magicIndex = (int)((rookOccupancies[square][i] * MagicConstants.rookMagics[square]) >>> (64 - relevantBits));
+                attackMap[magicIndex] = rookAttacksWithBlockers[square][i];
+            }
+            rookMagics[square] = new MagicContainer(MagicConstants.rookMagics[square], attackMap);
+        }
+//        System.out.println("Bishop magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
+//        }
+//        System.out.println("\nRook magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(rookMagics[square].getMagicNumber()+"L,");
+//        }
+    }
+
+    public void generateMagics() {
+        for (int square = 0; square < BOARD_SIZE; square++) {
+            bishopMagics[square] = generateBishopMagic(square);
+            rookMagics[square] = generateRookMagic(square);
+        }
+//        System.out.println("Bishop magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
+//        }
+//        System.out.println("\nRook magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(rookMagics[square].getMagicNumber()+"L,");
+//        }
+    }
+
+    public MagicContainer generateBishopMagic(int square) {
+        Random random = new Random();
         int relevantBits = Long.bitCount(bishopAttacks[square]);
 
         for (int iterations = 0; iterations < 1e8; iterations++) {
-
             long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
-            long[] attackMap = new long[4096];
+            long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             boolean badCollision = false;
 
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
@@ -123,18 +145,18 @@ public class Bitboard {
             }
 
             if (!badCollision) {
-                return magicCandidate;
+                return new MagicContainer(magicCandidate, attackMap);
             }
         }
         EngineLogger.error("Could not find magic number.");
-        return -1;
+        return null;
     }
-    public long generateRookMagic(int square) {
-        Random random = new Random(123456);
+
+    public MagicContainer generateRookMagic(int square) {
+        Random random = new Random();
         int relevantBits = Long.bitCount(rookAttacks[square]);
 
         for (int iterations = 0; iterations < 1e9; iterations++) {
-
             long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
             long[] attackMap = new long[4096];
             boolean badCollision = false;
@@ -150,11 +172,11 @@ public class Bitboard {
             }
 
             if (!badCollision) {
-                return magicCandidate;
+                return new MagicContainer(magicCandidate, attackMap);
             }
         }
         EngineLogger.error("Could not find magic number.");
-        return -1;
+        return null;
     }
 
     /**
