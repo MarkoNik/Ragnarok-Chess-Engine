@@ -53,6 +53,19 @@ public class Bitboard {
     private final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
     private final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
 
+    public int magicHash(int square, int i, int relevantBits, byte piece) {
+        if (piece == Piece.Bishop) {
+            return (int)((bishopOccupancies[square][i] * MagicConstants.bishopMagics[square]) >>> (64 - relevantBits));
+        }
+        else if (piece == Piece.Rook) {
+            return (int)((rookOccupancies[square][i] * MagicConstants.rookMagics[square]) >>> (64 - relevantBits));
+        }
+        else {
+            EngineLogger.error("Magic hash function called on non sliding piece.");
+            return -1;
+        }
+    }
+
     public void fillAttackTables() {
         // precalculate attack masks for all leaper pieces
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -85,7 +98,7 @@ public class Bitboard {
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             int relevantBits = Long.bitCount(bishopAttacks[square]);
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
-                int magicIndex = (int)((bishopOccupancies[square][i] * MagicConstants.bishopMagics[square]) >>> (64 - relevantBits));
+                int magicIndex = magicHash(square, i, relevantBits, Piece.Bishop);
                 attackMap[magicIndex] = bishopAttacksWithBlockers[square][i];
             }
             bishopMagics[square] = new MagicContainer(MagicConstants.bishopMagics[square], attackMap);
@@ -95,7 +108,7 @@ public class Bitboard {
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             int relevantBits = Long.bitCount(rookAttacks[square]);
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
-                int magicIndex = (int)((rookOccupancies[square][i] * MagicConstants.rookMagics[square]) >>> (64 - relevantBits));
+                int magicIndex = magicHash(square, i, relevantBits, Piece.Rook);
                 attackMap[magicIndex] = rookAttacksWithBlockers[square][i];
             }
             rookMagics[square] = new MagicContainer(MagicConstants.rookMagics[square], attackMap);
