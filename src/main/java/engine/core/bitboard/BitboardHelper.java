@@ -3,6 +3,7 @@ package engine.core.bitboard;
 import app.Constants;
 import app.EngineLogger;
 import engine.core.Piece;
+import engine.util.BitUtils;
 
 import java.util.Random;
 
@@ -463,8 +464,8 @@ public class BitboardHelper {
         long occupancy = 0L;
         int bitCount = Long.bitCount(attackMask);
         for (int i = 0; i < bitCount; i++) {
-            int square = getLs1bIndex(attackMask);
-            attackMask = popBit(attackMask, square);
+            int square = BitUtils.getLs1bIndex(attackMask);
+            attackMask = BitUtils.popBit(attackMask, square);
             if ((index & (1 << i)) != 0) {
                 occupancy |= (1L << square);
             }
@@ -477,31 +478,12 @@ public class BitboardHelper {
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (j == 0) sb.append("   ").append(8 - i).append("   ");
-                sb.append(getBit(bitboard, 8 * i + j) ? 1 : 0).append(" ");
+                sb.append(BitUtils.getBit(bitboard, 8 * i + j) ? 1 : 0).append(" ");
             }
             sb.append("\n");
         }
         sb.append("\n       a b c d e f g h\n");
         EngineLogger.debug(sb.toString());
-    }
-
-    public static boolean getBit(long bitboard, int square) {
-        return (bitboard & (1L << square)) != 0;
-    }
-
-    public static long setBit(long bitboard, int square) {
-        return bitboard | (1L << square);
-    }
-
-    public static long popBit(long bitboard, int square) {
-        return getBit(bitboard, square) ? bitboard ^ (1L << square) : bitboard;
-    }
-
-    public static int getLs1bIndex(long bitboard) {
-        if (bitboard != 0) {
-            return Long.bitCount((bitboard & -bitboard) - 1);
-        }
-        return -1;
     }
 
     // Convert algebraic notation (e.g., "e4") to bitboard index (0..63)

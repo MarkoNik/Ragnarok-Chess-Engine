@@ -2,6 +2,7 @@ package engine.core.bitboard;
 
 import app.Constants;
 import app.EngineLogger;
+import engine.util.BitUtils;
 
 public class Bitboard {
 
@@ -28,8 +29,8 @@ public class Bitboard {
         for (int i = 0; i < PIECE_TYPES; i++) {
             long tempBitboard = pieces[i];
             while (tempBitboard != 0) {
-                int square = BitboardHelper.getLs1bIndex(tempBitboard);
-                tempBitboard = BitboardHelper.popBit(tempBitboard, square);
+                int square = BitUtils.getLs1bIndex(tempBitboard);
+                tempBitboard = BitUtils.popBit(tempBitboard, square);
                 output[square] = Constants.asciiPieces[i];
             }
         }
