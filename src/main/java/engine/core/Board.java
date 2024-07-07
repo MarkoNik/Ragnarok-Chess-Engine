@@ -6,6 +6,8 @@ import app.EngineLogger;
  * This class is used to represent the state of the board during the game.
  * It will store an integer matrix (laid out as an array) of size 10x12,
  * as it will be beneficial for faster search when doing move generation.
+ *
+ * Deprecated by bitboards.
  */
 public class Board {
     public static final int ROWS = 12;
