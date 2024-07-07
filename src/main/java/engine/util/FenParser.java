@@ -8,6 +8,7 @@ import engine.state.GameState;
 import static engine.core.Piece.pieceMap;
 
 // TODO better parsing
+// Deprecated
 public class FenParser {
     public static GameState parseFEN(String fenString) {
         String[] parts = fenString.split(" ");
@@ -35,7 +36,7 @@ public class FenParser {
         // Fullmove number
         int fullmoveNumber = Integer.parseInt(parts[5]);
 
-        return new GameState(board, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameState(null, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
     }
 
     private static Board parsePieces(String piecePlacement) {

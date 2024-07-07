@@ -1,8 +1,7 @@
 package engine.state;
 
 import app.UciLogger;
-import engine.core.Move;
-import engine.util.MoveGenerator;
+import engine.util.BitboardMoveGenerator;
 import uci.command.GoCommandWrapper;
 
 import java.util.List;
@@ -14,17 +13,16 @@ public class EngineState {
 
     // TODO make a set of available configuration parameters and their values
     private Map<String, String> configMap;
-    private Move bestMove;
-    private MoveGenerator moveGenerator = new MoveGenerator();
+    private int bestMove;
+    private BitboardMoveGenerator moveGenerator = new BitboardMoveGenerator();
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
     }
     public void search(GoCommandWrapper goCommandWrapper) {
-        moveGenerator.setBoard(gameState.getBoard());
-        List<Move> legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
+        moveGenerator.setBitboard(gameState.getBitboard());
+        List<Integer> legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
         Random rand = new Random();
-        bestMove = legalMoves.get(rand.nextInt(legalMoves.size()));
         gameState.playMove(bestMove);
     }
 
@@ -38,7 +36,7 @@ public class EngineState {
         configMap.put(name, value);
     }
 
-    public Move getBestMove() {
+    public int getBestMove() {
         return bestMove;
     }
 }
