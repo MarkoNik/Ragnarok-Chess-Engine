@@ -30,7 +30,7 @@ public class BitboardFenParser {
         // Fullmove number
         int fullmoveNumber = Integer.parseInt(parts[5]);
 
-        return new GameState(null, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameState(bitboard, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
     }
 
     private static Bitboard parsePieces(String piecePlacement) {
@@ -70,17 +70,21 @@ public class BitboardFenParser {
         return indexToAlgebraic(from) + indexToAlgebraic(to);
     }
 
-    public static short algebraicToIndex(String position) {
-        int file = position.charAt(0) - 'a';
-        int rank = 8 - (position.charAt(1) - '0');
-        return (short) (rank * 8 + file);
+    // Convert algebraic notation (e.g., "e4") to bitboard index (0..63)
+    public static int algebraicToIndex(String algebraic) {
+        char file = algebraic.charAt(0);
+        char rank = algebraic.charAt(1);
+        int fileIndex = file - 'a';
+        int rankIndex = rank - '1';
+        return rankIndex * 8 + fileIndex;
     }
 
-    public static String indexToAlgebraic(int square) {
-        int file = square % 8;
-        int rank = 8 - (square / 8);
-        char fileChar = (char) ('a' + file);
-        char rankChar = (char) ('0' + rank);
-        return "" + fileChar + rankChar;
+    // Convert bitboard index (0..63) to algebraic notation (e.g., "e4")
+    public static String indexToAlgebraic(int index) {
+        int fileIndex = index % 8;
+        int rankIndex = index / 8;
+        char file = (char) ('a' + fileIndex);
+        char rank = (char) ('1' + rankIndex);
+        return "" + file + rank;
     }
 }

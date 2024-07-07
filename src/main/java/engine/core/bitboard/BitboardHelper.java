@@ -485,22 +485,4 @@ public class BitboardHelper {
         sb.append("\n       a b c d e f g h\n");
         EngineLogger.debug(sb.toString());
     }
-
-    // Convert algebraic notation (e.g., "e4") to bitboard index (0..63)
-    public static int algToIdx(String algebraic) {
-        char file = algebraic.charAt(0);
-        char rank = algebraic.charAt(1);
-        int fileIndex = file - 'a';
-        int rankIndex = rank - '1';
-        return rankIndex * 8 + fileIndex;
-    }
-
-    // Convert bitboard index (0..63) to algebraic notation (e.g., "e4")
-    public static String idxToAlg(int index) {
-        int fileIndex = index % 8;
-        int rankIndex = index / 8;
-        char file = (char) ('a' + fileIndex);
-        char rank = (char) ('1' + rankIndex);
-        return "" + file + rank;
-    }
 }
