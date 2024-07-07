@@ -37,18 +37,18 @@ public class BitboardFenParser {
         Bitboard bitboard = new Bitboard();
         String[] rows = piecePlacement.split("/");
 
-        int rowIndex = 7;
+        int rowIndex = 0;
         for (String row : rows) {
             int colIndex = 0;
-            for (char c : row.toCharArray()) {
-                if (Character.isDigit(c)) {
-                    colIndex += c - '0';
+            for (char piece : row.toCharArray()) {
+                if (Character.isDigit(piece)) {
+                    colIndex += piece - '0';
                 } else {
-                    bitboard.setPiece(rowIndex * 8 + colIndex, c);
+                    bitboard.setPiece(rowIndex * 8 + colIndex, piece);
                     colIndex++;
                 }
             }
-            rowIndex--;
+            rowIndex++;
         }
 
         bitboard.logBoardState();

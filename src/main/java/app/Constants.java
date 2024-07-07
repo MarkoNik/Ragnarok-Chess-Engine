@@ -4,9 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
-    public static final int ROWS = 8;
-    public static final int COLS = 8;
-    public static final int BOARD_SIZE = ROWS * COLS;
+    public static final int RANKS = 8;
+    public static final int FILES = 8;
+    public static final int BOARD_SIZE = RANKS * FILES;
+    public static final int WHITE = 0;
+    public static final int BLACK = 1;
+    public static final int BOTH = 2;
+    public static final int WHITE_PIECE_TYPES = 6;
     public static final String INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     public static Map<Character, Integer> pieceMap = new HashMap<>();
     public static char[] asciiPieces = {

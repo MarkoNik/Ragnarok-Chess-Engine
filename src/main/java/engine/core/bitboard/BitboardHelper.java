@@ -7,6 +7,9 @@ import engine.util.BitUtils;
 
 import java.util.Random;
 
+import static app.Constants.BLACK;
+import static app.Constants.WHITE;
+
 public class BitboardHelper {
     /**
     * Bitmask where every bit is set apart from bits on the A file (first column)
@@ -28,8 +31,6 @@ public class BitboardHelper {
      */
     private final long NOT_HG_FILE_MASK = 4557430888798830399L;
 
-    private final int WHITE = 0;
-    private final int BLACK = 1;
     private final int BOARD_SIZE = Constants.BOARD_SIZE;
 
     /**
@@ -41,20 +42,23 @@ public class BitboardHelper {
     // TODO separate blocking mask number for bishops and rooks
     private final int MAXIMUM_BLOCKING_PIECES_MASK = 1 << MAXIMUM_BLOCKING_PIECES;
 
-    private final long[][] pawnAttacks = new long[2][BOARD_SIZE];
-    private final long[] knightAttacks = new long[BOARD_SIZE];
-    private final long[] bishopAttacks = new long[BOARD_SIZE];
-    private final long[] rookAttacks = new long[BOARD_SIZE];
-    private final long[] queenAttacks = new long[BOARD_SIZE];
-    private final long[] kingAttacks = new long[BOARD_SIZE];
+    public final long[][] pawnAttacks = new long[2][BOARD_SIZE];
+    public final long[] knightAttacks = new long[BOARD_SIZE];
+    public final long[] bishopAttacks = new long[BOARD_SIZE];
+    public final long[] rookAttacks = new long[BOARD_SIZE];
+    public final long[] kingAttacks = new long[BOARD_SIZE];
 
-    private final long[][] bishopOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
-    private final long[][] rookOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
-    private final long[][] bishopAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
-    private final long[][] rookAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    public final long[][] bishopOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    public final long[][] rookOccupancies = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    public final long[][] bishopAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
+    public final long[][] rookAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
 
-    private final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
-    private final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
+    public final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
+    public final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
+
+    public BitboardHelper() {
+        fillAttackTables();
+    }
 
     /**
      * The main function in this class.
@@ -62,7 +66,7 @@ public class BitboardHelper {
      * Here we either generate magic constants or reuse the generated ones,
      * which are hardcoded in the MagicConstants class.
      */
-    public void fillAttackTables() {
+    private void fillAttackTables() {
         // precalculate attack masks for all leaper pieces
         for (int i = 0; i < BOARD_SIZE; i++) {
             pawnAttacks[WHITE][i] = generatePawnAttacks(WHITE, i);
@@ -127,14 +131,14 @@ public class BitboardHelper {
             }
             rookMagics[square] = new MagicContainer(MagicConstants.rookMagics[square], attackMap);
         }
-        System.out.println("Bishop magics");
-        for (int square = 0; square < 64; square++) {
-            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
-        }
-        System.out.println("\nRook magics");
-        for (int square = 0; square < 64; square++) {
-            System.out.println(rookMagics[square].getMagicNumber()+"L,");
-        }
+//        System.out.println("Bishop magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
+//        }
+//        System.out.println("\nRook magics");
+//        for (int square = 0; square < 64; square++) {
+//            System.out.println(rookMagics[square].getMagicNumber()+"L,");
+//        }
     }
 
     /**

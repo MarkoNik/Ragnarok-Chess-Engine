@@ -1,8 +1,12 @@
 package engine.util;
 
+import app.Constants;
 import engine.core.bitboard.Bitboard;
+import engine.core.bitboard.BitboardHelper;
 
 import java.util.List;
+
+import static app.Constants.*;
 
 public class BitboardMoveGenerator {
     /*
@@ -17,14 +21,74 @@ public class BitboardMoveGenerator {
     1000 0000 0000 0000 0000 0000 0000 - capture flag
      */
     private Bitboard bitboard;
+    private BitboardHelper bitboardHelper;
+
+    public BitboardMoveGenerator(BitboardHelper bitboardHelper) {
+        this.bitboardHelper = bitboardHelper;
+    }
 
     public void setBitboard(Bitboard bitboard) {
         this.bitboard = bitboard;
+        logAttacks();
     }
 
     public List<Integer> generateLegalMoves(boolean isWhiteTurn) {
         // TODO
         return null;
+    }
+
+    private boolean isSquareAttacked(int square, boolean isWhiteTurn) {
+        if (!isWhiteTurn) {
+            // This square is attacked by a white pawn if there is a white pawn on any of the squares that a black pawn would be attacking from this square
+            if ((bitboardHelper.pawnAttacks[WHITE][square] & bitboard.getPieces()[Constants.pieceMap.get('p')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.knightAttacks[square] & bitboard.getPieces()[Constants.pieceMap.get('n')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.kingAttacks[square] & bitboard.getPieces()[Constants.pieceMap.get('k')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateBishopAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('b')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateRookAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('r')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateQueenAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('q')]) != 0) {
+                return true;
+            }
+        }
+        else {
+            // This square is attacked by a black pawn if there is a black pawn on any of the squares that a white pawn would be attacking from this square
+            if ((bitboardHelper.pawnAttacks[BLACK][square] & bitboard.getPieces()[Constants.pieceMap.get('P')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.knightAttacks[square] & bitboard.getPieces()[Constants.pieceMap.get('N')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.kingAttacks[square] & bitboard.getPieces()[Constants.pieceMap.get('K')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateBishopAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('B')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateRookAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('R')]) != 0) {
+                return true;
+            }
+            if ((bitboardHelper.generateQueenAttacksWithMagics(square, bitboard.getOccupancies()[BOTH]) & bitboard.getPieces()[Constants.pieceMap.get('Q')]) != 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void logAttacks() {
+        long bitboard = 0L;
+        for (int square = 0; square < BOARD_SIZE; square++) {
+            if (isSquareAttacked(square, true)) bitboard |= (1L << square);
+        }
+        BitUtils.logBitboard(bitboard);
     }
 
     private int encodeMove(int from,

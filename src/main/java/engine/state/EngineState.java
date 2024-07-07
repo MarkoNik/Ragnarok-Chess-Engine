@@ -1,6 +1,7 @@
 package engine.state;
 
 import app.UciLogger;
+import engine.core.bitboard.BitboardHelper;
 import engine.util.BitboardMoveGenerator;
 import uci.command.GoCommandWrapper;
 
@@ -14,7 +15,13 @@ public class EngineState {
     // TODO make a set of available configuration parameters and their values
     private Map<String, String> configMap;
     private int bestMove;
-    private BitboardMoveGenerator moveGenerator = new BitboardMoveGenerator();
+    private BitboardHelper bitboardHelper;
+    private BitboardMoveGenerator moveGenerator;
+
+    public EngineState() {
+        bitboardHelper = new BitboardHelper();
+        moveGenerator = new BitboardMoveGenerator(bitboardHelper);
+    }
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
