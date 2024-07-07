@@ -56,20 +56,6 @@ public class BitboardHelper {
     private final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
     private final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
 
-
-    public int magicHash(int square, long relevantOccupancy, int relevantBits, byte piece) {
-        if (piece == Piece.Bishop) {
-            return (int)((relevantOccupancy * MagicConstants.bishopMagics[square]) >>> (BOARD_SIZE - relevantBits));
-        }
-        else if (piece == Piece.Rook) {
-            return (int)((relevantOccupancy * MagicConstants.rookMagics[square]) >>> (BOARD_SIZE - relevantBits));
-        }
-        else {
-            EngineLogger.error("Magic hash function called on non sliding piece.");
-            return -1;
-        }
-    }
-
     /**
      * The main function in this class.
      * Used to fill in all the attack tables for every kind of piece on the board.
@@ -103,11 +89,25 @@ public class BitboardHelper {
         fillMagicContainers();
     }
 
+
+    private int magicHash(int square, long relevantOccupancy, int relevantBits, byte piece) {
+        if (piece == Piece.Bishop) {
+            return (int)((relevantOccupancy * MagicConstants.bishopMagics[square]) >>> (BOARD_SIZE - relevantBits));
+        }
+        else if (piece == Piece.Rook) {
+            return (int)((relevantOccupancy * MagicConstants.rookMagics[square]) >>> (BOARD_SIZE - relevantBits));
+        }
+        else {
+            EngineLogger.error("Magic hash function called on non sliding piece.");
+            return -1;
+        }
+    }
+
     /**
      * This function is used to read the magic constants from the MagicConstants class,
      * and to fill in attack maps for bishops and rooks using the said constants.
      */
-    public void fillMagicContainers() {
+    private void fillMagicContainers() {
         for (int square = 0; square < BOARD_SIZE; square++) {
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             int relevantBits = Long.bitCount(bishopAttacks[square]);
@@ -142,7 +142,7 @@ public class BitboardHelper {
      * We should only call this function if we want to regenerate the magic constants,
      * as they can be hardcoded and reused and generating new ones takes a bit of time.
      */
-    public void generateMagics() {
+    private void generateMagics() {
         for (int square = 0; square < BOARD_SIZE; square++) {
             bishopMagics[square] = generateBishopMagic(square);
             rookMagics[square] = generateRookMagic(square);
@@ -194,7 +194,7 @@ public class BitboardHelper {
      * @param square The square that the rook is on
      * @return The class containing the magic constant
      */
-    public MagicContainer generateRookMagic(int square) {
+    private MagicContainer generateRookMagic(int square) {
         Random random = new Random();
         int relevantBits = Long.bitCount(rookAttacks[square]);
 
@@ -500,6 +500,8 @@ public class BitboardHelper {
 
         return bishopMagics[square].getAttackMap()[bishopMagicKey] | rookMagics[square].getAttackMap()[rookMagicKey];
     }
+
+
 
     /**
      * This function is used to get an occupancy bitboard for the given attack mask.
