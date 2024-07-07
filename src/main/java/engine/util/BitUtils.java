@@ -1,5 +1,7 @@
 package engine.util;
 
+import app.EngineLogger;
+
 public class BitUtils {
 
     public static boolean getBit(long bitboard, int square) {
@@ -19,5 +21,18 @@ public class BitUtils {
             return Long.bitCount((bitboard & -bitboard) - 1);
         }
         return -1;
+    }
+
+    public static void logBitboard(long bitboard) {
+        StringBuilder sb = new StringBuilder("\n\n");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (j == 0) sb.append("   ").append(8 - i).append("   ");
+                sb.append(BitUtils.getBit(bitboard, 8 * i + j) ? 1 : 0).append(" ");
+            }
+            sb.append("\n");
+        }
+        sb.append("\n       a b c d e f g h\n");
+        EngineLogger.debug(sb.toString());
     }
 }
