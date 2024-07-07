@@ -455,13 +455,14 @@ public class BitboardHelper {
      * on a given square with the given occupancy bitboard.
      * In contrast with the same functions above, it can generate the attack bitboard
      * in practically O(1) time using precalculated magic hash maps.
-     * @param square The position of the bishop.
-     * @param occupancy The occupancy bitboard.
-     * @return
+     * @param square The position of the bishop
+     * @param occupancy The occupancy bitboard
+     * @return The bishop attack bitboard
      */
     public long generateBishopAttacksWithMagics(int square, long occupancy) {
         int relevantBits = Long.bitCount(bishopAttacks[square]);
-        int magicKey = magicHash(square, occupancy, relevantBits, Piece.Bishop);
+        long relevantOccupancy = occupancy & bishopAttacks[square];
+        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.Bishop);
         return bishopMagics[square].attackMap[magicKey];
     }
 
@@ -470,14 +471,34 @@ public class BitboardHelper {
      * on a given square with the given occupancy bitboard.
      * In contrast with the same functions above, it can generate the attack bitboard
      * in practically O(1) time using precalculated magic hash maps.
-     * @param square The position of the rook.
-     * @param occupancy The occupancy bitboard.
-     * @return
+     * @param square The position of the rook
+     * @param occupancy The occupancy bitboard
+     * @return The rook attack bitboard
      */
     public long generateRookAttacksWithMagics(int square, long occupancy) {
         int relevantBits = Long.bitCount(rookAttacks[square]);
+        long relevantOccupancy = occupancy & rookAttacks[square];
         int magicKey = magicHash(square, occupancy, relevantBits, Piece.Rook);
         return rookMagics[square].attackMap[magicKey];
+    }
+
+    /**
+     * This function is used to create an attack map of a queen
+     * on a given square with the given occupancy bitboard.
+     * @param square The position of the queen
+     * @param occupancy The occupancy bitboard
+     * @return The queen attack bitboard (bishop attack map | rook attack map)
+     */
+    public long generateQueenAttacksWithMagics(int square, long occupancy) {
+        int bishopRelevantBits = Long.bitCount(bishopAttacks[square]);
+        long bishopRelevantOccupancy = occupancy & bishopAttacks[square];
+        int bishopMagicKey = magicHash(square, bishopRelevantOccupancy, bishopRelevantBits, Piece.Bishop);
+
+        int rookRelevantBits = Long.bitCount(rookAttacks[square]);
+        long rookRelevantOccupancy = occupancy & rookAttacks[square];
+        int rookMagicKey = magicHash(square, rookRelevantOccupancy, rookRelevantBits, Piece.Rook);
+
+        return bishopMagics[square].attackMap[bishopMagicKey] | rookMagics[square].attackMap[rookMagicKey];
     }
 
     /**
