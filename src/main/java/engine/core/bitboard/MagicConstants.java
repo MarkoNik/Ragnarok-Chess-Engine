@@ -1,4 +1,4 @@
-package engine.core;
+package engine.core.bitboard;
 
 public class MagicConstants {
     public static long[] bishopMagics = new long[]{

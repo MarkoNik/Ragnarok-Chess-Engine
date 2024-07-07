@@ -1,12 +1,12 @@
-package engine.core;
+package engine.core.bitboard;
 
 import app.Constants;
 import app.EngineLogger;
+import engine.core.Piece;
 
 import java.util.Random;
 
 public class BitboardHelper {
-
     /**
     * Bitmask where every bit is set apart from bits on the A file (first column)
     */

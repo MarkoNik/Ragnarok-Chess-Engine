@@ -1,4 +1,4 @@
-package engine.core;
+package engine.core.bitboard;
 
 public class MagicContainer {
     long magicNumber;

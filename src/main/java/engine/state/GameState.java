@@ -1,6 +1,6 @@
 package engine.state;
 
-import engine.core.Bitboard;
+import engine.core.bitboard.Bitboard;
 
 import java.util.List;
 
