@@ -4,6 +4,7 @@ import app.Constants;
 import engine.core.bitboard.Bitboard;
 import engine.core.bitboard.BitboardHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static app.Constants.*;
@@ -22,6 +23,8 @@ public class BitboardMoveGenerator {
      */
     private Bitboard bitboard;
     private BitboardHelper bitboardHelper;
+    private boolean isWhiteTurn = true;
+    List<Integer> moves = new ArrayList<>();
 
     public BitboardMoveGenerator(BitboardHelper bitboardHelper) {
         this.bitboardHelper = bitboardHelper;
@@ -33,8 +36,93 @@ public class BitboardMoveGenerator {
     }
 
     public List<Integer> generateLegalMoves(boolean isWhiteTurn) {
-        // TODO
+        this.isWhiteTurn = isWhiteTurn;
+        generateSinglePawnPushMoves();
+        generateDoublePawnPushMoves();
+        generateCapturePawnMoves();
+        generateKnightMoves();
         return null;
+    }
+
+    public void generateSinglePawnPushMoves() {
+        if (isWhiteTurn) {
+            long whitePawnTargets = (bitboard.getPieces()[pieceMap.get('P')] << 8) & ~bitboard.getOccupancies()[BOTH];
+            while (whitePawnTargets != 0) {
+                int toSquare = BitUtils.getLs1bIndex(whitePawnTargets);
+                int fromSquare = toSquare + 8;
+                // TODO add move to move list
+                if (toSquare < 8) {
+                    // TODO promotion
+                }
+                whitePawnTargets = BitUtils.popBit(whitePawnTargets, toSquare);
+            }
+        }
+        else {
+            long blackPawnTargets = (bitboard.getOccupancies()[pieceMap.get('p')] >>> 8) & ~bitboard.getOccupancies()[BOTH];
+            while (blackPawnTargets != 0) {
+                int toSquare = BitUtils.getLs1bIndex(blackPawnTargets);
+                int fromSquare = toSquare - 8;
+                // TODO add move to move list
+                if (toSquare >= 56) {
+                    // TODO promotion
+                }
+                blackPawnTargets = BitUtils.popBit(blackPawnTargets, toSquare);
+            }
+        }
+    }
+
+    public void generateDoublePawnPushMoves() {
+        if (isWhiteTurn) {
+            long whiteSinglePushTargets = (bitboard.getPieces()[pieceMap.get('P')] << 8) & ~bitboard.getOccupancies()[BOTH];
+            long whiteDoublePushTargets = (whiteSinglePushTargets << 8) & ~bitboard.getOccupancies()[BOTH] & RANK_4;
+            while (whiteDoublePushTargets != 0) {
+                int toSquare = BitUtils.getLs1bIndex(whiteDoublePushTargets);
+                int fromSquare = toSquare + 16;
+                // TODO add move to move list
+                whiteDoublePushTargets = BitUtils.popBit(whiteDoublePushTargets, toSquare);
+            }
+        }
+        else {
+            long blackSinglePushTargets = (bitboard.getOccupancies()[pieceMap.get('p')] >>> 8) & ~bitboard.getOccupancies()[BOTH];
+            long blackDoublePushTargets = (blackSinglePushTargets >>> 8) & ~bitboard.getOccupancies()[BOTH] & RANK_5;
+            while (blackDoublePushTargets != 0) {
+                int toSquare = BitUtils.getLs1bIndex(blackDoublePushTargets);
+                int fromSquare = toSquare - 16;
+                // TODO add move to move list
+                blackDoublePushTargets = BitUtils.popBit(blackDoublePushTargets, toSquare);
+            }
+        }
+    }
+
+    public void generateCapturePawnMoves() {
+        if (isWhiteTurn) {
+            long whitePawns = bitboard.getPieces()[pieceMap.get('P')];
+            while (whitePawns != 0) {
+                int fromSquare = BitUtils.getLs1bIndex(whitePawns);
+                long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
+                // TODO add moves to move list
+                if (fromSquare >= 8 && fromSquare < 16) {
+                    // TODO promotion
+                }
+                whitePawns = BitUtils.popBit(whitePawns, fromSquare);
+            }
+        }
+        else {
+            long blackPawns = bitboard.getPieces()[pieceMap.get('p')];
+            while (blackPawns != 0) {
+                int fromSquare = BitUtils.getLs1bIndex(blackPawns);
+                long toSquares = bitboardHelper.pawnAttacks[BLACK][fromSquare] & bitboard.getOccupancies()[WHITE];
+                // TODO add moves to move list
+                if (fromSquare >= 48 && fromSquare < 56) {
+                    // TODO promotion
+                }
+                blackPawns = BitUtils.popBit(blackPawns, fromSquare);
+            }
+        }
+    }
+
+    public void generateKnightMoves() {
+        // TODO
     }
 
     private boolean isSquareAttacked(int square, boolean isWhiteTurn) {
@@ -86,7 +174,7 @@ public class BitboardMoveGenerator {
     private void logAttacks() {
         long bitboard = 0L;
         for (int square = 0; square < BOARD_SIZE; square++) {
-            if (isSquareAttacked(square, true)) bitboard |= (1L << square);
+            if (isSquareAttacked(square, isWhiteTurn)) bitboard |= (1L << square);
         }
         BitUtils.logBitboard(bitboard);
     }
