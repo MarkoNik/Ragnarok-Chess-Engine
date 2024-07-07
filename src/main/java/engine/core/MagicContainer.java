@@ -1,8 +1,6 @@
 package engine.core;
 
-import java.io.Serializable;
-
-public class MagicContainer implements Serializable {
+public class MagicContainer {
     long magicNumber;
     long[] attackMap;
 
