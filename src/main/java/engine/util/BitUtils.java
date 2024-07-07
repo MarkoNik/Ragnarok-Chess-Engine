@@ -17,6 +17,7 @@ public class BitUtils {
     }
 
     public static int getLs1bIndex(long bitboard) {
+        // TODO De Bruijn LS1B performance benchmark
         if (bitboard != 0) {
             return Long.bitCount((bitboard & -bitboard) - 1);
         }

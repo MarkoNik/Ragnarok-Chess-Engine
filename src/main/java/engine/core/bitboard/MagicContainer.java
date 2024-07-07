@@ -1,8 +1,8 @@
 package engine.core.bitboard;
 
 public class MagicContainer {
-    long magicNumber;
-    long[] attackMap;
+    private long magicNumber;
+    private long[] attackMap;
 
     public MagicContainer(long magicNumber, long[] magicMap) {
         this.magicNumber = magicNumber;
@@ -11,5 +11,9 @@ public class MagicContainer {
 
     public long getMagicNumber() {
         return magicNumber;
+    }
+
+    public long[] getAttackMap() {
+        return attackMap;
     }
 }

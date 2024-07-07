@@ -127,14 +127,14 @@ public class BitboardHelper {
             }
             rookMagics[square] = new MagicContainer(MagicConstants.rookMagics[square], attackMap);
         }
-//        System.out.println("Bishop magics");
-//        for (int square = 0; square < 64; square++) {
-//            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
-//        }
-//        System.out.println("\nRook magics");
-//        for (int square = 0; square < 64; square++) {
-//            System.out.println(rookMagics[square].getMagicNumber()+"L,");
-//        }
+        System.out.println("Bishop magics");
+        for (int square = 0; square < 64; square++) {
+            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
+        }
+        System.out.println("\nRook magics");
+        for (int square = 0; square < 64; square++) {
+            System.out.println(rookMagics[square].getMagicNumber()+"L,");
+        }
     }
 
     /**
@@ -463,7 +463,7 @@ public class BitboardHelper {
         int relevantBits = Long.bitCount(bishopAttacks[square]);
         long relevantOccupancy = occupancy & bishopAttacks[square];
         int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.Bishop);
-        return bishopMagics[square].attackMap[magicKey];
+        return bishopMagics[square].getAttackMap()[magicKey];
     }
 
     /**
@@ -478,8 +478,8 @@ public class BitboardHelper {
     public long generateRookAttacksWithMagics(int square, long occupancy) {
         int relevantBits = Long.bitCount(rookAttacks[square]);
         long relevantOccupancy = occupancy & rookAttacks[square];
-        int magicKey = magicHash(square, occupancy, relevantBits, Piece.Rook);
-        return rookMagics[square].attackMap[magicKey];
+        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.Rook);
+        return rookMagics[square].getAttackMap()[magicKey];
     }
 
     /**
@@ -498,7 +498,7 @@ public class BitboardHelper {
         long rookRelevantOccupancy = occupancy & rookAttacks[square];
         int rookMagicKey = magicHash(square, rookRelevantOccupancy, rookRelevantBits, Piece.Rook);
 
-        return bishopMagics[square].attackMap[bishopMagicKey] | rookMagics[square].attackMap[rookMagicKey];
+        return bishopMagics[square].getAttackMap()[bishopMagicKey] | rookMagics[square].getAttackMap()[rookMagicKey];
     }
 
     /**
