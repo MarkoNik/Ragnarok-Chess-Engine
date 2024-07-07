@@ -3,57 +3,9 @@ package engine.core;
 import app.Constants;
 import app.EngineLogger;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 public class BitboardHelper {
-    public static Map<Character, Integer> pieceMap = new HashMap<>();
-
-    public static char[] asciiPieces = {
-            'P',
-            'N',
-            'B',
-            'R',
-            'Q',
-            'K',
-            'p',
-            'n',
-            'b',
-            'r',
-            'q',
-            'k'
-    };
-
-    public static char[] unicodePieces = {
-            '♙',
-            '♘',
-            '♗',
-            '♖',
-            '♕',
-            '♔',
-            '♟',
-            '♞',
-            '♝',
-            '♜',
-            '♛',
-            '♚'
-    };
-
-    static {
-        pieceMap.put('P', 0);
-        pieceMap.put('N', 1);
-        pieceMap.put('B', 2);
-        pieceMap.put('R', 3);
-        pieceMap.put('Q', 4);
-        pieceMap.put('K', 5);
-        pieceMap.put('p', 6);
-        pieceMap.put('n', 7);
-        pieceMap.put('b', 8);
-        pieceMap.put('r', 9);
-        pieceMap.put('q', 10);
-        pieceMap.put('k', 11);
-    }
 
     /**
     * Bitmask where every bit is set apart from bits on the A file (first column)

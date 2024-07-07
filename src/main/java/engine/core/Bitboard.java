@@ -1,5 +1,6 @@
 package engine.core;
 
+import app.Constants;
 import app.EngineLogger;
 
 public class Bitboard {
@@ -14,7 +15,7 @@ public class Bitboard {
 
     public void setPiece(int square, char piece) {
         long bitboard = 1L << square;
-        pieces[BitboardHelper.pieceMap.get(piece)] |= bitboard;
+        pieces[Constants.pieceMap.get(piece)] |= bitboard;
     }
 
     public void makeMove(int move) {
@@ -29,7 +30,7 @@ public class Bitboard {
             while (tempBitboard != 0) {
                 int square = BitboardHelper.getLs1bIndex(tempBitboard);
                 tempBitboard = BitboardHelper.popBit(tempBitboard, square);
-                output[square] = BitboardHelper.asciiPieces[i];
+                output[square] = Constants.asciiPieces[i];
             }
         }
 
