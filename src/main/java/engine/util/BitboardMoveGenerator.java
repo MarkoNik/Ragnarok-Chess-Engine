@@ -163,7 +163,6 @@ public class BitboardMoveGenerator {
                     && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 1))) != 0
                     && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 2))) != 0
                     && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 3))) != 0
-                    && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 1, false)
                     && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 2, false)
                     && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 3, false)) {
                 // TODO add castles move to list
@@ -181,7 +180,6 @@ public class BitboardMoveGenerator {
                     && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 1))) != 0
                     && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 2))) != 0
                     && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 3))) != 0
-                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 1, false)
                     && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 2, false)
                     && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 3, false)) {
                 // TODO add castles move to list
