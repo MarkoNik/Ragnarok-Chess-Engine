@@ -1,7 +1,5 @@
 package engine.state;
 
-import engine.core.bitboard.Bitboard;
-
 import java.util.List;
 
 public class GameState {

@@ -1,4 +1,4 @@
-package engine.core.bitboard;
+package engine.state;
 
 import app.Constants;
 import app.EngineLogger;

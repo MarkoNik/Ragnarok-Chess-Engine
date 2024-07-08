@@ -17,6 +17,7 @@ public class Constants {
     public static final int WHITE_QUEENSIDE_CASTLES_MASK = 2;
     public static final int BLACK_KINGSIDE_CASTLES_MASK = 4;
     public static final int BLACK_QUEENSIDE_CASTLES_MASK = 8;
+    public static final int ALL_CASTLES_MASK = 15;
     public static final int WHITE_KINGSIDE_CASTLES_SQUARE = 62;
     public static final int WHITE_QUEENSIDE_CASTLES_SQUARE = 58;
     public static final int BLACK_KINGSIDE_CASTLES_SQUARE = 6;

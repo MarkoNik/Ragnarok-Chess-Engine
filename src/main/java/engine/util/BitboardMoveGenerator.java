@@ -1,7 +1,7 @@
 package engine.util;
 
 import app.Constants;
-import engine.core.bitboard.Bitboard;
+import engine.state.Bitboard;
 import engine.core.bitboard.BitboardHelper;
 
 import java.util.ArrayList;
@@ -137,7 +137,8 @@ public class BitboardMoveGenerator {
         long knights = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('N')] : bitboard.getPieces()[pieceMap.get('n')];
         while (knights != 0) {
             int fromSquare = BitUtils.getLs1bIndex(knights);
-            long toSquares = bitboardHelper.knightAttacks[fromSquare];
+            long toSquares = bitboardHelper.knightAttacks[fromSquare]
+                    & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
             // TODO add moves to move list
             knights = BitUtils.popBit(knights, fromSquare);
         }
@@ -146,7 +147,8 @@ public class BitboardMoveGenerator {
     public void generateKingMoves() {
         long king = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('K')] : bitboard.getPieces()[pieceMap.get('k')];
         int fromSquare = BitUtils.getLs1bIndex(king);
-        long toSquares = bitboardHelper.kingAttacks[fromSquare];
+        long toSquares = bitboardHelper.kingAttacks[fromSquare]
+                & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
         // TODO add moves to move list
 
         if (isWhiteTurn) {
@@ -191,7 +193,8 @@ public class BitboardMoveGenerator {
         long bishops = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('B')] : bitboard.getPieces()[pieceMap.get('b')];
         while (bishops != 0) {
             int fromSquare = BitUtils.getLs1bIndex(bishops);
-            long toSquares = bitboardHelper.generateBishopAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH]);
+            long toSquares = bitboardHelper.generateBishopAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
+                    & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
             // TODO add moves to move list
             bishops = BitUtils.popBit(bishops, fromSquare);
         }
@@ -201,7 +204,8 @@ public class BitboardMoveGenerator {
         long rooks = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('R')] : bitboard.getPieces()[pieceMap.get('r')];
         while (rooks != 0) {
             int fromSquare = BitUtils.getLs1bIndex(rooks);
-            long toSquares = bitboardHelper.generateRookAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH]);
+            long toSquares = bitboardHelper.generateRookAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
+                    & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
             // TODO add moves to move list
             rooks = BitUtils.popBit(rooks, fromSquare);
         }
@@ -211,7 +215,8 @@ public class BitboardMoveGenerator {
         long queens = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('Q')] : bitboard.getPieces()[pieceMap.get('q')];
         while (queens != 0) {
             int fromSquare = BitUtils.getLs1bIndex(queens);
-            long toSquares = bitboardHelper.generateQueenAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH]);
+            long toSquares = bitboardHelper.generateQueenAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
+                    & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
             // TODO add moves to move list
             queens = BitUtils.popBit(queens, fromSquare);
         }
@@ -269,54 +274,5 @@ public class BitboardMoveGenerator {
             if (isSquareAttacked(square, isWhiteTurn)) bitboard |= (1L << square);
         }
         BitUtils.logBitboard(bitboard);
-    }
-
-    private int encodeMove(int from,
-                           int to,
-                           int piece,
-                           int promotionPiece,
-                           int doublePush,
-                           int castles,
-                           int enPassant,
-                           int capture) {
-        return from
-                | to << 8
-                | piece << 16
-                | promotionPiece << 20
-                | doublePush << 24
-                | castles << 25
-                | enPassant << 26
-                | capture << 27;
-    }
-
-    private int extractFrom(int move) {
-        return move & 0xFF;
-    }
-    private int extractTo(int move) {
-        return (move >> 8) & 0xFF;
-    }
-
-    private int extractPiece(int move) {
-        return (move >> 16) & 0xF;
-    }
-
-    private int extractPromotionPiece(int move) {
-        return (move >> 20) & 0xF;
-    }
-
-    private int extractDoublePushFlag(int move) {
-        return (move >> 24) & 1;
-    }
-
-    private int extractCastlesFlag(int move) {
-        return (move >> 25) & 1;
-    }
-
-    private int extractEnPassantFlag(int move) {
-        return (move >> 26) & 1;
-    }
-
-    private int extractCaptureFlag(int move) {
-        return (move >> 27) & 1;
     }
 }

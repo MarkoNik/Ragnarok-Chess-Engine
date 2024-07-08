@@ -1,6 +1,6 @@
 package engine.util;
 
-import engine.core.bitboard.Bitboard;
+import engine.state.Bitboard;
 import engine.state.GameState;
 
 public class BitboardFenParser {
