@@ -56,7 +56,7 @@ public class BitboardMoveGenerator {
                 int fromSquare = toSquare + 8;
                 // TODO add move to move list
                 if (toSquare < 8) {
-                    // TODO promotion
+                    // TODO add promotion moves to move list
                 }
                 whitePawnTargets = BitUtils.popBit(whitePawnTargets, toSquare);
             }
@@ -68,7 +68,7 @@ public class BitboardMoveGenerator {
                 int fromSquare = toSquare - 8;
                 // TODO add move to move list
                 if (toSquare >= 56) {
-                    // TODO promotion
+                    // TODO add promotion moves to move list
                 }
                 blackPawnTargets = BitUtils.popBit(blackPawnTargets, toSquare);
             }
@@ -104,10 +104,13 @@ public class BitboardMoveGenerator {
             while (whitePawns != 0) {
                 int fromSquare = BitUtils.getLs1bIndex(whitePawns);
                 long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
-                // TODO en passant
+                if (bitboard.getEnPassantSquare() != -1
+                        && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
+                    // TODO add en passant move to move list
+                }
                 // TODO add moves to move list
                 if (fromSquare >= 8 && fromSquare < 16) {
-                    // TODO promotion
+                    // TODO add promotion moves to move list
                 }
                 whitePawns = BitUtils.popBit(whitePawns, fromSquare);
             }
@@ -117,10 +120,13 @@ public class BitboardMoveGenerator {
             while (blackPawns != 0) {
                 int fromSquare = BitUtils.getLs1bIndex(blackPawns);
                 long toSquares = bitboardHelper.pawnAttacks[BLACK][fromSquare] & bitboard.getOccupancies()[WHITE];
-                // TODO en passant
+                if (bitboard.getEnPassantSquare() != -1
+                        && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
+                    // TODO add en passant move to move list
+                }
                 // TODO add moves to move list
                 if (fromSquare >= 48 && fromSquare < 56) {
-                    // TODO promotion
+                    // TODO add promotion moves to move list
                 }
                 blackPawns = BitUtils.popBit(blackPawns, fromSquare);
             }
