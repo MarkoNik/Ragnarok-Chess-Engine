@@ -26,6 +26,7 @@ public class Constants {
     public static final int WHITE_QUEENSIDE_ROOK = 56;
     public static final int BLACK_KINGSIDE_ROOK = 7;
     public static final int BLACK_QUEENSIDE_ROOK = 0;
+    public static final int ILLEGAL = -1;
 
     public static final String INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     public static Map<Character, Integer> pieceMap = new HashMap<>();
