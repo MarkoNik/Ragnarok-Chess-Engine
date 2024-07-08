@@ -13,6 +13,19 @@ public class Constants {
     public static final int WHITE_PIECE_TYPES = 6;
     public static final long RANK_4 = 0x00000000FF000000L;
     public static final long RANK_5 = 0x000000FF00000000L;
+    public static final int WHITE_KINGSIDE_CASTLES_MASK = 1;
+    public static final int WHITE_QUEENSIDE_CASTLES_MASK = 2;
+    public static final int BLACK_KINGSIDE_CASTLES_MASK = 4;
+    public static final int BLACK_QUEENSIDE_CASTLES_MASK = 8;
+    public static final int WHITE_KINGSIDE_CASTLES_SQUARE = 62;
+    public static final int WHITE_QUEENSIDE_CASTLES_SQUARE = 58;
+    public static final int BLACK_KINGSIDE_CASTLES_SQUARE = 6;
+    public static final int BLACK_QUEENSIDE_CASTLES_SQUARE = 2;
+    public static final int WHITE_KINGSIDE_ROOK = 63;
+    public static final int WHITE_QUEENSIDE_ROOK = 56;
+    public static final int BLACK_KINGSIDE_ROOK = 7;
+    public static final int BLACK_QUEENSIDE_ROOK = 0;
+
     public static final String INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     public static Map<Character, Integer> pieceMap = new HashMap<>();
     public static char[] asciiPieces = {

@@ -16,6 +16,15 @@ public class Bitboard {
     private long[] pieces = new long[PIECE_TYPES];
     private long[] occupancies = new long[3];
 
+    /**
+     * 0001 - white kingside castles
+     * 0010 - white queenside castles
+     * 0100 - black kingside castles
+     * 1000 - black queenside castles
+     */
+    private byte castlesFlags = 0;
+    private byte enPassantSquare = 0;
+
     public void setPiece(int square, char piece) {
         // set the piece bitboard
         long bitboard = 1L << square;
@@ -65,5 +74,13 @@ public class Bitboard {
 
     public long[] getOccupancies() {
         return occupancies;
+    }
+
+    public byte getCastlesFlags() {
+        return castlesFlags;
+    }
+
+    public byte getEnPassantSquare() {
+        return enPassantSquare;
     }
 }
