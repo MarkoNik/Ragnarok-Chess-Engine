@@ -38,6 +38,9 @@ public class Constants {
     public static final int MAX_LEGAL_MOVES = 220;
 
     public static final String INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    public static final int PIECE_TYPES = 12;
+    // white occupancies, black occupancies, both occupancies
+    public static final int OCCUPANCY_TYPES = 3;
     public static Map<Character, Integer> pieceMap = new HashMap<>();
     public static char[] asciiPieces = {
             'P',

@@ -3,10 +3,8 @@ package engine.state;
 import java.util.List;
 
 public class GameState {
-    // 10x12 Board, deprecated by bitboards.
-//    private Board board;
     private Bitboard bitboard;
-    private boolean isWhiteTurn = true;
+    private boolean isWhiteTurn;
     private String castlingAvailability;
     private String enPassantTargetSquare;
     private int halfmoveClock;

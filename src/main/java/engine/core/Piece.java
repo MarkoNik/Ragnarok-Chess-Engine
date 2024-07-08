@@ -34,6 +34,8 @@ public class Piece {
     public static final byte BlackQueen = Queen | Black;    // 13
     public static final byte BlackKing = King | Black;      // 14
 
+    public static String[] pieceCodeToPiece = new String[16];
+
     public static final byte typeMask = 0b0111;
     public static final byte colourFlag = 0b1000;
     public static final byte castlesFlag = 0b10000;
@@ -69,5 +71,19 @@ public class Piece {
 
         // Empty squares
         pieceMap.put(' ', Piece.None);
+
+        pieceCodeToPiece[0] = "None";
+        pieceCodeToPiece[1] = "WhitePawn";
+        pieceCodeToPiece[2] = "WhiteKnight";
+        pieceCodeToPiece[3] = "WhiteBishop";
+        pieceCodeToPiece[4] = "WhiteRook";
+        pieceCodeToPiece[5] = "WhiteQueen";
+        pieceCodeToPiece[6] = "WhiteKing";
+        pieceCodeToPiece[9] = "BlackPawn";
+        pieceCodeToPiece[10] = "BlackKnight";
+        pieceCodeToPiece[11] = "BlackBishop";
+        pieceCodeToPiece[12] = "BlackRook";
+        pieceCodeToPiece[13] = "BlackQueen";
+        pieceCodeToPiece[14] = "BlackKing";
     }
 }

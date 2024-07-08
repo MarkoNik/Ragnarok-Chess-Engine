@@ -7,12 +7,6 @@ import engine.util.BitUtils;
 import static app.Constants.*;
 
 public class Bitboard {
-
-    public static final int PIECE_TYPES = 12;
-
-    // white occupancies, black occupancies, both occupancies
-    public static final int OCCUPANCY_TYPES = 3;
-
     private long[] pieces = new long[PIECE_TYPES];
     private long[] occupancies = new long[3];
 
