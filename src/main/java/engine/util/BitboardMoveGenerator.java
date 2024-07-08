@@ -41,6 +41,7 @@ public class BitboardMoveGenerator {
         generateDoublePawnPushMoves();
         generateCapturePawnMoves();
         generateKnightMoves();
+        generateKingMoves();
         generateBishopMoves();
         generateRookMoves();
         generateQueenMoves();
@@ -134,6 +135,13 @@ public class BitboardMoveGenerator {
             // TODO add moves to move list
             knights = BitUtils.popBit(knights, fromSquare);
         }
+    }
+
+    public void generateKingMoves() {
+        long king = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('K')] : bitboard.getPieces()[pieceMap.get('k')];
+        int fromSquare = BitUtils.getLs1bIndex(king);
+        long toSquares = bitboardHelper.kingAttacks[fromSquare];
+        // TODO add moves to move list
     }
 
     public void generateBishopMoves() {
