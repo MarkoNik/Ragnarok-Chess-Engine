@@ -301,12 +301,25 @@ public class BitboardMoveGenerator {
     }
 
     public void generateKnightMoves() {
+        int move;
         long knights = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('N')] : bitboard.getPieces()[pieceMap.get('n')];
         while (knights != 0) {
             int fromSquare = BitUtils.getLs1bIndex(knights);
             long toSquares = bitboardHelper.knightAttacks[fromSquare]
                     & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
-            // TODO add moves to move list
+            while (toSquares != 0) {
+                int toSquare = BitUtils.getLs1bIndex(toSquares);
+                boolean isCapture = isWhiteTurn ?
+                        (bitboard.getOccupancies()[BLACK] & (1L << toSquare)) != 0 : (bitboard.getOccupancies()[WHITE] & (1L << toSquare)) != 0;
+
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? Piece.WhiteKnight : Piece.BlackKnight,
+                        0, 0, 0, 0, isCapture ? 1 : 0);
+                if (move != ILLEGAL) {
+                    moves[moveCounter++] = move;
+                }
+
+                toSquares = BitUtils.popBit(toSquares, toSquare);
+            }
             knights = BitUtils.popBit(knights, fromSquare);
         }
     }
@@ -355,34 +368,75 @@ public class BitboardMoveGenerator {
     }
 
     public void generateBishopMoves() {
+        int move;
         long bishops = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('B')] : bitboard.getPieces()[pieceMap.get('b')];
         while (bishops != 0) {
             int fromSquare = BitUtils.getLs1bIndex(bishops);
             long toSquares = bitboardHelper.generateBishopAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
                     & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
-            // TODO add moves to move list
+            while (toSquares != 0) {
+                int toSquare = BitUtils.getLs1bIndex(toSquares);
+                boolean isCapture = isWhiteTurn ?
+                        (bitboard.getOccupancies()[BLACK] & (1L << toSquare)) != 0 : (bitboard.getOccupancies()[WHITE] & (1L << toSquare)) != 0;
+
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? Piece.WhiteBishop : Piece.BlackBishop,
+                        0, 0, 0, 0, isCapture ? 1 : 0);
+                if (move != ILLEGAL) {
+                    moves[moveCounter++] = move;
+                }
+
+                toSquares = BitUtils.popBit(toSquares, toSquare);
+            }
             bishops = BitUtils.popBit(bishops, fromSquare);
         }
     }
 
     public void generateRookMoves() {
+        int move;
         long rooks = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('R')] : bitboard.getPieces()[pieceMap.get('r')];
         while (rooks != 0) {
             int fromSquare = BitUtils.getLs1bIndex(rooks);
             long toSquares = bitboardHelper.generateRookAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
                     & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
-            // TODO add moves to move list
+
+            while (toSquares != 0) {
+                int toSquare = BitUtils.getLs1bIndex(toSquares);
+                boolean isCapture = isWhiteTurn ?
+                        (bitboard.getOccupancies()[BLACK] & (1L << toSquare)) != 0 : (bitboard.getOccupancies()[WHITE] & (1L << toSquare)) != 0;
+
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? Piece.WhiteRook : Piece.BlackRook,
+                        0, 0, 0, 0, isCapture ? 1 : 0);
+                if (move != ILLEGAL) {
+                    moves[moveCounter++] = move;
+                }
+
+                toSquares = BitUtils.popBit(toSquares, toSquare);
+            }
             rooks = BitUtils.popBit(rooks, fromSquare);
         }
     }
 
     public void generateQueenMoves() {
+        int move;
         long queens = isWhiteTurn ? bitboard.getPieces()[pieceMap.get('Q')] : bitboard.getPieces()[pieceMap.get('q')];
         while (queens != 0) {
             int fromSquare = BitUtils.getLs1bIndex(queens);
             long toSquares = bitboardHelper.generateQueenAttacksWithMagics(fromSquare, bitboard.getOccupancies()[BOTH])
                     & (isWhiteTurn ? ~bitboard.getOccupancies()[WHITE] : ~bitboard.getOccupancies()[BLACK]);
-            // TODO add moves to move list
+
+            while (toSquares != 0) {
+                int toSquare = BitUtils.getLs1bIndex(toSquares);
+                boolean isCapture = isWhiteTurn ?
+                        (bitboard.getOccupancies()[BLACK] & (1L << toSquare)) != 0 : (bitboard.getOccupancies()[WHITE] & (1L << toSquare)) != 0;
+
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? Piece.WhiteQueen : Piece.BlackQueen,
+                        0, 0, 0, 0, isCapture ? 1 : 0);
+                if (move != ILLEGAL) {
+                    moves[moveCounter++] = move;
+                }
+
+                toSquares = BitUtils.popBit(toSquares, toSquare);
+            }
             queens = BitUtils.popBit(queens, fromSquare);
         }
     }
