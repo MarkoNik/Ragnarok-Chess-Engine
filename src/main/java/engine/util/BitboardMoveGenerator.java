@@ -24,7 +24,7 @@ public class BitboardMoveGenerator {
     private Bitboard bitboard;
     private BitboardHelper bitboardHelper;
     private boolean isWhiteTurn = true;
-    int[] moves = new int[256];
+    int[] moves = new int[MAX_LEGAL_MOVES];
     int moveCounter = 0;
 
     public BitboardMoveGenerator(BitboardHelper bitboardHelper) {
@@ -40,7 +40,7 @@ public class BitboardMoveGenerator {
         this.isWhiteTurn = isWhiteTurn;
         generateSinglePawnPushMoves();
         generateDoublePawnPushMoves();
-        generateCapturePawnMoves();
+        generatePawnCaptureMoves();
         generateKnightMoves();
         generateKingMoves();
         generateBishopMoves();
@@ -57,33 +57,33 @@ public class BitboardMoveGenerator {
                 int toSquare = BitUtils.getLs1bIndex(whitePawnTargets);
                 int fromSquare = toSquare + 8;
 
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
                         0, 0, 0, 0, 0);
                 if (move != ILLEGAL) {
                     moves[moveCounter++] = move;
                 }
 
-                if (toSquare < 8) {
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Queen, 0, 0, 0, 0);
+                if (toSquare <= RANK_8_END_SQUARE) {
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                            Piece.WhiteQueen, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Rook, 0,0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                            Piece.WhiteRook, 0,0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Bishop, 0, 0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                            Piece.WhiteBishop, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Knight, 0, 0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                            Piece.WhiteKnight, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
@@ -96,33 +96,33 @@ public class BitboardMoveGenerator {
             while (blackPawnTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(blackPawnTargets);
                 int fromSquare = toSquare - 8;
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
                         0, 0, 0, 0, 0);
                 if (move != ILLEGAL) {
                     moves[moveCounter++] = move;
                 }
 
-                if (toSquare >= 56) {
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Queen, 0, 0, 0, 0);
+                if (toSquare >= RANK_1_START_SQUARE) {
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                            Piece.BlackQueen, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Rook, 0,0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                            Piece.BlackRook, 0,0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Bishop, 0, 0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                            Piece.BlackBishop, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
 
-                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
-                            Piece.Knight, 0, 0, 0, 0);
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                            Piece.BlackKnight, 0, 0, 0, 0);
                     if (move != ILLEGAL) {
                         moves[moveCounter++] = move;
                     }
@@ -141,7 +141,7 @@ public class BitboardMoveGenerator {
                 int toSquare = BitUtils.getLs1bIndex(whiteDoublePushTargets);
                 int fromSquare = toSquare + 16;
 
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
                         0, 1, 0, 0, 0);
                 if (move != ILLEGAL) {
                     moves[moveCounter++] = move;
@@ -157,7 +157,7 @@ public class BitboardMoveGenerator {
                 int toSquare = BitUtils.getLs1bIndex(blackDoublePushTargets);
                 int fromSquare = toSquare - 16;
 
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.Pawn,
+                move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
                         0, 1, 0, 0, 0);
                 if (move != ILLEGAL) {
                     moves[moveCounter++] = move;
@@ -168,20 +168,69 @@ public class BitboardMoveGenerator {
         }
     }
 
-    public void generateCapturePawnMoves() {
+    public void generatePawnCaptureMoves() {
+        int move;
         if (isWhiteTurn) {
             long whitePawns = bitboard.getPieces()[pieceMap.get('P')];
             while (whitePawns != 0) {
                 int fromSquare = BitUtils.getLs1bIndex(whitePawns);
                 long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
+
                 if (bitboard.getEnPassantSquare() != -1
                         && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
-                    // TODO add en passant move to move list
+                    move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() - 8, Piece.WhitePawn,
+                            0, 0, 0, 1, 1);
+                    if (move != ILLEGAL) {
+                        moves[moveCounter++] = move;
+                    }
                 }
-                // TODO add moves to move list
-                if (fromSquare >= 8 && fromSquare < 16) {
-                    // TODO add promotion moves to move list
+
+                else if (fromSquare >= RANK_7_START_SQUARE && fromSquare <= RANK_7_END_SQUARE) {
+                    while (toSquares != 0) {
+                        int toSquare = BitUtils.getLs1bIndex(toSquares);
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                                Piece.WhiteQueen, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                                Piece.WhiteRook, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                                Piece.WhiteBishop, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                                Piece.WhiteKnight, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        toSquares = BitUtils.popBit(toSquares, toSquare);
+                    }
                 }
+
+                else {
+                    while (toSquares != 0) {
+                        int toSquare = BitUtils.getLs1bIndex(toSquares);
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.WhitePawn,
+                                0, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        toSquares = BitUtils.popBit(toSquares, toSquare);
+                    }
+                }
+
                 whitePawns = BitUtils.popBit(whitePawns, fromSquare);
             }
         }
@@ -190,14 +239,62 @@ public class BitboardMoveGenerator {
             while (blackPawns != 0) {
                 int fromSquare = BitUtils.getLs1bIndex(blackPawns);
                 long toSquares = bitboardHelper.pawnAttacks[BLACK][fromSquare] & bitboard.getOccupancies()[WHITE];
+
                 if (bitboard.getEnPassantSquare() != -1
                         && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
-                    // TODO add en passant move to move list
+                    move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() + 8, Piece.BlackPawn,
+                            0, 0, 0, 1, 1);
+                    if (move != ILLEGAL) {
+                        moves[moveCounter++] = move;
+                    }
                 }
-                // TODO add moves to move list
-                if (fromSquare >= 48 && fromSquare < 56) {
-                    // TODO add promotion moves to move list
+
+                else if (fromSquare >= RANK_2_START_SQUARE && fromSquare <= RANK_2_END_SQUARE) {
+                    while (toSquares != 0) {
+                        int toSquare = BitUtils.getLs1bIndex(toSquares);
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                                Piece.BlackQueen, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                                Piece.BlackRook, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                                Piece.BlackBishop, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                                Piece.BlackKnight, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        toSquares = BitUtils.popBit(toSquares, toSquare);
+                    }
                 }
+
+                else {
+                    while (toSquares != 0) {
+                        int toSquare = BitUtils.getLs1bIndex(toSquares);
+
+                        move = MoveEncoder.encodeMove(fromSquare, toSquare, Piece.BlackPawn,
+                                0, 0, 0, 0, 1);
+                        if (move != ILLEGAL) {
+                            moves[moveCounter++] = move;
+                        }
+
+                        toSquares = BitUtils.popBit(toSquares, toSquare);
+                    }
+                }
+
                 blackPawns = BitUtils.popBit(blackPawns, fromSquare);
             }
         }
