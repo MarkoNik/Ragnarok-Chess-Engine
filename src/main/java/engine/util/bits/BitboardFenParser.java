@@ -1,5 +1,6 @@
 package engine.util.bits;
 
+import app.UciLogger;
 import engine.core.entity.Piece;
 import engine.core.entity.UciMove;
 import engine.core.state.Bitboard;
@@ -74,23 +75,24 @@ public class BitboardFenParser {
     public static UciMove parseUciMove(String move) {
         if (move.equals("0000")) {
             // Handle nullmove
-            return new UciMove(-1, -1, false, false, 0);
+            return new UciMove(-1, -1, 0, 0, 0);
         }
 
         int from = algebraicToIndex(move.substring(0, 2));
         int to = algebraicToIndex(move.substring(2, 4));
-        boolean potentialDoublePushFlag = false;
-        boolean castlesFlag = false;
+        int potentialDoublePushFlag = 0;
+        int castlesFlag = 0;
         int promotionPiece = 0;
 
         // Check for castling
         if (move.equals("e1g1") || move.equals("e8g8") || move.equals("e1c1") || move.equals("e8c8")) {
-            castlesFlag = true;
+            UciLogger.debug("Received castles move: " + move);
+            castlesFlag = 1;
         }
 
         // Check for pawn double push (white and black)
         if ((move.charAt(1) == '2' && move.charAt(3) == '4') || (move.charAt(1) == '7' && move.charAt(3) == '5')) {
-            potentialDoublePushFlag = true;
+            potentialDoublePushFlag = 1;
         }
 
         // Check for pawn promotion
@@ -102,7 +104,7 @@ public class BitboardFenParser {
             if (promotionPieceChar == 'n') promotionPiece = Piece.Knight;
         }
 
-        return new UciMove(from, to, potentialDoublePushFlag, castlesFlag, promotionPiece);
+        return new UciMove(from, to, castlesFlag, potentialDoublePushFlag, promotionPiece);
     }
 
     // Convert promotion piece character to flag
