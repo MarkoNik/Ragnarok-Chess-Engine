@@ -3,7 +3,7 @@ package engine.core.bitboard;
 import app.Constants;
 import app.EngineLogger;
 import engine.core.entity.Piece;
-import engine.util.BitUtils;
+import engine.util.bits.BitUtils;
 
 import java.util.Random;
 

@@ -1,7 +1,7 @@
 package uci.command;
 
 import engine.core.state.EngineState;
-import engine.util.BitboardFenParser;
+import engine.util.bits.BitboardFenParser;
 import uci.Cli;
 
 import java.util.Arrays;

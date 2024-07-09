@@ -3,8 +3,8 @@ package engine.core.state;
 import app.EngineLogger;
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
-import engine.util.BitboardMoveGenerator;
-import engine.util.MoveEncoder;
+import engine.util.bits.BitboardMoveGenerator;
+import engine.util.bits.MoveEncoder;
 import uci.command.GoCommandWrapper;
 
 import java.util.Map;

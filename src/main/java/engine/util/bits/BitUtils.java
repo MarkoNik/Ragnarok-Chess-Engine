@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.bits;
 
 import app.EngineLogger;
 

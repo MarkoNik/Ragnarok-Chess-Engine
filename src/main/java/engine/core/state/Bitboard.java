@@ -2,7 +2,7 @@ package engine.core.state;
 
 import app.Constants;
 import app.EngineLogger;
-import engine.util.BitUtils;
+import engine.util.bits.BitUtils;
 
 import static app.Constants.*;
 

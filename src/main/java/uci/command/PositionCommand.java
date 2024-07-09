@@ -3,7 +3,7 @@ package uci.command;
 import app.Constants;
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
-import engine.util.BitboardFenParser;
+import engine.util.bits.BitboardFenParser;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;

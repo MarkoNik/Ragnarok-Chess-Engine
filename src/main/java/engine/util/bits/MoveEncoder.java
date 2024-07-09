@@ -1,7 +1,8 @@
-package engine.util;
+package engine.util.bits;
 
 import app.EngineLogger;
 import engine.core.entity.Piece;
+import engine.util.bits.BitboardFenParser;
 
 public class MoveEncoder {
     /*

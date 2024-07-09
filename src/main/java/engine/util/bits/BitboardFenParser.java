@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.bits;
 
 import engine.core.state.Bitboard;
 import engine.core.state.GameState;
