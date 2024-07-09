@@ -151,7 +151,21 @@ public class Bitboard {
                 break;
             }
         }
-        int promotionPiece = uciMove.promotionPieceFlags;
+
+        int promotionPiece = uciMove.promotionPiece;
+        if (isWhiteTurn) {
+            if (promotionPiece == Piece.Queen) promotionPiece = Piece.WhiteQueen;
+            else if (promotionPiece == Piece.Rook) promotionPiece = Piece.WhiteRook;
+            else if (promotionPiece == Piece.Bishop) promotionPiece = Piece.WhiteBishop;
+            else if (promotionPiece == Piece.Knight) promotionPiece = Piece.WhiteKnight;
+        }
+        else {
+            if (promotionPiece == Piece.Queen) promotionPiece = Piece.BlackQueen;
+            else if (promotionPiece == Piece.Rook) promotionPiece = Piece.BlackRook;
+            else if (promotionPiece == Piece.Bishop) promotionPiece = Piece.BlackBishop;
+            else if (promotionPiece == Piece.Knight) promotionPiece = Piece.BlackKnight;
+        }
+
         int doublePushFlag = 0;
         if (uciMove.potentialDoublePush && isWhiteTurn && piece == Piece.WhitePawn
                 || uciMove.potentialDoublePush && !isWhiteTurn && piece == Piece.BlackPawn) {
@@ -161,7 +175,7 @@ public class Bitboard {
         int castlesFlag = uciMove.castlesFlag ? 1 : 0;
         int captureFlag = 0;
         if ((isWhiteTurn && (occupancies[BLACK] & (1L << to)) != 0)
-                || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0 )) {
+                || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0)) {
             captureFlag = 1;
         }
 
@@ -206,7 +220,7 @@ public class Bitboard {
         }
         sb.append("\n       a b c d e f g h\n");
         EngineLogger.debug(sb.toString());
-        //logBitboards();
+        logBitboards();
     }
 
     public void logBitboards() {

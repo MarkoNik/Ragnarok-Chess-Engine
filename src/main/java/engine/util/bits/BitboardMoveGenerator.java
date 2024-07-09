@@ -27,6 +27,10 @@ public class BitboardMoveGenerator {
         return moveCounter;
     }
 
+    public void clearMoves() {
+        moveCounter = 0;
+    }
+
     public int[] generateLegalMoves(boolean isWhiteTurn) {
         this.isWhiteTurn = isWhiteTurn;
         generateSinglePawnPushMoves();

@@ -1,5 +1,6 @@
 package engine.util.bits;
 
+import engine.core.entity.Piece;
 import engine.core.entity.UciMove;
 import engine.core.state.Bitboard;
 import engine.core.state.GameState;
@@ -80,7 +81,7 @@ public class BitboardFenParser {
         int to = algebraicToIndex(move.substring(2, 4));
         boolean potentialDoublePushFlag = false;
         boolean castlesFlag = false;
-        int promotionPieceFlags = 0;
+        int promotionPiece = 0;
 
         // Check for castling
         if (move.equals("e1g1") || move.equals("e8g8") || move.equals("e1c1") || move.equals("e8c8")) {
@@ -94,23 +95,26 @@ public class BitboardFenParser {
 
         // Check for pawn promotion
         if (move.length() == 5) {
-            char promotionPiece = move.charAt(4);
-            promotionPieceFlags = pieceCharToFlag(promotionPiece);
+            char promotionPieceChar = move.charAt(4);
+            if (promotionPieceChar == 'q') promotionPiece = Piece.Queen;
+            if (promotionPieceChar == 'r') promotionPiece = Piece.Rook;
+            if (promotionPieceChar == 'b') promotionPiece = Piece.Bishop;
+            if (promotionPieceChar == 'n') promotionPiece = Piece.Knight;
         }
 
-        return new UciMove(from, to, potentialDoublePushFlag, castlesFlag, promotionPieceFlags);
+        return new UciMove(from, to, potentialDoublePushFlag, castlesFlag, promotionPiece);
     }
 
     // Convert promotion piece character to flag
     private static int pieceCharToFlag(char piece) {
         switch (piece) {
-            case 'q':
-                return 1;
-            case 'r':
-                return 2;
-            case 'b':
-                return 4;
             case 'n':
+                return 1;
+            case 'b':
+                return 2;
+            case 'r':
+                return 4;
+            case 'q':
                 return 8;
             default:
                 return 0;

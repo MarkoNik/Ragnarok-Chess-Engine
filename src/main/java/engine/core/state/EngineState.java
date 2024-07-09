@@ -23,9 +23,6 @@ public class EngineState {
         moveGenerator = new BitboardMoveGenerator(bitboardHelper);
     }
 
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
     public void search(GoCommandWrapper goCommandWrapper) {
         moveGenerator.setBitboard(gameState.getBitboard());
         int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
@@ -35,8 +32,9 @@ public class EngineState {
             MoveEncoder.logMove(legalMoves[i]);
         }
         Random rand = new Random();
-        bestMove = legalMoves[rand.nextInt(moveCount + 1) - 1];
+        bestMove = legalMoves[rand.nextInt(moveCount)];
         gameState.playMove(bestMove);
+        moveGenerator.clearMoves();
     }
 
     public String getConfigOption(String name) {
@@ -51,5 +49,9 @@ public class EngineState {
 
     public int getBestMove() {
         return bestMove;
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
     }
 }
