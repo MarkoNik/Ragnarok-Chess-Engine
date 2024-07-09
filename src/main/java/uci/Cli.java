@@ -1,7 +1,7 @@
 package uci;
 
 import app.UciLogger;
-import engine.state.EngineState;
+import engine.core.state.EngineState;
 import uci.command.*;
 
 import java.io.BufferedReader;

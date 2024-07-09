@@ -1,6 +1,6 @@
 package app;
 
-import engine.state.EngineState;
+import engine.core.state.EngineState;
 import uci.Cli;
 
 public class Main {

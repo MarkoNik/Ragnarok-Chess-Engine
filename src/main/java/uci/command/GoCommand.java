@@ -1,6 +1,6 @@
 package uci.command;
 
-import engine.state.EngineState;
+import engine.core.state.EngineState;
 import engine.util.BitboardFenParser;
 import uci.Cli;
 

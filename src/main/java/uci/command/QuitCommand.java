@@ -1,6 +1,6 @@
 package uci.command;
 
-import engine.state.EngineState;
+import engine.core.state.EngineState;
 
 public class QuitCommand implements Command {
     @Override

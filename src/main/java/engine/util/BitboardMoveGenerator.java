@@ -3,7 +3,7 @@ package engine.util;
 import app.Constants;
 import engine.core.Piece;
 import engine.core.bitboard.BitboardHelper;
-import engine.state.Bitboard;
+import engine.core.state.Bitboard;
 
 import static app.Constants.*;
 

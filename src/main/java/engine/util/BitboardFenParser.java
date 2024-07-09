@@ -1,7 +1,7 @@
 package engine.util;
 
-import engine.state.Bitboard;
-import engine.state.GameState;
+import engine.core.state.Bitboard;
+import engine.core.state.GameState;
 
 public class BitboardFenParser {
     public static GameState parseFEN(String fenString) {

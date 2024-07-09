@@ -3,7 +3,7 @@ package engine.util;
 import engine.core.Board;
 import engine.core.Move;
 import engine.core.Piece;
-import engine.state.GameState;
+import engine.core.state.GameState;
 
 import static engine.core.Piece.pieceMap;
 
