@@ -65,8 +65,10 @@ public class BitboardFenParser {
     }
 
     public static String moveToAlgebraic(int move) {
-        int from = move >>> 8;
-        int to = move & 0xFF;
+        int from = move & 0xFF;
+        int to = (move >>> 8) & 0xFF;
+        System.out.println(from);
+        System.out.println(to);
         return indexToAlgebraic(from) + indexToAlgebraic(to);
     }
 
