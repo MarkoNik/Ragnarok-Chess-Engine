@@ -1,10 +1,10 @@
 package engine.util;
 
 import app.EngineLogger;
-import engine.core.Board;
-import engine.core.Piece;
+import engine.core.entity.Board;
+import engine.core.entity.Piece;
 
-import static engine.core.Board.*;
+import static engine.core.entity.Board.*;
 import static engine.util.MoveGenerator.*;
 
 public class CheckHelper {

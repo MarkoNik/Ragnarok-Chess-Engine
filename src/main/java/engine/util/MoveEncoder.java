@@ -1,7 +1,7 @@
 package engine.util;
 
 import app.EngineLogger;
-import engine.core.Piece;
+import engine.core.entity.Piece;
 
 public class MoveEncoder {
     /*

@@ -1,9 +1,9 @@
 package engine.util;
 
 import app.EngineLogger;
-import engine.core.Board;
-import engine.core.Move;
-import engine.core.Piece;
+import engine.core.entity.Board;
+import engine.core.entity.Move;
+import engine.core.entity.Piece;
 
 import java.util.ArrayList;
 import java.util.List;

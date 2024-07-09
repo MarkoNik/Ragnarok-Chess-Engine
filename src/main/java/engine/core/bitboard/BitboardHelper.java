@@ -2,7 +2,7 @@ package engine.core.bitboard;
 
 import app.Constants;
 import app.EngineLogger;
-import engine.core.Piece;
+import engine.core.entity.Piece;
 import engine.util.BitUtils;
 
 import java.util.Random;

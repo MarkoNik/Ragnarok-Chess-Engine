@@ -1,4 +1,4 @@
-package engine.core;
+package engine.core.entity;
 
 public class Move {
     public final int from, to;

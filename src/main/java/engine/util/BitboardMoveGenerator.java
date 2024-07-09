@@ -1,7 +1,7 @@
 package engine.util;
 
 import app.Constants;
-import engine.core.Piece;
+import engine.core.entity.Piece;
 import engine.core.bitboard.BitboardHelper;
 import engine.core.state.Bitboard;
 

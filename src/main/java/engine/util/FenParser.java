@@ -1,11 +1,11 @@
 package engine.util;
 
-import engine.core.Board;
-import engine.core.Move;
-import engine.core.Piece;
+import engine.core.entity.Board;
+import engine.core.entity.Move;
+import engine.core.entity.Piece;
 import engine.core.state.GameState;
 
-import static engine.core.Piece.pieceMap;
+import static engine.core.entity.Piece.pieceMap;
 
 // TODO better parsing
 // Deprecated
