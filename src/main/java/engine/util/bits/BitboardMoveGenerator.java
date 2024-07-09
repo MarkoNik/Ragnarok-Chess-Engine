@@ -1,5 +1,6 @@
 package engine.util.bits;
 
+import app.EngineLogger;
 import engine.core.bitboard.BitboardHelper;
 import engine.core.state.Bitboard;
 
@@ -47,36 +48,28 @@ public class BitboardMoveGenerator {
                 int toSquare = BitUtils.getLs1bIndex(whitePawnTargets);
                 int fromSquare = toSquare + 8;
 
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
-                        0, 0, 0, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
+                if (toSquare > RANK_8_END_SQUARE) {
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
+                            0, 0, 0, 0, 0);
+                    addMove(move);
                 }
 
-                if (toSquare <= RANK_8_END_SQUARE) {
+                else {
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                             WhiteQueen, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                             WhiteRook, 0,0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                             WhiteBishop, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                             WhiteKnight, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
                 }
                 whitePawnTargets = BitUtils.popBit(whitePawnTargets, toSquare);
             }
@@ -86,36 +79,29 @@ public class BitboardMoveGenerator {
             while (blackPawnTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(blackPawnTargets);
                 int fromSquare = toSquare - 8;
-                move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
-                        0, 0, 0, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
+
+                if (toSquare < RANK_1_START_SQUARE) {
+                    move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
+                            0, 0, 0, 0, 0);
+                    addMove(move);
                 }
 
-                if (toSquare >= RANK_1_START_SQUARE) {
+                else {
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                             BlackQueen, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                             BlackRook, 0,0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                             BlackBishop, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
 
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                             BlackKnight, 0, 0, 0, 0);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
                 }
                 blackPawnTargets = BitUtils.popBit(blackPawnTargets, toSquare);
             }
@@ -133,9 +119,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                         0, 1, 0, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 whiteDoublePushTargets = BitUtils.popBit(whiteDoublePushTargets, toSquare);
             }
@@ -149,9 +133,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                         0, 1, 0, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 blackDoublePushTargets = BitUtils.popBit(blackDoublePushTargets, toSquare);
             }
@@ -170,9 +152,7 @@ public class BitboardMoveGenerator {
                         && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() - 8, WhitePawn,
                             0, 0, 0, 1, 1);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
                 }
 
                 else if (fromSquare >= RANK_7_START_SQUARE && fromSquare <= RANK_7_END_SQUARE) {
@@ -181,27 +161,19 @@ public class BitboardMoveGenerator {
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                                 WhiteQueen, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                                 WhiteRook, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                                 WhiteBishop, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                                 WhiteKnight, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         toSquares = BitUtils.popBit(toSquares, toSquare);
                     }
@@ -213,9 +185,7 @@ public class BitboardMoveGenerator {
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, WhitePawn,
                                 0, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         toSquares = BitUtils.popBit(toSquares, toSquare);
                     }
@@ -234,9 +204,7 @@ public class BitboardMoveGenerator {
                         && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() + 8, BlackPawn,
                             0, 0, 0, 1, 1);
-                    if (move != ILLEGAL) {
-                        moves[moveCounter++] = move;
-                    }
+                    addMove(move);
                 }
 
                 else if (fromSquare >= RANK_2_START_SQUARE && fromSquare <= RANK_2_END_SQUARE) {
@@ -245,27 +213,19 @@ public class BitboardMoveGenerator {
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                                 BlackQueen, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                                 BlackRook, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                                 BlackBishop, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                                 BlackKnight, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         toSquares = BitUtils.popBit(toSquares, toSquare);
                     }
@@ -277,9 +237,7 @@ public class BitboardMoveGenerator {
 
                         move = MoveEncoder.encodeMove(fromSquare, toSquare, BlackPawn,
                                 0, 0, 0, 0, 1);
-                        if (move != ILLEGAL) {
-                            moves[moveCounter++] = move;
-                        }
+                        addMove(move);
 
                         toSquares = BitUtils.popBit(toSquares, toSquare);
                     }
@@ -305,9 +263,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? WhiteKnight : BlackKnight,
                         0, 0, 0, 0, isCapture ? 1 : 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 toSquares = BitUtils.popBit(toSquares, toSquare);
             }
@@ -329,9 +285,7 @@ public class BitboardMoveGenerator {
 
             move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? WhiteKing : BlackKing,
                     0, 0, 0, 0, isCapture ? 1 : 0);
-            if (move != ILLEGAL) {
-                moves[moveCounter++] = move;
-            }
+            addMove(move);
 
             toSquares = BitUtils.popBit(toSquares, toSquare);
         }
@@ -346,9 +300,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, WHITE_KINGSIDE_CASTLES_SQUARE, WhiteKing,
                         0, 0, 1, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
             }
 
             if ((bitboard.getCastlesFlags() & WHITE_QUEENSIDE_CASTLES_MASK) != 0
@@ -361,9 +313,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, WHITE_QUEENSIDE_CASTLES_SQUARE, WhiteKing,
                         0, 0, 1, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
             }
         }
         else {
@@ -376,9 +326,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, BLACK_KINGSIDE_CASTLES_SQUARE, BlackKing,
                         0, 0, 1, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
             }
             if ((bitboard.getCastlesFlags() & BLACK_QUEENSIDE_CASTLES_MASK) != 0
                     && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 1))) != 0
@@ -390,9 +338,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, BLACK_QUEENSIDE_CASTLES_SQUARE, BlackKing,
                         0, 0, 1, 0, 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
             }
         }
     }
@@ -411,9 +357,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? WhiteBishop : BlackBishop,
                         0, 0, 0, 0, isCapture ? 1 : 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 toSquares = BitUtils.popBit(toSquares, toSquare);
             }
@@ -436,9 +380,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? WhiteRook : BlackRook,
                         0, 0, 0, 0, isCapture ? 1 : 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 toSquares = BitUtils.popBit(toSquares, toSquare);
             }
@@ -461,9 +403,7 @@ public class BitboardMoveGenerator {
 
                 move = MoveEncoder.encodeMove(fromSquare, toSquare, isWhiteTurn ? WhiteQueen : BlackQueen,
                         0, 0, 0, 0, isCapture ? 1 : 0);
-                if (move != ILLEGAL) {
-                    moves[moveCounter++] = move;
-                }
+                addMove(move);
 
                 toSquares = BitUtils.popBit(toSquares, toSquare);
             }
@@ -473,7 +413,6 @@ public class BitboardMoveGenerator {
 
     private boolean isSquareAttacked(int square, boolean isWhiteTurn) {
         if (!isWhiteTurn) {
-            // This square is attacked by a white pawn if there is a white pawn on any of the squares that a black pawn would be attacking from this square
             if ((bitboardHelper.pawnAttacks[WHITE][square] & bitboard.getPieces()[pieceMap.get('p')]) != 0) {
                 return true;
             }
@@ -494,7 +433,6 @@ public class BitboardMoveGenerator {
             }
         }
         else {
-            // This square is attacked by a black pawn if there is a black pawn on any of the squares that a white pawn would be attacking from this square
             if ((bitboardHelper.pawnAttacks[BLACK][square] & bitboard.getPieces()[pieceMap.get('P')]) != 0) {
                 return true;
             }
@@ -517,19 +455,30 @@ public class BitboardMoveGenerator {
         return false;
     }
 
+    private void addMove(int move) {
+        move = tryMakeMove(move, isWhiteTurn);
+        if (move != ILLEGAL) {
+            moves[moveCounter++] = move;
+        }
+    }
+
     public int tryMakeMove(int move, boolean isWhiteTurn) {
         bitboard.backupState();
         bitboard.makeMove(move, isWhiteTurn, false);
         if (isWhiteTurn) {
             int whiteKingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[pieceMap.get('K')]);
             if (isSquareAttacked(whiteKingSquare, !isWhiteTurn)) {
+                EngineLogger.debug("Encountered illegal move: ");
+                MoveEncoder.logMove(move);
                 bitboard.restoreState();
                 return ILLEGAL;
             }
         }
         else {
             int blackKingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[pieceMap.get('k')]);
-            if (isSquareAttacked(blackKingSquare, isWhiteTurn)) {
+            if (isSquareAttacked(blackKingSquare, !isWhiteTurn)) {
+                EngineLogger.debug("Encountered illegal move: ");
+                MoveEncoder.logMove(move);
                 bitboard.restoreState();
                 return ILLEGAL;
             }

@@ -35,7 +35,7 @@ public class EngineState {
             MoveEncoder.logMove(legalMoves[i]);
         }
         Random rand = new Random();
-        bestMove = legalMoves[rand.nextInt(moveGenerator.getMoveCounter())];
+        bestMove = legalMoves[rand.nextInt(moveCount + 1) - 1];
         gameState.playMove(bestMove);
     }
 

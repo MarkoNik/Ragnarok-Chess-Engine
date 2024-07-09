@@ -37,6 +37,7 @@ public class Piece {
     public static final byte BlackKing = King | Black;      // 14
 
     public static String[] pieceCodeToPiece = new String[BorderPiece];
+    public static String[] pieceIndexToPiece = new String[BorderPiece];
     public static int[] pieceCodeToPieceIndex = new int[BorderPiece];
 
     public static final byte typeMask = 0b0111;
@@ -89,11 +90,13 @@ public class Piece {
         pieceCodeToPiece[13] = "BlackQueen";
         pieceCodeToPiece[14] = "BlackKing";
 
-        for (int i = 0; i < Constants.WHITE_PIECE_TYPES; i++) {
-            pieceCodeToPieceIndex[i] = i;
+        for (int i = 1; i <= Constants.WHITE_PIECE_TYPES; i++) {
+            pieceCodeToPieceIndex[i] = i - 1;
+            pieceIndexToPiece[i] = pieceCodeToPiece[i - 1];
         }
         for (int i = Constants.WHITE_PIECE_TYPES; i < Constants.PIECE_TYPES; i++) {
             pieceCodeToPieceIndex[i + 3] = i;
+            pieceIndexToPiece[i] = pieceCodeToPiece[i + 3];
         }
     }
 }

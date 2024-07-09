@@ -47,14 +47,24 @@ public class Bitboard {
         if (!capturesOnly) {
             int from = MoveEncoder.extractFrom(move);
             int to = MoveEncoder.extractTo(move);
-            int piece = MoveEncoder.extractPiece(move);
+            int piece = Piece.pieceCodeToPieceIndex[MoveEncoder.extractPiece(move)];
             int promotionPiece = MoveEncoder.extractPromotionPiece(move);
             int doublePushFlag = MoveEncoder.extractDoublePushFlag(move);
             int castlesFlag = MoveEncoder.extractCastlesFlag(move);
             int enPassantFlag = MoveEncoder.extractEnPassantFlag(move);
             int captureFlag = MoveEncoder.extractCaptureFlag(move);
+//            if (!BitUtils.getBit(pieces[piece], from)) {
+//                EngineLogger.error("Tried to move inexistent piece: " + piece + " from: " + from + " to " + to);
+//            }
             pieces[piece] = BitUtils.popBit(pieces[piece], from);
             pieces[piece] = BitUtils.setBit(pieces[piece], to);
+            if (isWhiteTurn) {
+                occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], from);
+                occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], to);
+            } else {
+                occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], from);
+                occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], to);
+            }
 
             if (captureFlag != 0) {
                 if (isWhiteTurn) {
@@ -65,6 +75,7 @@ public class Bitboard {
                             break;
                         }
                     }
+                    occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], to);
                 }
                 else {
                     // iterate over all white piece types
@@ -74,8 +85,10 @@ public class Bitboard {
                             break;
                         }
                     }
+                    occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], to);
                 }
             }
+
             if (promotionPiece != 0) {
                 pieces[piece] = BitUtils.popBit(pieces[piece], to);
                 pieces[Piece.pieceCodeToPieceIndex[promotionPiece]] = BitUtils.setBit(pieces[Piece.pieceCodeToPieceIndex[promotionPiece]], to);
@@ -91,31 +104,39 @@ public class Bitboard {
                 if (to == WHITE_KINGSIDE_CASTLES_SQUARE) {
                     pieces[pieceMap.get('R')] = BitUtils.popBit(pieces[pieceMap.get('R')], WHITE_KINGSIDE_ROOK);
                     pieces[pieceMap.get('R')] = BitUtils.popBit(pieces[pieceMap.get('R')], WHITE_KINGSIDE_CASTLES_SQUARE - 1);
+                    occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], WHITE_KINGSIDE_ROOK);
+                    occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], WHITE_KINGSIDE_CASTLES_SQUARE - 1);
                 }
                 if (to == WHITE_QUEENSIDE_CASTLES_SQUARE) {
                     pieces[pieceMap.get('R')] = BitUtils.popBit(pieces[pieceMap.get('R')], WHITE_QUEENSIDE_ROOK);
                     pieces[pieceMap.get('R')] = BitUtils.popBit(pieces[pieceMap.get('R')], WHITE_QUEENSIDE_CASTLES_SQUARE + 1);
+                    occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], WHITE_QUEENSIDE_ROOK);
+                    occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], WHITE_QUEENSIDE_CASTLES_SQUARE + 1);
                 }
-                if (to == WHITE_KINGSIDE_CASTLES_SQUARE) {
+                if (to == BLACK_KINGSIDE_CASTLES_SQUARE) {
                     pieces[pieceMap.get('r')] = BitUtils.popBit(pieces[pieceMap.get('r')], BLACK_KINGSIDE_ROOK);
                     pieces[pieceMap.get('r')] = BitUtils.popBit(pieces[pieceMap.get('r')], BLACK_KINGSIDE_CASTLES_SQUARE - 1);
+                    occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], BLACK_KINGSIDE_ROOK);
+                    occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], BLACK_KINGSIDE_CASTLES_SQUARE - 1);
                 }
-                if (to == WHITE_KINGSIDE_CASTLES_SQUARE) {
+                if (to == BLACK_QUEENSIDE_CASTLES_SQUARE) {
                     pieces[pieceMap.get('r')] = BitUtils.popBit(pieces[pieceMap.get('r')], BLACK_QUEENSIDE_ROOK);
                     pieces[pieceMap.get('r')] = BitUtils.popBit(pieces[pieceMap.get('r')], BLACK_QUEENSIDE_CASTLES_SQUARE + 1);
+                    occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], BLACK_QUEENSIDE_ROOK);
+                    occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], BLACK_QUEENSIDE_CASTLES_SQUARE + 1);
                 }
             }
 
             if (enPassantFlag != 0) {
-                if (isWhiteTurn) {
-                    pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
-                    enPassantSquare = -1;
-                }
-                else {
-                    pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
-                    enPassantSquare = -1;
-                }
+//                if (isWhiteTurn) {
+//                    pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
+//                }
+//                else {
+//                    pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
+//                }
+                enPassantSquare = -1;
             }
+            occupancies[BOTH] = occupancies[WHITE] | occupancies[BLACK];
         }
     }
 
@@ -155,6 +176,14 @@ public class Bitboard {
         }
         sb.append("\n       a b c d e f g h\n");
         EngineLogger.debug(sb.toString());
+        //logBitboards();
+    }
+
+    public void logBitboards() {
+        for (int i = 0; i < PIECE_TYPES; i++) {
+            EngineLogger.debug("Piece bitboard: " + Piece.pieceIndexToPiece[i]);
+            BitUtils.logBitboard(pieces[i]);
+        }
     }
 
     public long[] getPieces() {
