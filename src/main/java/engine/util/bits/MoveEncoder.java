@@ -26,6 +26,9 @@ public class MoveEncoder {
                            int castles,
                            int enPassant,
                            int capture) {
+        // Easiest way to test for checks is to perform the test here, and return ILLEGAL if king is in check after performing the move.
+
+
         return from
                 | to << 8
                 | piece << 16

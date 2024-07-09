@@ -12,6 +12,7 @@ public class Constants {
     public static final int BLACK = 1;
     public static final int BOTH = 2;
     public static final int WHITE_PIECE_TYPES = 6;
+    public static final int PIECE_TYPES = 12;
     public static final long RANK_5 = 0x00000000FF000000L;
     public static final long RANK_4 = 0x000000FF00000000L;
     public static final long RANK_8_END_SQUARE = 7;
@@ -39,7 +40,6 @@ public class Constants {
     public static final int MAX_LEGAL_MOVES = 220;
 
     public static final String INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    public static final int PIECE_TYPES = 12;
     // white occupancies, black occupancies, both occupancies
     public static final int OCCUPANCY_TYPES = 3;
     public static Map<Character, Integer> pieceMap = new HashMap<>();

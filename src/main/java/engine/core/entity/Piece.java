@@ -1,5 +1,7 @@
 package engine.core.entity;
 
+import app.Constants;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +36,8 @@ public class Piece {
     public static final byte BlackQueen = Queen | Black;    // 13
     public static final byte BlackKing = King | Black;      // 14
 
-    public static String[] pieceCodeToPiece = new String[16];
+    public static String[] pieceCodeToPiece = new String[BorderPiece];
+    public static int[] pieceCodeToPieceIndex = new int[BorderPiece];
 
     public static final byte typeMask = 0b0111;
     public static final byte colourFlag = 0b1000;
@@ -85,5 +88,12 @@ public class Piece {
         pieceCodeToPiece[12] = "BlackRook";
         pieceCodeToPiece[13] = "BlackQueen";
         pieceCodeToPiece[14] = "BlackKing";
+
+        for (int i = 0; i < Constants.WHITE_PIECE_TYPES; i++) {
+            pieceCodeToPieceIndex[i] = i;
+        }
+        for (int i = Constants.WHITE_PIECE_TYPES; i < Constants.PIECE_TYPES; i++) {
+            pieceCodeToPieceIndex[i + 3] = i;
+        }
     }
 }

@@ -17,13 +17,12 @@ public class GameState {
 
     public void playMoves(List<Integer> moves) {
         for (int move : moves) {
-            bitboard.makeMove(move);
-            isWhiteTurn = !isWhiteTurn;
+            playMove(move);
         }
     }
 
     public void playMove(int move) {
-        bitboard.makeMove(move);
+        bitboard.makeMove(move, isWhiteTurn, false);
         isWhiteTurn = !isWhiteTurn;
     }
 
