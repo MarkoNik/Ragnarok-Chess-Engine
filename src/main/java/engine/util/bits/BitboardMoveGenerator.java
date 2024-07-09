@@ -339,8 +339,8 @@ public class BitboardMoveGenerator {
 
         if (isWhiteTurn) {
             if ((bitboard.getCastlesFlags() & WHITE_KINGSIDE_CASTLES_MASK) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_KINGSIDE_ROOK - 1))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_KINGSIDE_ROOK - 2))) != 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_KINGSIDE_ROOK - 1))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_KINGSIDE_ROOK - 2))) == 0
                     && !isSquareAttacked(WHITE_KINGSIDE_ROOK - 1, false)
                     && !isSquareAttacked(WHITE_KINGSIDE_ROOK - 2, false)
                     && !isSquareAttacked(WHITE_KINGSIDE_ROOK - 3, false)) {
@@ -353,9 +353,9 @@ public class BitboardMoveGenerator {
             }
 
             if ((bitboard.getCastlesFlags() & WHITE_QUEENSIDE_CASTLES_MASK) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 1))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 2))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 3))) != 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 1))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 2))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (WHITE_QUEENSIDE_ROOK + 3))) == 0
                     && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 2, false)
                     && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 3, false)
                     && !isSquareAttacked(WHITE_QUEENSIDE_ROOK + 4, false)) {
@@ -369,8 +369,8 @@ public class BitboardMoveGenerator {
         }
         else {
             if ((bitboard.getCastlesFlags() & BLACK_KINGSIDE_CASTLES_MASK) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_KINGSIDE_ROOK - 1))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_KINGSIDE_ROOK - 2))) != 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_KINGSIDE_ROOK - 1))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_KINGSIDE_ROOK - 2))) == 0
                     && !isSquareAttacked(BLACK_KINGSIDE_ROOK - 1, true)
                     && !isSquareAttacked(BLACK_KINGSIDE_ROOK - 2, true)
                     && !isSquareAttacked(BLACK_KINGSIDE_ROOK - 3, true)) {
