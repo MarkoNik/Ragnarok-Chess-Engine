@@ -62,9 +62,40 @@ public class Bitboard {
             if (isWhiteTurn) {
                 occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], from);
                 occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], to);
+                if (castlesFlags != 0) {
+                    if (from == WHITE_KINGSIDE_ROOK) {
+                        castlesFlags &= 0b1110;
+                    }
+                    if (from == WHITE_QUEENSIDE_ROOK) {
+                        castlesFlags &= 0b1101;
+                    }
+                    if (to == BLACK_KINGSIDE_ROOK) {
+                        castlesFlags &= 0b1011;
+                    }
+                    if (to == BLACK_QUEENSIDE_ROOK) {
+                        castlesFlags &= 0b0111;
+                    }
+                    if (from == WHITE_KING) {
+                        castlesFlags = 0;
+                    }
+                }
             } else {
                 occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], from);
                 occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], to);
+                if (castlesFlags != 0) {
+                    if (from == BLACK_KINGSIDE_ROOK) {
+                        castlesFlags &= 0b1011;
+                    }
+                    if (from == BLACK_QUEENSIDE_ROOK) {
+                        castlesFlags &= 0b0111;
+                    }
+                    if (to == WHITE_KINGSIDE_ROOK) {
+                        castlesFlags &= 0b1110;
+                    }
+                    if (to == WHITE_QUEENSIDE_ROOK) {
+                        castlesFlags &= 0b1101;
+                    }
+                }
             }
 
             if (captureFlag != 0) {

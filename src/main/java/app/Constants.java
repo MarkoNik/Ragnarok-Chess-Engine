@@ -34,6 +34,8 @@ public class Constants {
     public static final int WHITE_QUEENSIDE_ROOK = 56;
     public static final int BLACK_KINGSIDE_ROOK = 7;
     public static final int BLACK_QUEENSIDE_ROOK = 0;
+    public static final int WHITE_KING = 60;
+    public static final int BLACK_KING = 4;
     public static final int ILLEGAL = -1;
 
     // https://www.stmintz.com/ccc/index.php?id=424966
