@@ -27,7 +27,7 @@ public class PositionCommand implements Command {
     public int execute(EngineState engineState) {
         GameState newState = BitboardFenParser.parseFEN(position);
         if (moves != null) {
-            newState.playMoves(Arrays.stream(moves).map(BitboardFenParser::algebraicToMove).collect(Collectors.toList()));
+            newState.playUciMoves(Arrays.stream(moves).map(BitboardFenParser::parseUciMove).collect(Collectors.toList()));
         }
         newState.logState();
         engineState.setGameState(newState);

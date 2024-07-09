@@ -1,7 +1,5 @@
 package engine.core.entity;
 
-import app.Constants;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,30 +13,24 @@ public class Piece {
     public static final byte Rook = 4;
     public static final byte Queen = 5;
     public static final byte King = 6;
-    public static final byte BorderPiece = 15;
-
-    // Piece colours
-    public static final byte White = 0;
-    public static final byte Black = 8;
+    public static final byte MaxPiece = 12;
 
     // Pieces
-    public static final byte WhitePawn = Pawn | White;      // 1
-    public static final byte WhiteKnight = Knight | White;  // 2
-    public static final byte WhiteBishop = Bishop | White;  // 3
-    public static final byte WhiteRook = Rook | White;      // 4
-    public static final byte WhiteQueen = Queen | White;    // 5
-    public static final byte WhiteKing = King | White;      // 6
+    public static final byte WhitePawn = 0;      // 1
+    public static final byte WhiteKnight = 1;  // 2
+    public static final byte WhiteBishop = 2;  // 3
+    public static final byte WhiteRook = 3;      // 4
+    public static final byte WhiteQueen = 4;    // 5
+    public static final byte WhiteKing = 5;      // 6
 
-    public static final byte BlackPawn = Pawn | Black;      // 9
-    public static final byte BlackKnight = Knight | Black;  // 10
-    public static final byte BlackBishop = Bishop | Black;  // 11
-    public static final byte BlackRook = Rook | Black;      // 12
-    public static final byte BlackQueen = Queen | Black;    // 13
-    public static final byte BlackKing = King | Black;      // 14
+    public static final byte BlackPawn = 6;      // 9
+    public static final byte BlackKnight = 7;  // 10
+    public static final byte BlackBishop = 8;  // 11
+    public static final byte BlackRook = 9;      // 12
+    public static final byte BlackQueen = 10;    // 13
+    public static final byte BlackKing = 11;      // 14
 
-    public static String[] pieceCodeToPiece = new String[BorderPiece];
-    public static String[] pieceIndexToPiece = new String[BorderPiece];
-    public static int[] pieceCodeToPieceIndex = new int[BorderPiece];
+    public static String[] pieceCodeToPiece = new String[MaxPiece];
 
     public static final byte typeMask = 0b0111;
     public static final byte colourFlag = 0b1000;
@@ -47,11 +39,11 @@ public class Piece {
     public static final byte pinnedFlag = 0b1000000;
 
     public static boolean isWhitePiece(byte piece) {
-        return piece != None && piece != BorderPiece && (piece & Piece.colourFlag) == 0;
+        return piece != None && piece != MaxPiece && (piece & Piece.colourFlag) == 0;
     }
 
     public static boolean isBlackPiece(byte piece) {
-        return piece != None && piece != BorderPiece && (piece & Piece.colourFlag) != 0;
+        return piece != None && piece != MaxPiece && (piece & Piece.colourFlag) != 0;
     }
 
     public static final Map<Character, Byte> pieceMap = new HashMap<>();
@@ -76,27 +68,17 @@ public class Piece {
         // Empty squares
         pieceMap.put(' ', Piece.None);
 
-        pieceCodeToPiece[0] = "None";
-        pieceCodeToPiece[1] = "WhitePawn";
-        pieceCodeToPiece[2] = "WhiteKnight";
-        pieceCodeToPiece[3] = "WhiteBishop";
-        pieceCodeToPiece[4] = "WhiteRook";
-        pieceCodeToPiece[5] = "WhiteQueen";
-        pieceCodeToPiece[6] = "WhiteKing";
-        pieceCodeToPiece[9] = "BlackPawn";
-        pieceCodeToPiece[10] = "BlackKnight";
-        pieceCodeToPiece[11] = "BlackBishop";
-        pieceCodeToPiece[12] = "BlackRook";
-        pieceCodeToPiece[13] = "BlackQueen";
-        pieceCodeToPiece[14] = "BlackKing";
-
-        for (int i = 1; i <= Constants.WHITE_PIECE_TYPES; i++) {
-            pieceCodeToPieceIndex[i] = i - 1;
-            pieceIndexToPiece[i] = pieceCodeToPiece[i - 1];
-        }
-        for (int i = Constants.WHITE_PIECE_TYPES; i < Constants.PIECE_TYPES; i++) {
-            pieceCodeToPieceIndex[i + 3] = i;
-            pieceIndexToPiece[i] = pieceCodeToPiece[i + 3];
-        }
+        pieceCodeToPiece[0] = "WhitePawn";
+        pieceCodeToPiece[1] = "WhiteKnight";
+        pieceCodeToPiece[2] = "WhiteBishop";
+        pieceCodeToPiece[3] = "WhiteRook";
+        pieceCodeToPiece[4] = "WhiteQueen";
+        pieceCodeToPiece[5] = "WhiteKing";
+        pieceCodeToPiece[6] = "BlackPawn";
+        pieceCodeToPiece[7] = "BlackKnight";
+        pieceCodeToPiece[8] = "BlackBishop";
+        pieceCodeToPiece[9]  = "BlackRook";
+        pieceCodeToPiece[10] = "BlackQueen";
+        pieceCodeToPiece[11] = "BlackKing";
     }
 }

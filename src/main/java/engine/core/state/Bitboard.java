@@ -3,6 +3,7 @@ package engine.core.state;
 import app.Constants;
 import app.EngineLogger;
 import engine.core.entity.Piece;
+import engine.core.entity.UciMove;
 import engine.util.bits.BitUtils;
 import engine.util.bits.MoveEncoder;
 
@@ -47,7 +48,7 @@ public class Bitboard {
         if (!capturesOnly) {
             int from = MoveEncoder.extractFrom(move);
             int to = MoveEncoder.extractTo(move);
-            int piece = Piece.pieceCodeToPieceIndex[MoveEncoder.extractPiece(move)];
+            int piece = MoveEncoder.extractPiece(move);
             int promotionPiece = MoveEncoder.extractPromotionPiece(move);
             int doublePushFlag = MoveEncoder.extractDoublePushFlag(move);
             int castlesFlag = MoveEncoder.extractCastlesFlag(move);
@@ -91,7 +92,7 @@ public class Bitboard {
 
             if (promotionPiece != 0) {
                 pieces[piece] = BitUtils.popBit(pieces[piece], to);
-                pieces[Piece.pieceCodeToPieceIndex[promotionPiece]] = BitUtils.setBit(pieces[Piece.pieceCodeToPieceIndex[promotionPiece]], to);
+                pieces[promotionPiece] = BitUtils.setBit(pieces[promotionPiece], to);
             }
 
             if (doublePushFlag != 0) {
@@ -127,17 +128,46 @@ public class Bitboard {
                 }
             }
 
-            if (enPassantFlag != 0) {
+//            if (enPassantFlag != 0) {
 //                if (isWhiteTurn) {
 //                    pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
 //                }
 //                else {
 //                    pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
 //                }
-                enPassantSquare = -1;
-            }
+//                enPassantSquare = -1;
+//            }
             occupancies[BOTH] = occupancies[WHITE] | occupancies[BLACK];
         }
+    }
+
+    public void makeUciMove(UciMove uciMove, boolean isWhiteTurn) {
+        int from = uciMove.from;
+        int to = uciMove.to;
+        int piece = -1;
+        for (int i = 0; i < PIECE_TYPES; i++) {
+            if ((pieces[i] & (1L << from)) != 0) {
+                piece = i;
+                break;
+            }
+        }
+        int promotionPiece = uciMove.promotionPieceFlags;
+        int doublePushFlag = 0;
+        if (uciMove.potentialDoublePush && isWhiteTurn && piece == Piece.WhitePawn
+                || uciMove.potentialDoublePush && !isWhiteTurn && piece == Piece.BlackPawn) {
+            doublePushFlag = 1;
+        }
+
+        int castlesFlag = uciMove.castlesFlag ? 1 : 0;
+        int captureFlag = 0;
+        if ((isWhiteTurn && (occupancies[BLACK] & (1L << to)) != 0)
+                || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0 )) {
+            captureFlag = 1;
+        }
+
+        int enPassantFlag = 0;
+        int move = MoveEncoder.encodeMove(from, to, piece, promotionPiece, doublePushFlag, castlesFlag, enPassantFlag, captureFlag);
+        makeMove(move, isWhiteTurn, false);
     }
 
     public void backupState() {
@@ -181,7 +211,7 @@ public class Bitboard {
 
     public void logBitboards() {
         for (int i = 0; i < PIECE_TYPES; i++) {
-            EngineLogger.debug("Piece bitboard: " + Piece.pieceIndexToPiece[i]);
+            EngineLogger.debug("Piece bitboard: " + Piece.pieceCodeToPiece[i]);
             BitUtils.logBitboard(pieces[i]);
         }
     }

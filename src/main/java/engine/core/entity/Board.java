@@ -43,7 +43,7 @@ public class Board {
     public void logState() {
         StringBuilder sb = new StringBuilder();
         for (int i = BOARD_START; i < BOARD_END; i++) {
-            if (state[i] == Piece.BorderPiece) {
+            if (state[i] == Piece.MaxPiece) {
                 if (i % COLS == 0) {
                     sb.append("\n");
                 }

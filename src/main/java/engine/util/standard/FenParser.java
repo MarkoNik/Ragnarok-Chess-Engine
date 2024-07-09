@@ -42,7 +42,7 @@ public class FenParser {
     private static Board parsePieces(String piecePlacement) {
         byte[] state = new byte[120];
         for (int i = 0; i < 120; i++) {
-            state[i] = Piece.BorderPiece;
+            state[i] = Piece.MaxPiece;
         }
 
         String[] rows = piecePlacement.split("/");

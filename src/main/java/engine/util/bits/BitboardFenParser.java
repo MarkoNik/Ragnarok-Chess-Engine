@@ -1,5 +1,6 @@
 package engine.util.bits;
 
+import engine.core.entity.UciMove;
 import engine.core.state.Bitboard;
 import engine.core.state.GameState;
 
@@ -23,10 +24,10 @@ public class BitboardFenParser {
         // Castling availability
         String castlingAvailability = parts[2];
         byte castlesFlags = 0;
-        castlesFlags |= castlingAvailability.contains("K") ? WHITE_KINGSIDE_CASTLES_MASK : 0;
-        castlesFlags |= castlingAvailability.contains("Q") ? WHITE_QUEENSIDE_CASTLES_MASK : 0;
-        castlesFlags |= castlingAvailability.contains("k") ? BLACK_KINGSIDE_CASTLES_MASK : 0;
-        castlesFlags |= castlingAvailability.contains("q") ? BLACK_QUEENSIDE_CASTLES_MASK : 0;
+        castlesFlags |= (byte) (castlingAvailability.contains("K") ? WHITE_KINGSIDE_CASTLES_MASK : 0);
+        castlesFlags |= (byte) (castlingAvailability.contains("Q") ? WHITE_QUEENSIDE_CASTLES_MASK : 0);
+        castlesFlags |= (byte) (castlingAvailability.contains("k") ? BLACK_KINGSIDE_CASTLES_MASK : 0);
+        castlesFlags |= (byte) (castlingAvailability.contains("q") ? BLACK_QUEENSIDE_CASTLES_MASK : 0);
         bitboard.setCastlesFlags(castlesFlags);
 
         // En passant target square
@@ -65,17 +66,55 @@ public class BitboardFenParser {
             rowIndex++;
         }
 
-        bitboard.logBoardState();
         return bitboard;
     }
 
-    public static int algebraicToMove(String move) {
-        int fromSquare = algebraicToIndex(move.substring(0, 2));
-        int toSquare = algebraicToIndex(move.substring(2, 4));
-        short packedMove = (short) fromSquare;
-        packedMove <<= 8;
-        packedMove |= toSquare;
-        return packedMove;
+    // Method to parse a UCI move string
+    public static UciMove parseUciMove(String move) {
+        if (move.equals("0000")) {
+            // Handle nullmove
+            return new UciMove(-1, -1, false, false, 0);
+        }
+
+        int from = algebraicToIndex(move.substring(0, 2));
+        int to = algebraicToIndex(move.substring(2, 4));
+        boolean potentialDoublePushFlag = false;
+        boolean castlesFlag = false;
+        int promotionPieceFlags = 0;
+
+        // Check for castling
+        if (move.equals("e1g1") || move.equals("e8g8") || move.equals("e1c1") || move.equals("e8c8")) {
+            castlesFlag = true;
+        }
+
+        // Check for pawn double push (white and black)
+        if ((move.charAt(1) == '2' && move.charAt(3) == '4') || (move.charAt(1) == '7' && move.charAt(3) == '5')) {
+            potentialDoublePushFlag = true;
+        }
+
+        // Check for pawn promotion
+        if (move.length() == 5) {
+            char promotionPiece = move.charAt(4);
+            promotionPieceFlags = pieceCharToFlag(promotionPiece);
+        }
+
+        return new UciMove(from, to, potentialDoublePushFlag, castlesFlag, promotionPieceFlags);
+    }
+
+    // Convert promotion piece character to flag
+    private static int pieceCharToFlag(char piece) {
+        switch (piece) {
+            case 'q':
+                return 1;
+            case 'r':
+                return 2;
+            case 'b':
+                return 4;
+            case 'n':
+                return 8;
+            default:
+                return 0;
+        }
     }
 
     public static String moveToAlgebraic(int move) {
