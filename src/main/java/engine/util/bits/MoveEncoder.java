@@ -89,4 +89,26 @@ public class MoveEncoder {
                 .append("\n");
         EngineLogger.debug(sb.toString());
     }
+
+    public static void logMovesStats(int[] moves, int moveCount) {
+        int captures = 0;
+        int enPassant = 0;
+        int castles = 0;
+        int promotions = 0;
+        for (int i = 0; i < moveCount; i++) {
+            captures += extractCaptureFlag(moves[i]);
+            enPassant += extractEnPassantFlag(moves[i]);
+            castles += extractCastlesFlag(moves[i]);
+            promotions += extractPromotionPiece(moves[i]) != 0 ? 1 : 0;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("Stats:\n")
+                .append("moves: " + moveCount)
+                .append(" | captures: " + captures)
+                .append(" | enPassants: " + enPassant)
+                .append(" | castles: " + castles)
+                .append(" | promotions: " + promotions)
+                .append("\n");
+        EngineLogger.debug(sb.toString());
+    }
 }

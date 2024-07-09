@@ -3,6 +3,8 @@ package engine.util.bits;
 import engine.core.state.Bitboard;
 import engine.core.state.GameState;
 
+import static app.Constants.INF;
+
 public class BitboardFenParser {
     public static GameState parseFEN(String fenString) {
         String[] parts = fenString.split(" ");
@@ -25,10 +27,10 @@ public class BitboardFenParser {
         String enPassantTargetSquare = parts[3];
 
         // Halfmove clock
-        int halfmoveClock = Integer.parseInt(parts[4]);
+        int halfmoveClock = parts.length < 5 ? INF : Integer.parseInt(parts[4]);
 
         // Fullmove number
-        int fullmoveNumber = Integer.parseInt(parts[5]);
+        int fullmoveNumber = parts.length < 6 ? INF : Integer.parseInt(parts[5]);
 
         return new GameState(bitboard, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
     }

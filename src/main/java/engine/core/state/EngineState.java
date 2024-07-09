@@ -3,6 +3,7 @@ package engine.core.state;
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
 import engine.util.bits.BitboardMoveGenerator;
+import engine.util.bits.MoveEncoder;
 import uci.command.GoCommandWrapper;
 
 import java.util.Map;
@@ -28,10 +29,11 @@ public class EngineState {
     public void search(GoCommandWrapper goCommandWrapper) {
         moveGenerator.setBitboard(gameState.getBitboard());
         int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
-//        EngineLogger.debug("Generated: " + moveGenerator.getMoveCounter() + " legal moves.");
-//        for (int i = 0; i < moveGenerator.getMoveCounter(); i++) {
-//            MoveEncoder.logMove(legalMoves[i]);
-//        }
+        int moveCount = moveGenerator.getMoveCounter();
+        MoveEncoder.logMovesStats(legalMoves, moveCount);
+        for (int i = 0; i < moveCount; i++) {
+            MoveEncoder.logMove(legalMoves[i]);
+        }
         Random rand = new Random();
         bestMove = legalMoves[rand.nextInt(moveGenerator.getMoveCounter())];
         gameState.playMove(bestMove);

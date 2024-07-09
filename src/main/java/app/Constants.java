@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Constants {
+    public static final int INF = 1 << 30;
     public static final int RANKS = 8;
     public static final int FILES = 8;
     public static final int BOARD_SIZE = RANKS * FILES;
