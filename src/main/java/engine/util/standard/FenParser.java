@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.standard;
 
 import engine.core.entity.Board;
 import engine.core.entity.Move;

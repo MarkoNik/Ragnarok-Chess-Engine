@@ -1,11 +1,11 @@
-package engine.util;
+package engine.util.standard;
 
 import app.EngineLogger;
 import engine.core.entity.Board;
 import engine.core.entity.Piece;
 
 import static engine.core.entity.Board.*;
-import static engine.util.MoveGenerator.*;
+import static engine.util.standard.MoveGenerator.*;
 
 public class CheckHelper {
     private boolean[] attacked = new boolean[BOARD_SIZE];

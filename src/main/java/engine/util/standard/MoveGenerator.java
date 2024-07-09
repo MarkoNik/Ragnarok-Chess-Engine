@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.standard;
 
 import app.EngineLogger;
 import engine.core.entity.Board;
