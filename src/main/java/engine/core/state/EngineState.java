@@ -29,7 +29,7 @@ public class EngineState {
     }
     public void search(GoCommandWrapper goCommandWrapper) {
         moveGenerator.setBitboard(gameState.getBitboard());
-        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
+        int[] legalMoves = moveGenerator.generateLegalMoves(false);
         EngineLogger.debug("Generated: " + moveGenerator.getMoveCounter() + " legal moves.");
         for (int i = 0; i < moveGenerator.getMoveCounter(); i++) {
             MoveEncoder.logMove(legalMoves[i]);

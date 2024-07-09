@@ -21,7 +21,6 @@ public class BitboardMoveGenerator {
 
     public void setBitboard(Bitboard bitboard) {
         this.bitboard = bitboard;
-        logAttacks();
     }
 
     public int getMoveCounter() {
@@ -84,7 +83,7 @@ public class BitboardMoveGenerator {
             }
         }
         else {
-            long blackPawnTargets = (bitboard.getOccupancies()[pieceMap.get('p')] << 8) & ~bitboard.getOccupancies()[BOTH];
+            long blackPawnTargets = (bitboard.getPieces()[pieceMap.get('p')] << 8) & ~bitboard.getOccupancies()[BOTH];
             while (blackPawnTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(blackPawnTargets);
                 int fromSquare = toSquare - 8;
@@ -127,8 +126,8 @@ public class BitboardMoveGenerator {
     public void generateDoublePawnPushMoves() {
         int move;
         if (isWhiteTurn) {
-            long whiteSinglePushTargets = (bitboard.getPieces()[pieceMap.get('P')] << 8) & ~bitboard.getOccupancies()[BOTH];
-            long whiteDoublePushTargets = (whiteSinglePushTargets << 8) & ~bitboard.getOccupancies()[BOTH] & RANK_4;
+            long whiteSinglePushTargets = (bitboard.getPieces()[pieceMap.get('P')] >>> 8) & ~bitboard.getOccupancies()[BOTH];
+            long whiteDoublePushTargets = (whiteSinglePushTargets >>> 8) & ~bitboard.getOccupancies()[BOTH] & RANK_4;
             while (whiteDoublePushTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(whiteDoublePushTargets);
                 int fromSquare = toSquare + 16;
@@ -143,8 +142,8 @@ public class BitboardMoveGenerator {
             }
         }
         else {
-            long blackSinglePushTargets = (bitboard.getOccupancies()[pieceMap.get('p')] >>> 8) & ~bitboard.getOccupancies()[BOTH];
-            long blackDoublePushTargets = (blackSinglePushTargets >>> 8) & ~bitboard.getOccupancies()[BOTH] & RANK_5;
+            long blackSinglePushTargets = (bitboard.getPieces()[pieceMap.get('p')] << 8) & ~bitboard.getOccupancies()[BOTH];
+            long blackDoublePushTargets = (blackSinglePushTargets << 8) & ~bitboard.getOccupancies()[BOTH] & RANK_5;
             while (blackDoublePushTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(blackDoublePushTargets);
                 int fromSquare = toSquare - 16;

@@ -2,7 +2,6 @@ package engine.util.bits;
 
 import app.EngineLogger;
 import engine.core.entity.Piece;
-import engine.util.bits.BitboardFenParser;
 
 public class MoveEncoder {
     /*
@@ -80,13 +79,13 @@ public class MoveEncoder {
         StringBuilder sb = new StringBuilder();
         sb.append("Move:\n")
                 .append("from: " + BitboardFenParser.indexToAlgebraic(from))
-                .append(" to: " + BitboardFenParser.indexToAlgebraic(to))
-                .append(" piece: " + Piece.pieceCodeToPiece[piece])
-                .append(" promotionPiece: " + Piece.pieceCodeToPiece[promotionPiece])
-                .append(" doublePush: " + doublePushFlag)
-                .append(" castles: " + castlesFlag)
-                .append(" enPassant: " + enPassantFlag)
-                .append(" capture: " + captureFlag)
+                .append(" | to: " + BitboardFenParser.indexToAlgebraic(to))
+                .append(" | piece: " + Piece.pieceCodeToPiece[piece])
+                .append(" | promotionPiece: " + Piece.pieceCodeToPiece[promotionPiece])
+                .append(" | doublePush: " + doublePushFlag)
+                .append(" | castles: " + castlesFlag)
+                .append(" | enPassant: " + enPassantFlag)
+                .append(" | capture: " + captureFlag)
                 .append("\n");
         EngineLogger.debug(sb.toString());
     }
