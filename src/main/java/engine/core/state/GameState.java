@@ -5,16 +5,12 @@ import java.util.List;
 public class GameState {
     private Bitboard bitboard;
     private boolean isWhiteTurn;
-    private String castlingAvailability;
-    private String enPassantTargetSquare;
     private int halfmoveClock;
     private int fullmoveNumber;
 
-    public GameState(Bitboard bitboard, boolean isWhiteTurn, String castlingAvailability, String enPassantTargetSquare, int halfmoveClock, int fullmoveNumber) {
+    public GameState(Bitboard bitboard, boolean isWhiteTurn, int halfmoveClock, int fullmoveNumber) {
         this.bitboard = bitboard;
         this.isWhiteTurn = isWhiteTurn;
-        this.castlingAvailability = castlingAvailability;
-        this.enPassantTargetSquare = enPassantTargetSquare;
         this.halfmoveClock = halfmoveClock;
         this.fullmoveNumber = fullmoveNumber;
     }

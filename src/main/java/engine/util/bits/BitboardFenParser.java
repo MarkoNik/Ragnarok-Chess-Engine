@@ -3,7 +3,7 @@ package engine.util.bits;
 import engine.core.state.Bitboard;
 import engine.core.state.GameState;
 
-import static app.Constants.INF;
+import static app.Constants.*;
 
 public class BitboardFenParser {
     public static GameState parseFEN(String fenString) {
@@ -22,9 +22,21 @@ public class BitboardFenParser {
 
         // Castling availability
         String castlingAvailability = parts[2];
+        byte castlesFlags = 0;
+        castlesFlags |= castlingAvailability.contains("K") ? WHITE_KINGSIDE_CASTLES_MASK : 0;
+        castlesFlags |= castlingAvailability.contains("Q") ? WHITE_QUEENSIDE_CASTLES_MASK : 0;
+        castlesFlags |= castlingAvailability.contains("k") ? BLACK_KINGSIDE_CASTLES_MASK : 0;
+        castlesFlags |= castlingAvailability.contains("q") ? BLACK_QUEENSIDE_CASTLES_MASK : 0;
+        bitboard.setCastlesFlags(castlesFlags);
 
         // En passant target square
         String enPassantTargetSquare = parts[3];
+        if (enPassantTargetSquare.trim().equals("-")) {
+            bitboard.setEnPassantSquare(-1);
+        }
+        else {
+            bitboard.setEnPassantSquare(algebraicToIndex(enPassantTargetSquare));
+        }
 
         // Halfmove clock
         int halfmoveClock = parts.length < 5 ? INF : Integer.parseInt(parts[4]);
@@ -32,7 +44,7 @@ public class BitboardFenParser {
         // Fullmove number
         int fullmoveNumber = parts.length < 6 ? INF : Integer.parseInt(parts[5]);
 
-        return new GameState(bitboard, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameState(bitboard, isWhiteTurn, halfmoveClock, fullmoveNumber);
     }
 
     private static Bitboard parsePieces(String piecePlacement) {

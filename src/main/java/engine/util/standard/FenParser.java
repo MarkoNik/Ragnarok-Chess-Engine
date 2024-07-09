@@ -36,7 +36,7 @@ public class FenParser {
         // Fullmove number
         int fullmoveNumber = Integer.parseInt(parts[5]);
 
-        return new GameState(null, isWhiteTurn, castlingAvailability, enPassantTargetSquare, halfmoveClock, fullmoveNumber);
+        return new GameState(null, isWhiteTurn, halfmoveClock, fullmoveNumber);
     }
 
     private static Board parsePieces(String piecePlacement) {

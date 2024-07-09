@@ -17,7 +17,7 @@ public class Bitboard {
      * 1000 - black queenside castles
      */
     private byte castlesFlags = 0;
-    private byte enPassantSquare = 0;
+    private int enPassantSquare = 0;
 
     public void setPiece(int square, char piece) {
         // set the piece bitboard
@@ -74,7 +74,15 @@ public class Bitboard {
         return castlesFlags;
     }
 
-    public byte getEnPassantSquare() {
+    public int getEnPassantSquare() {
         return enPassantSquare;
+    }
+
+    public void setCastlesFlags(byte castlesFlags) {
+        this.castlesFlags = castlesFlags;
+    }
+
+    public void setEnPassantSquare(int enPassantSquare) {
+        this.enPassantSquare = enPassantSquare;
     }
 }
