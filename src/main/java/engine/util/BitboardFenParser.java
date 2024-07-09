@@ -76,13 +76,13 @@ public class BitboardFenParser {
         char rank = algebraic.charAt(1);
         int fileIndex = file - 'a';
         int rankIndex = rank - '1';
-        return rankIndex * 8 + fileIndex;
+        return (7 - rankIndex) * 8 + fileIndex;
     }
 
     // Convert bitboard index (0..63) to algebraic notation (e.g., "e4")
     public static String indexToAlgebraic(int index) {
         int fileIndex = index % 8;
-        int rankIndex = index / 8;
+        int rankIndex = 7 - index / 8;
         char file = (char) ('a' + fileIndex);
         char rank = (char) ('1' + rankIndex);
         return "" + file + rank;
