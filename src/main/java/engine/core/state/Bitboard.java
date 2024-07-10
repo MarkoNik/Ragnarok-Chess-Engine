@@ -210,7 +210,12 @@ public class Bitboard {
             }
         }
 
-        int castlesFlag = uciMove.castlesFlag;
+        int castlesFlag = 0;
+        if ((uciMove.potentialCastlesFlag == 1 && isWhiteTurn && piece == Piece.WhiteKing)
+            || (uciMove.potentialCastlesFlag == 1 && !isWhiteTurn && piece == Piece.BlackKing)) {
+            castlesFlag = 1;
+        }
+
         int captureFlag = 0;
         if ((isWhiteTurn && (occupancies[BLACK] & (1L << to)) != 0)
                 || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0)

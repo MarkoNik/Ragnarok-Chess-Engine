@@ -4,15 +4,15 @@ import app.EngineLogger;
 
 public class UciMove {
     public int from, to;
-    public int castlesFlag;
+    public int potentialCastlesFlag;
     public int potentialDoublePush;
     public int promotionPiece;
 
-    public UciMove(int from, int to, int castlesFlag, int potentialDoublePush, int promotionPiece) {
+    public UciMove(int from, int to, int potentialCastlesFlag, int potentialDoublePush, int promotionPiece) {
         this.from = from;
         this.to = to;
         this.potentialDoublePush = potentialDoublePush;
-        this.castlesFlag = castlesFlag;
+        this.potentialCastlesFlag = potentialCastlesFlag;
         this.promotionPiece = promotionPiece;
         EngineLogger.debug("Created new Uci move: " + this);
     }
@@ -22,7 +22,7 @@ public class UciMove {
         return "UciMove{" +
                 "from=" + from +
                 ", to=" + to +
-                ", castlesFlag=" + castlesFlag +
+                ", castlesFlag=" + potentialCastlesFlag +
                 ", potentialDoublePush=" + potentialDoublePush +
                 ", promotionPiece=" + promotionPiece +
                 '}';
