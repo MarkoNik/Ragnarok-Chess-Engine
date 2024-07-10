@@ -127,7 +127,7 @@ public class BitboardFenParser {
         int from = move & 0xFF;
         int to = (move >>> 8) & 0xFF;
         String promotionPiece = "";
-        int promotionPieceCode = MoveEncoder.extractPromotionPiece(move)
+        int promotionPieceCode = MoveEncoder.extractPromotionPiece(move);
         if (MoveEncoder.extractPromotionPiece(move) != 0) {
             if (promotionPieceCode == Piece.WhiteQueen || promotionPieceCode == Piece.BlackQueen) {
                 promotionPiece = "q";
