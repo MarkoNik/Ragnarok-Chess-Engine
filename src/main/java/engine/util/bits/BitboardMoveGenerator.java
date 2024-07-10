@@ -153,7 +153,8 @@ public class BitboardMoveGenerator {
                 long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
 
                 if (bitboard.getEnPassantSquare() != -1
-                        && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
+                        && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0
+                        && (fromSquare == bitboard.getEnPassantSquare() - 1 || fromSquare == bitboard.getEnPassantSquare() + 1)) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() - 8, WhitePawn,
                             0, 0, 0, 1, 1);
                     addMove(move);
@@ -205,7 +206,8 @@ public class BitboardMoveGenerator {
                 long toSquares = bitboardHelper.pawnAttacks[BLACK][fromSquare] & bitboard.getOccupancies()[WHITE];
 
                 if (bitboard.getEnPassantSquare() != -1
-                        && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0) {
+                        && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0
+                        && (fromSquare == bitboard.getEnPassantSquare() - 1 || fromSquare == bitboard.getEnPassantSquare() + 1)) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() + 8, BlackPawn,
                             0, 0, 0, 1, 1);
                     addMove(move);
