@@ -54,11 +54,9 @@ public class Bitboard {
             int castlesFlag = MoveEncoder.extractCastlesFlag(move);
             int enPassantFlag = MoveEncoder.extractEnPassantFlag(move);
             int captureFlag = MoveEncoder.extractCaptureFlag(move);
-//            if (!BitUtils.getBit(pieces[piece], from)) {
-//                EngineLogger.error("Tried to move inexistent piece: " + piece + " from: " + from + " to " + to);
-//            }
             pieces[piece] = BitUtils.popBit(pieces[piece], from);
             pieces[piece] = BitUtils.setBit(pieces[piece], to);
+
             if (isWhiteTurn) {
                 occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], from);
                 occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], to);
@@ -79,7 +77,8 @@ public class Bitboard {
                         castlesFlags = 0;
                     }
                 }
-            } else {
+            }
+            else {
                 occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], from);
                 occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], to);
                 if (castlesFlags != 0) {
@@ -126,12 +125,6 @@ public class Bitboard {
                 pieces[promotionPiece] = BitUtils.setBit(pieces[promotionPiece], to);
             }
 
-            if (doublePushFlag != 0) {
-                enPassantSquare = to;
-            } else {
-                enPassantSquare = -1;
-            }
-
             if (castlesFlag != 0) {
                 if (to == WHITE_KINGSIDE_CASTLES_SQUARE) {
                     pieces[pieceMap.get('R')] = BitUtils.popBit(pieces[pieceMap.get('R')], WHITE_KINGSIDE_ROOK);
@@ -159,15 +152,21 @@ public class Bitboard {
                 }
             }
 
-//            if (enPassantFlag != 0) {
-//                if (isWhiteTurn) {
-//                    pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
-//                }
-//                else {
-//                    pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
-//                }
-//                enPassantSquare = -1;
-//            }
+            if (enPassantFlag != 0) {
+                if (isWhiteTurn) {
+                    pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
+                }
+                else {
+                    pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
+                }
+            }
+
+            if (doublePushFlag != 0) {
+                enPassantSquare = to;
+            } else {
+                enPassantSquare = -1;
+            }
+
             occupancies[BOTH] = occupancies[WHITE] | occupancies[BLACK];
         }
     }
@@ -203,14 +202,22 @@ public class Bitboard {
             doublePushFlag = 1;
         }
 
+        int enPassantFlag = 0;
+        if (enPassantSquare != -1) {
+            if ((isWhiteTurn && piece == Piece.WhitePawn && to == enPassantSquare - 8)
+                    || (!isWhiteTurn && pieces[piece] == Piece.BlackPawn && to == enPassantSquare + 8)) {
+                enPassantFlag = 1;
+            }
+        }
+
         int castlesFlag = uciMove.castlesFlag;
         int captureFlag = 0;
         if ((isWhiteTurn && (occupancies[BLACK] & (1L << to)) != 0)
-                || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0)) {
+                || (!isWhiteTurn && (occupancies[WHITE] & (1L << to)) != 0)
+                || enPassantFlag == 1) {
             captureFlag = 1;
         }
 
-        int enPassantFlag = 0;
         int move = MoveEncoder.encodeMove(from, to, piece, promotionPiece, doublePushFlag, castlesFlag, enPassantFlag, captureFlag);
         makeMove(move, isWhiteTurn, false);
     }
