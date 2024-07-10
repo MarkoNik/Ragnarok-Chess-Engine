@@ -73,6 +73,9 @@ public class GoCommand implements Command {
                     goCommandWrapper.infinite = true;
                     i++;
                     break;
+                case "perft":
+                    goCommandWrapper.perftDepth = Integer.parseInt(tokens[++i]);
+                    i++;
                 default:
                     i++;
                     break;
@@ -83,6 +86,8 @@ public class GoCommand implements Command {
     @Override
     public int execute(EngineState engineState) {
         engineState.search(goCommandWrapper);
+        if (goCommandWrapper.perftDepth != -1) return 0;
+
         int bestMove = engineState.getBestMove();
         Cli.sendCommand("bestmove " + BitboardFenParser.moveToAlgebraic(bestMove));
         return 0;

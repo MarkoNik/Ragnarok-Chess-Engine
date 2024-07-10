@@ -24,10 +24,13 @@ public class Bitboard {
     private byte castlesFlags = 0;
     private int enPassantSquare = 0;
 
-    private long[] piecesBackup = new long[PIECE_TYPES];
-    private long[] occupanciesBackup = new long[OCCUPANCY_TYPES];
-    private byte castlesFlagsBackup = 0;
-    private int enPassantSquareBackup = 0;
+    private static final int BACKUP_STACK_SIZE = 50000;
+
+    private final long[][] piecesBackup = new long[BACKUP_STACK_SIZE][PIECE_TYPES];
+    private final long[][] occupanciesBackup = new long[BACKUP_STACK_SIZE][OCCUPANCY_TYPES];
+    private final byte[] castlesFlagsBackup = new byte[BACKUP_STACK_SIZE];
+    private final int[] enPassantSquareBackup = new int[BACKUP_STACK_SIZE];
+    private int backupStackPointer = 0;
 
     public void setPiece(int square, char piece) {
         // set the piece bitboard
@@ -231,17 +234,19 @@ public class Bitboard {
     }
 
     public void backupState() {
-        piecesBackup = pieces.clone();
-        occupanciesBackup = occupancies.clone();
-        castlesFlagsBackup = castlesFlags;
-        enPassantSquareBackup = enPassantSquare;
+        piecesBackup[backupStackPointer] = pieces.clone();
+        occupanciesBackup[backupStackPointer] = occupancies.clone();
+        castlesFlagsBackup[backupStackPointer] = castlesFlags;
+        enPassantSquareBackup[backupStackPointer] = enPassantSquare;
+        backupStackPointer++;
     }
 
     public void restoreState() {
-        pieces = piecesBackup;
-        occupancies = occupanciesBackup;
-        castlesFlags = castlesFlagsBackup;
-        enPassantSquare = enPassantSquareBackup;
+        backupStackPointer--;
+        pieces = piecesBackup[backupStackPointer];
+        occupancies = occupanciesBackup[backupStackPointer];
+        castlesFlags = castlesFlagsBackup[backupStackPointer];
+        enPassantSquare = enPassantSquareBackup[backupStackPointer];
     }
 
     public void logBoardState() {

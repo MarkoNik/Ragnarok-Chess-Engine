@@ -2,6 +2,7 @@ package engine.core.state;
 
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
+import engine.util.PerftDriver;
 import engine.util.bits.BitboardMoveGenerator;
 import engine.util.bits.MoveEncoder;
 import uci.command.GoCommandWrapper;
@@ -24,6 +25,17 @@ public class EngineState {
     }
 
     public void search(GoCommandWrapper goCommandWrapper) {
+        if (goCommandWrapper.perftDepth != -1) {
+            PerftDriver driver = new PerftDriver(this, gameState);
+            long startTime = System.currentTimeMillis();
+            driver.runTest(goCommandWrapper.perftDepth);
+            long endTime = System.currentTimeMillis();
+            long elapsedTime = endTime - startTime;
+            System.out.println("Nodes: " + driver.getNodes());
+            System.out.println("Elapsed time: " + (double) elapsedTime / 1000);
+            return;
+        }
+
         moveGenerator.setBitboard(gameState.getBitboard());
         int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
         int moveCount = moveGenerator.getMoveCounter();
@@ -34,6 +46,26 @@ public class EngineState {
         Random rand = new Random();
         bestMove = legalMoves[rand.nextInt(moveCount)];
         gameState.playMove(bestMove);
+        moveGenerator.clearMoves();
+    }
+
+    private void perftDriver(int depth) {
+        moveGenerator.setBitboard(gameState.getBitboard());
+        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
+        int moveCount = moveGenerator.getMoveCounter();
+    }
+
+    public int[] generateLegalMoves() {
+        moveGenerator.setBitboard(gameState.getBitboard());
+        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
+        return legalMoves;
+    }
+
+    public int getMoveCounter() {
+        return moveGenerator.getMoveCounter();
+    }
+
+    public void clearMoves() {
         moveGenerator.clearMoves();
     }
 

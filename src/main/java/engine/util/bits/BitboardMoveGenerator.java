@@ -1,6 +1,5 @@
 package engine.util.bits;
 
-import app.EngineLogger;
 import engine.core.bitboard.BitboardHelper;
 import engine.core.state.Bitboard;
 
@@ -473,18 +472,24 @@ public class BitboardMoveGenerator {
         bitboard.makeMove(move, isWhiteTurn, false);
         if (isWhiteTurn) {
             int whiteKingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[pieceMap.get('K')]);
+            if (whiteKingSquare == -1) {
+                bitboard.logBoardState();
+            }
             if (isSquareAttacked(whiteKingSquare, !isWhiteTurn)) {
-                EngineLogger.debug("Encountered illegal move: ");
-                MoveEncoder.logMove(move);
+//                EngineLogger.debug("Encountered illegal move: ");
+//                MoveEncoder.logMove(move);
                 bitboard.restoreState();
                 return ILLEGAL;
             }
         }
         else {
             int blackKingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[pieceMap.get('k')]);
+            if (blackKingSquare == -1) {
+                bitboard.logBoardState();
+            }
             if (isSquareAttacked(blackKingSquare, !isWhiteTurn)) {
-                EngineLogger.debug("Encountered illegal move: ");
-                MoveEncoder.logMove(move);
+//                EngineLogger.debug("Encountered illegal move: ");
+//                MoveEncoder.logMove(move);
                 bitboard.restoreState();
                 return ILLEGAL;
             }

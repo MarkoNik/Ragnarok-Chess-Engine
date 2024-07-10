@@ -50,4 +50,8 @@ public class GameState {
     public boolean isWhiteTurn() {
         return isWhiteTurn;
     }
+
+    public void switchPlayer() {
+        isWhiteTurn = !isWhiteTurn;
+    }
 }

@@ -16,6 +16,7 @@ public class GoCommandWrapper {
     public int mate;
     public int moveTime;
     public boolean infinite;
+    public int perftDepth;
 
     public GoCommandWrapper() {
         searchMoves = new ArrayList<>();
@@ -30,11 +31,12 @@ public class GoCommandWrapper {
         mate = -1;
         moveTime = -1;
         infinite = false;
+        perftDepth = -1;
     }
 
     @Override
     public String toString() {
-        return "GoCommand{" +
+        return "GoCommandWrapper{" +
                 "searchMoves=" + searchMoves +
                 ", ponder=" + ponder +
                 ", wtime=" + wtime +
@@ -47,6 +49,7 @@ public class GoCommandWrapper {
                 ", mate=" + mate +
                 ", moveTime=" + moveTime +
                 ", infinite=" + infinite +
+                ", perftDepth=" + perftDepth +
                 '}';
     }
 }
