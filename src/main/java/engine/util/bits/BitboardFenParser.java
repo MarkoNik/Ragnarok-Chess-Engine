@@ -126,9 +126,23 @@ public class BitboardFenParser {
     public static String moveToAlgebraic(int move) {
         int from = move & 0xFF;
         int to = (move >>> 8) & 0xFF;
-        System.out.println(from);
-        System.out.println(to);
-        return indexToAlgebraic(from) + indexToAlgebraic(to);
+        String promotionPiece = "";
+        int promotionPieceCode = MoveEncoder.extractPromotionPiece(move)
+        if (MoveEncoder.extractPromotionPiece(move) != 0) {
+            if (promotionPieceCode == Piece.WhiteQueen || promotionPieceCode == Piece.BlackQueen) {
+                promotionPiece = "q";
+            }
+            if (promotionPieceCode == Piece.WhiteRook || promotionPieceCode == Piece.BlackRook) {
+                promotionPiece = "r";
+            }
+            if (promotionPieceCode == Piece.WhiteBishop || promotionPieceCode == Piece.BlackBishop) {
+                promotionPiece = "b";
+            }
+            if (promotionPieceCode == Piece.WhiteKnight || promotionPieceCode == Piece.BlackKnight) {
+                promotionPiece = "n";
+            }
+        }
+        return indexToAlgebraic(from) + indexToAlgebraic(to) + promotionPiece;
     }
 
     // Convert algebraic notation (e.g., "e4") to bitboard index (0..63)
