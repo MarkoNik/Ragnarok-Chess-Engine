@@ -3,18 +3,28 @@ package app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static app.Constants.USE_LOGGER;
+
 public class EngineLogger {
     private static final Logger logger = LoggerFactory.getLogger(EngineLogger.class);
     public static void debug(String message) {
-        logger.debug(message);
+        if (USE_LOGGER) {
+            logger.debug(message);
+        }
     }
     public static void info(String message) {
-        logger.info(message);
+        if (USE_LOGGER) {
+            logger.info(message);
+        }
     }
     public static void warn(String message) {
-        logger.warn(message);
+        if (USE_LOGGER) {
+            logger.warn(message);
+        }
     }
     public static void error(String message) {
-        logger.error(message);
+        if (USE_LOGGER) {
+            logger.error(message);
+        }
     }
 }

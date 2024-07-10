@@ -1,7 +1,5 @@
 package engine.core.entity;
 
-import app.EngineLogger;
-
 public class UciMove {
     public int from, to;
     public int potentialCastlesFlag;
@@ -14,7 +12,7 @@ public class UciMove {
         this.potentialDoublePush = potentialDoublePush;
         this.potentialCastlesFlag = potentialCastlesFlag;
         this.promotionPiece = promotionPiece;
-        EngineLogger.debug("Created new Uci move: " + this);
+        // EngineLogger.debug("Created new Uci move: " + this);
     }
 
     @Override

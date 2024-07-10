@@ -74,7 +74,7 @@ public class Bitboard {
                         castlesFlags &= 0b0111;
                     }
                     if (from == WHITE_KING) {
-                        castlesFlags = 0;
+                        castlesFlags &= 0b1100;
                     }
                 }
             }
@@ -93,6 +93,9 @@ public class Bitboard {
                     }
                     if (to == WHITE_QUEENSIDE_ROOK) {
                         castlesFlags &= 0b1101;
+                    }
+                    if (from == BLACK_KING) {
+                        castlesFlags &= 0b0011;
                     }
                 }
             }
