@@ -85,8 +85,7 @@ public class MoveEncoder {
                 .append(" | doublePush: " + doublePushFlag)
                 .append(" | castles: " + castlesFlag)
                 .append(" | enPassant: " + enPassantFlag)
-                .append(" | capture: " + captureFlag)
-                .append("\n");
+                .append(" | capture: " + captureFlag);
         EngineLogger.debug(sb.toString());
     }
 

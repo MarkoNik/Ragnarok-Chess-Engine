@@ -89,5 +89,5 @@ public class Constants {
         Constants.pieceMap.put('k', 11);
     }
 
-    public static final boolean USE_LOGGER = false;
+    public static final boolean USE_LOGGER = true;
 }

@@ -152,14 +152,13 @@ public class BitboardMoveGenerator {
                 long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
 
                 if (bitboard.getEnPassantSquare() != -1
-                        && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0
-                        && (fromSquare == bitboard.getEnPassantSquare() - 1 || fromSquare == bitboard.getEnPassantSquare() + 1)) {
+                        && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << (bitboard.getEnPassantSquare() - 8))) != 0) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() - 8, WhitePawn,
                             0, 0, 0, 1, 1);
                     addMove(move);
                 }
 
-                else if (fromSquare >= RANK_7_START_SQUARE && fromSquare <= RANK_7_END_SQUARE) {
+                if (fromSquare >= RANK_7_START_SQUARE && fromSquare <= RANK_7_END_SQUARE) {
                     while (toSquares != 0) {
                         int toSquare = BitUtils.getLs1bIndex(toSquares);
 
@@ -205,14 +204,13 @@ public class BitboardMoveGenerator {
                 long toSquares = bitboardHelper.pawnAttacks[BLACK][fromSquare] & bitboard.getOccupancies()[WHITE];
 
                 if (bitboard.getEnPassantSquare() != -1
-                        && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << bitboard.getEnPassantSquare())) != 0
-                        && (fromSquare == bitboard.getEnPassantSquare() - 1 || fromSquare == bitboard.getEnPassantSquare() + 1)) {
+                        && (bitboardHelper.pawnAttacks[BLACK][fromSquare] & (1L << (bitboard.getEnPassantSquare() + 8))) != 0) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() + 8, BlackPawn,
                             0, 0, 0, 1, 1);
                     addMove(move);
                 }
 
-                else if (fromSquare >= RANK_2_START_SQUARE && fromSquare <= RANK_2_END_SQUARE) {
+                if (fromSquare >= RANK_2_START_SQUARE && fromSquare <= RANK_2_END_SQUARE) {
                     while (toSquares != 0) {
                         int toSquare = BitUtils.getLs1bIndex(toSquares);
 

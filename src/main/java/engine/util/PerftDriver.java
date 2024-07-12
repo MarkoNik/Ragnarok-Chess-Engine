@@ -7,7 +7,7 @@ public class PerftDriver {
     private long nodes = 0;
     private EngineState engineState;
     private GameState gameState;
-    private int[] moveStack = new int[100];
+    private int[] moveStack = new int[100000];
     private int moveStackTop = 0;
 
     public PerftDriver(EngineState engineState, GameState gameState) {
@@ -16,6 +16,11 @@ public class PerftDriver {
     }
 
     public void runTest(int depth) {
+        if (depth == 0) {
+            nodes++;
+            return;
+        }
+
         int[] moves = engineState.generateLegalMoves().clone();
         int moveCounter = engineState.getMoveCounter();
 //        System.out.println("moveStackTop: " + moveStackTop);
@@ -25,10 +30,10 @@ public class PerftDriver {
 //        System.out.println();
         engineState.clearMoves();
 
-        if (depth == 1) {
-            nodes += moveCounter;
-            return;
-        }
+//        if (depth == 1) {
+//            nodes += moveCounter;
+//            return;
+//        }
 
         for (int i = 0; i < moveCounter; i++) {
             moveStack[moveStackTop++] = moves[i];
@@ -45,5 +50,9 @@ public class PerftDriver {
 
     public long getNodes() {
         return nodes;
+    }
+
+    public void resetNodes() {
+        nodes = 0;
     }
 }

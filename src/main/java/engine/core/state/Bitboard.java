@@ -161,9 +161,11 @@ public class Bitboard {
             if (enPassantFlag != 0) {
                 if (isWhiteTurn) {
                     pieces[pieceMap.get('p')] = BitUtils.popBit(pieces[pieceMap.get('p')], enPassantSquare);
+                    occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], enPassantSquare);
                 }
                 else {
                     pieces[pieceMap.get('P')] = BitUtils.popBit(pieces[pieceMap.get('P')], enPassantSquare);
+                    occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], enPassantSquare);
                 }
             }
 
