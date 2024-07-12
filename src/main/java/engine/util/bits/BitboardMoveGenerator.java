@@ -332,12 +332,12 @@ public class BitboardMoveGenerator {
                 addMove(move);
             }
             if ((bitboard.getCastlesFlags() & BLACK_QUEENSIDE_CASTLES_MASK) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 1))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 2))) != 0
-                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 3))) != 0
-                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 2, false)
-                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 3, false)
-                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 4, false)) {
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 1))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 2))) == 0
+                    && (bitboard.getOccupancies()[BOTH] & (1L << (BLACK_QUEENSIDE_ROOK + 3))) == 0
+                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 2, true)
+                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 3, true)
+                    && !isSquareAttacked(BLACK_QUEENSIDE_ROOK + 4, true)) {
 
                 move = MoveEncoder.encodeMove(fromSquare, BLACK_QUEENSIDE_CASTLES_SQUARE, BlackKing,
                         0, 0, 1, 0, 0);
