@@ -45,14 +45,8 @@ public class EngineState {
     }
 
     private void runPerftTest(int depth) {
+        long startTime = System.currentTimeMillis();
         PerftDriver driver = new PerftDriver(this, gameState);
-//        long startTime = System.currentTimeMillis();
-//        driver.runTest(depth);
-//        long endTime = System.currentTimeMillis();
-//        long elapsedTime = endTime - startTime;
-//        System.out.println("Nodes: " + driver.getNodes());
-//        System.out.println("Elapsed time: " + (double) elapsedTime / 1000);
-
         moveGenerator.setBitboard(gameState.getBitboard());
         int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn()).clone();
         int moveCount = moveGenerator.getMoveCounter();
@@ -69,6 +63,9 @@ public class EngineState {
             gameState.switchPlayer();
         }
         System.out.println("\n" + total);
+        long endTime = System.currentTimeMillis();
+        long elapsedTime = endTime - startTime;
+        System.out.println("Elapsed time: " + (double) elapsedTime / 1000);
     }
 
     public int[] generateLegalMoves() {
