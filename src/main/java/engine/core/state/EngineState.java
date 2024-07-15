@@ -10,6 +10,8 @@ import uci.command.GoCommandWrapper;
 
 import java.util.Map;
 
+import static app.Constants.INF;
+
 public class EngineState {
     private GameState gameState;
 
@@ -37,7 +39,7 @@ public class EngineState {
 
         moveGenerator.setBitboard(gameState.getBitboard());
         minimax.setBitboard(gameState.getBitboard());
-        minimax.search(5, gameState.isWhiteTurn());
+        minimax.search(6, -INF, INF, gameState.isWhiteTurn());
         bestMove = minimax.getBestMove();
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
