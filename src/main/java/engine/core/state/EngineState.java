@@ -2,7 +2,7 @@ package engine.core.state;
 
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
-import engine.util.PerftDriver;
+import engine.util.perft.PerftDriver;
 import engine.util.bits.BitboardFenParser;
 import engine.util.bits.BitboardMoveGenerator;
 import engine.util.bits.MoveEncoder;

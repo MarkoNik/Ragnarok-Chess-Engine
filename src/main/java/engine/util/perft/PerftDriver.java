@@ -1,4 +1,4 @@
-package engine.util;
+package engine.util.perft;
 
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
