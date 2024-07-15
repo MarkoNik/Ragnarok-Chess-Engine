@@ -2,13 +2,13 @@ package engine.core.state;
 
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
-import engine.util.bits.MoveEncoder;
-import engine.util.bits.MoveGenerator;
+import engine.search.Evaluator;
+import engine.search.Minimax;
+import engine.search.MoveGenerator;
 import engine.util.perft.PerftDriver;
 import uci.command.GoCommandWrapper;
 
 import java.util.Map;
-import java.util.Random;
 
 public class EngineState {
     private GameState gameState;
@@ -18,10 +18,14 @@ public class EngineState {
     private int bestMove;
     private BitboardHelper bitboardHelper;
     private MoveGenerator moveGenerator;
+    private Evaluator evaluator;
+    private Minimax minimax;
 
     public EngineState() {
         bitboardHelper = new BitboardHelper();
         moveGenerator = new MoveGenerator(bitboardHelper);
+        evaluator = new Evaluator();
+        minimax = new Minimax(moveGenerator, evaluator);
     }
 
     public void search(GoCommandWrapper goCommandWrapper) {
@@ -32,14 +36,9 @@ public class EngineState {
         }
 
         moveGenerator.setBitboard(gameState.getBitboard());
-        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
-        int moveCount = moveGenerator.getMoveCounter();
-        MoveEncoder.logMovesStats(legalMoves, moveCount);
-        for (int i = 0; i < moveCount; i++) {
-            MoveEncoder.logMove(legalMoves[i]);
-        }
-        Random rand = new Random();
-        bestMove = legalMoves[rand.nextInt(moveCount)];
+        minimax.setBitboard(gameState.getBitboard());
+        minimax.search(5, gameState.isWhiteTurn());
+        bestMove = minimax.getBestMove();
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
     }

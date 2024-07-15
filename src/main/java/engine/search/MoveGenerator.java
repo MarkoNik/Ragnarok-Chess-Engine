@@ -1,7 +1,9 @@
-package engine.util.bits;
+package engine.search;
 
 import engine.core.bitboard.BitboardHelper;
 import engine.core.state.Bitboard;
+import engine.util.bits.BitUtils;
+import engine.util.bits.MoveEncoder;
 
 import static app.Constants.*;
 import static engine.core.entity.Piece.*;
@@ -455,6 +457,17 @@ public class MoveGenerator {
             }
         }
         return false;
+    }
+
+    public boolean isKingInCheck(boolean isWhiteTurn) {
+        int kingSquare;
+        if (isWhiteTurn) {
+            kingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[WHITE_KING]);
+        }
+        else {
+            kingSquare = BitUtils.getLs1bIndex(bitboard.getPieces()[BLACK_KING]);
+        }
+        return isSquareAttacked(kingSquare, !isWhiteTurn);
     }
 
     private void addMove(int move) {

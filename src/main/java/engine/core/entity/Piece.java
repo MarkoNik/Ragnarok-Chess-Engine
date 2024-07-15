@@ -14,6 +14,13 @@ public class Piece {
     public static final byte QUEEN = 5;
     public static final byte KING = 6;
 
+    public static final int PAWN_VALUE = 100;
+    public static final int KNIGHT_VALUE = 300;
+    public static final int BISHOP_VALUE = 300;
+    public static final int ROOK_VALUE = 500;
+    public static final int QUEEN_VALUE = 900;
+    public static final int KING_VALUE = 40000;
+
     // Pieces
     public static final byte WHITE_PAWN = 0;      // 1
     public static final byte WHITE_KNIGHT = 1;  // 2
@@ -61,6 +68,21 @@ public class Piece {
             '♜',
             '♛',
             '♚'
+    };
+
+    public static int[] pieceToPieceEval = {
+            PAWN_VALUE,
+            KNIGHT_VALUE,
+            BISHOP_VALUE,
+            ROOK_VALUE,
+            QUEEN_VALUE,
+            KING_VALUE,
+            -PAWN_VALUE,
+            -KNIGHT_VALUE,
+            -BISHOP_VALUE,
+            -ROOK_VALUE,
+            -QUEEN_VALUE,
+            -KING_VALUE,
     };
 
     static {

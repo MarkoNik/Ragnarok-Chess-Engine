@@ -3,7 +3,7 @@ package engine.util.perft;
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
 import engine.util.bits.FenParser;
-import engine.util.bits.MoveGenerator;
+import engine.search.MoveGenerator;
 
 public class PerftDriver {
     private long nodes = 0;
