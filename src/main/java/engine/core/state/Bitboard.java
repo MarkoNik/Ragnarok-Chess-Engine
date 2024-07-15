@@ -1,6 +1,5 @@
 package engine.core.state;
 
-import app.Constants;
 import app.EngineLogger;
 import engine.core.entity.Piece;
 import engine.core.entity.UciMove;
@@ -36,10 +35,10 @@ public class Bitboard {
     public void setPiece(int square, char piece) {
         // set the piece bitboard
         long bitboard = 1L << square;
-        pieces[Constants.pieceMap.get(piece)] |= bitboard;
+        pieces[pieceMap.get(piece)] |= bitboard;
 
         // set the occupancies
-        if (Constants.pieceMap.get(piece) < WHITE_PIECE_TYPES) {
+        if (pieceMap.get(piece) < WHITE_PIECE_TYPES) {
             occupancies[WHITE] |= bitboard;
         }
         else {
@@ -260,7 +259,7 @@ public class Bitboard {
             while (tempBitboard != 0) {
                 int square = BitUtils.getLs1bIndex(tempBitboard);
                 tempBitboard = BitUtils.popBit(tempBitboard, square);
-                output[square] = Constants.asciiPieces[i];
+                output[square] = asciiPieces[i];
             }
         }
 

@@ -1,5 +1,8 @@
 package engine.core.entity;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Piece {
 
     // Piece types
@@ -29,7 +32,51 @@ public class Piece {
 
     public static String[] pieceCodeToPiece = new String[MAX_PIECE];
 
+    public static Map<Character, Integer> pieceMap = new HashMap<>();
+
+    public static char[] asciiPieces = {
+            'P',
+            'N',
+            'B',
+            'R',
+            'Q',
+            'K',
+            'p',
+            'n',
+            'b',
+            'r',
+            'q',
+            'k'
+    };
+    public static char[] unicodePieces = {
+            '♙',
+            '♘',
+            '♗',
+            '♖',
+            '♕',
+            '♔',
+            '♟',
+            '♞',
+            '♝',
+            '♜',
+            '♛',
+            '♚'
+    };
+
     static {
+        pieceMap.put('P', 0);
+        pieceMap.put('N', 1);
+        pieceMap.put('B', 2);
+        pieceMap.put('R', 3);
+        pieceMap.put('Q', 4);
+        pieceMap.put('K', 5);
+        pieceMap.put('p', 6);
+        pieceMap.put('n', 7);
+        pieceMap.put('b', 8);
+        pieceMap.put('r', 9);
+        pieceMap.put('q', 10);
+        pieceMap.put('k', 11);
+
         pieceCodeToPiece[0] = "White Pawn";
         pieceCodeToPiece[1] = "White Knight";
         pieceCodeToPiece[2] = "White Bishop";
