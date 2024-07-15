@@ -1,8 +1,5 @@
 package engine.core.entity;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Piece {
 
     // Piece types
@@ -32,39 +29,18 @@ public class Piece {
 
     public static String[] pieceCodeToPiece = new String[MAX_PIECE];
 
-    public static final Map<Character, Byte> pieceMap = new HashMap<>();
-
     static {
-        // White pieces
-        pieceMap.put('P', Piece.WHITE_PAWN);
-        pieceMap.put('N', Piece.WHITE_KNIGHT);
-        pieceMap.put('B', Piece.WHITE_BISHOP);
-        pieceMap.put('R', Piece.WHITE_ROOK);
-        pieceMap.put('Q', Piece.WHITE_QUEEN);
-        pieceMap.put('K', Piece.WHITE_KING);
-
-        // Black pieces
-        pieceMap.put('p', Piece.BLACK_PAWN);
-        pieceMap.put('n', Piece.BLACK_KNIGHT);
-        pieceMap.put('b', Piece.BLACK_BISHOP);
-        pieceMap.put('r', Piece.BLACK_ROOK);
-        pieceMap.put('q', Piece.BLACK_QUEEN);
-        pieceMap.put('k', Piece.BLACK_KING);
-
-        // Empty squares
-        pieceMap.put(' ', Piece.NONE);
-
-        pieceCodeToPiece[0] = "WhitePawn";
-        pieceCodeToPiece[1] = "WhiteKnight";
-        pieceCodeToPiece[2] = "WhiteBishop";
-        pieceCodeToPiece[3] = "WhiteRook";
-        pieceCodeToPiece[4] = "WhiteQueen";
-        pieceCodeToPiece[5] = "WhiteKing";
-        pieceCodeToPiece[6] = "BlackPawn";
-        pieceCodeToPiece[7] = "BlackKnight";
-        pieceCodeToPiece[8] = "BlackBishop";
-        pieceCodeToPiece[9]  = "BlackRook";
-        pieceCodeToPiece[10] = "BlackQueen";
-        pieceCodeToPiece[11] = "BlackKing";
+        pieceCodeToPiece[0] = "White Pawn";
+        pieceCodeToPiece[1] = "White Knight";
+        pieceCodeToPiece[2] = "White Bishop";
+        pieceCodeToPiece[3] = "White Rook";
+        pieceCodeToPiece[4] = "White Queen";
+        pieceCodeToPiece[5] = "White King";
+        pieceCodeToPiece[6] = "Black Pawn";
+        pieceCodeToPiece[7] = "Black Knight";
+        pieceCodeToPiece[8] = "Black Bishop";
+        pieceCodeToPiece[9]  = "Black Rook";
+        pieceCodeToPiece[10] = "Black Queen";
+        pieceCodeToPiece[11] = "Black King";
     }
 }
