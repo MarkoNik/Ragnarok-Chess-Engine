@@ -2,10 +2,9 @@ package engine.core.state;
 
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
-import engine.util.perft.PerftDriver;
-import engine.util.bits.BitboardFenParser;
-import engine.util.bits.BitboardMoveGenerator;
 import engine.util.bits.MoveEncoder;
+import engine.util.bits.MoveGenerator;
+import engine.util.perft.PerftDriver;
 import uci.command.GoCommandWrapper;
 
 import java.util.Map;
@@ -18,16 +17,17 @@ public class EngineState {
     private Map<String, String> configMap;
     private int bestMove;
     private BitboardHelper bitboardHelper;
-    private BitboardMoveGenerator moveGenerator;
+    private MoveGenerator moveGenerator;
 
     public EngineState() {
         bitboardHelper = new BitboardHelper();
-        moveGenerator = new BitboardMoveGenerator(bitboardHelper);
+        moveGenerator = new MoveGenerator(bitboardHelper);
     }
 
     public void search(GoCommandWrapper goCommandWrapper) {
         if (goCommandWrapper.perftDepth != -1) {
-            runPerftTest(goCommandWrapper.perftDepth);
+            PerftDriver perftDriver = new PerftDriver(this, gameState, moveGenerator);
+            perftDriver.runPerftTest(goCommandWrapper.perftDepth);
             return;
         }
 
@@ -42,30 +42,6 @@ public class EngineState {
         bestMove = legalMoves[rand.nextInt(moveCount)];
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
-    }
-
-    private void runPerftTest(int depth) {
-        long startTime = System.currentTimeMillis();
-        PerftDriver driver = new PerftDriver(this, gameState);
-        moveGenerator.setBitboard(gameState.getBitboard());
-        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn()).clone();
-        int moveCount = moveGenerator.getMoveCounter();
-        moveGenerator.clearMoves();
-        long total = 0;
-        for (int i = 0; i < moveCount; i++) {
-            gameState.getBitboard().backupState();
-            gameState.playMove(legalMoves[i]);
-            driver.runTest(depth - 1);
-            total += driver.getNodes();
-            System.out.println(BitboardFenParser.moveToAlgebraic(legalMoves[i]) + ": " + driver.getNodes());
-            driver.resetNodes();
-            gameState.getBitboard().restoreState();
-            gameState.switchPlayer();
-        }
-        System.out.println("\n" + total);
-        long endTime = System.currentTimeMillis();
-        long elapsedTime = endTime - startTime;
-        System.out.println("Elapsed time: " + (double) elapsedTime / 1000);
     }
 
     public int[] generateLegalMoves() {

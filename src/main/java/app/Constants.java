@@ -30,12 +30,12 @@ public class Constants {
     public static final int WHITE_QUEENSIDE_CASTLES_SQUARE = 58;
     public static final int BLACK_KINGSIDE_CASTLES_SQUARE = 6;
     public static final int BLACK_QUEENSIDE_CASTLES_SQUARE = 2;
-    public static final int WHITE_KINGSIDE_ROOK = 63;
-    public static final int WHITE_QUEENSIDE_ROOK = 56;
-    public static final int BLACK_KINGSIDE_ROOK = 7;
-    public static final int BLACK_QUEENSIDE_ROOK = 0;
-    public static final int WHITE_KING = 60;
-    public static final int BLACK_KING = 4;
+    public static final int WHITE_KINGSIDE_ROOK_POSITION = 63;
+    public static final int WHITE_QUEENSIDE_ROOK_POSITION = 56;
+    public static final int BLACK_KINGSIDE_ROOK_POSITION = 7;
+    public static final int BLACK_QUEENSIDE_ROOK_POSITION = 0;
+    public static final int WHITE_KING_POSITION = 60;
+    public static final int BLACK_KING_POSITION = 4;
     public static final int ILLEGAL = -1;
 
     // https://www.stmintz.com/ccc/index.php?id=424966

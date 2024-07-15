@@ -6,67 +6,53 @@ import java.util.Map;
 public class Piece {
 
     // Piece types
-    public static final byte None = 0;
-    public static final byte Pawn = 1;
-    public static final byte Knight = 2;
-    public static final byte Bishop = 3;
-    public static final byte Rook = 4;
-    public static final byte Queen = 5;
-    public static final byte King = 6;
-    public static final byte MaxPiece = 12;
+    public static final byte NONE = 0;
+    public static final byte PAWN = 1;
+    public static final byte KNIGHT = 2;
+    public static final byte BISHOP = 3;
+    public static final byte ROOK = 4;
+    public static final byte QUEEN = 5;
+    public static final byte KING = 6;
 
     // Pieces
-    public static final byte WhitePawn = 0;      // 1
-    public static final byte WhiteKnight = 1;  // 2
-    public static final byte WhiteBishop = 2;  // 3
-    public static final byte WhiteRook = 3;      // 4
-    public static final byte WhiteQueen = 4;    // 5
-    public static final byte WhiteKing = 5;      // 6
+    public static final byte WHITE_PAWN = 0;      // 1
+    public static final byte WHITE_KNIGHT = 1;  // 2
+    public static final byte WHITE_BISHOP = 2;  // 3
+    public static final byte WHITE_ROOK = 3;      // 4
+    public static final byte WHITE_QUEEN = 4;    // 5
+    public static final byte WHITE_KING = 5;      // 6
 
-    public static final byte BlackPawn = 6;      // 9
-    public static final byte BlackKnight = 7;  // 10
-    public static final byte BlackBishop = 8;  // 11
-    public static final byte BlackRook = 9;      // 12
-    public static final byte BlackQueen = 10;    // 13
-    public static final byte BlackKing = 11;      // 14
+    public static final byte BLACK_PAWN = 6;      // 9
+    public static final byte BLACK_KNIGHT = 7;  // 10
+    public static final byte BLACK_BISHOP = 8;  // 11
+    public static final byte BLACK_ROOK = 9;      // 12
+    public static final byte BLACK_QUEEN = 10;    // 13
+    public static final byte BLACK_KING = 11;      // 14
+    public static final byte MAX_PIECE = 12;
 
-    public static String[] pieceCodeToPiece = new String[MaxPiece];
-
-    public static final byte typeMask = 0b0111;
-    public static final byte colourFlag = 0b1000;
-    public static final byte castlesFlag = 0b10000;
-    public static final byte enPassantFlag = 0b100000;
-    public static final byte pinnedFlag = 0b1000000;
-
-    public static boolean isWhitePiece(byte piece) {
-        return piece != None && piece != MaxPiece && (piece & Piece.colourFlag) == 0;
-    }
-
-    public static boolean isBlackPiece(byte piece) {
-        return piece != None && piece != MaxPiece && (piece & Piece.colourFlag) != 0;
-    }
+    public static String[] pieceCodeToPiece = new String[MAX_PIECE];
 
     public static final Map<Character, Byte> pieceMap = new HashMap<>();
 
     static {
         // White pieces
-        pieceMap.put('P', Piece.WhitePawn);
-        pieceMap.put('N', Piece.WhiteKnight);
-        pieceMap.put('B', Piece.WhiteBishop);
-        pieceMap.put('R', Piece.WhiteRook);
-        pieceMap.put('Q', Piece.WhiteQueen);
-        pieceMap.put('K', Piece.WhiteKing);
+        pieceMap.put('P', Piece.WHITE_PAWN);
+        pieceMap.put('N', Piece.WHITE_KNIGHT);
+        pieceMap.put('B', Piece.WHITE_BISHOP);
+        pieceMap.put('R', Piece.WHITE_ROOK);
+        pieceMap.put('Q', Piece.WHITE_QUEEN);
+        pieceMap.put('K', Piece.WHITE_KING);
 
         // Black pieces
-        pieceMap.put('p', Piece.BlackPawn);
-        pieceMap.put('n', Piece.BlackKnight);
-        pieceMap.put('b', Piece.BlackBishop);
-        pieceMap.put('r', Piece.BlackRook);
-        pieceMap.put('q', Piece.BlackQueen);
-        pieceMap.put('k', Piece.BlackKing);
+        pieceMap.put('p', Piece.BLACK_PAWN);
+        pieceMap.put('n', Piece.BLACK_KNIGHT);
+        pieceMap.put('b', Piece.BLACK_BISHOP);
+        pieceMap.put('r', Piece.BLACK_ROOK);
+        pieceMap.put('q', Piece.BLACK_QUEEN);
+        pieceMap.put('k', Piece.BLACK_KING);
 
         // Empty squares
-        pieceMap.put(' ', Piece.None);
+        pieceMap.put(' ', Piece.NONE);
 
         pieceCodeToPiece[0] = "WhitePawn";
         pieceCodeToPiece[1] = "WhiteKnight";

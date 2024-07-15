@@ -78,8 +78,8 @@ public class MoveEncoder {
         int captureFlag = extractCaptureFlag(move);
         StringBuilder sb = new StringBuilder();
         sb.append("Move:\n")
-                .append("from: " + BitboardFenParser.indexToAlgebraic(from))
-                .append(" | to: " + BitboardFenParser.indexToAlgebraic(to))
+                .append("from: " + FenParser.indexToAlgebraic(from))
+                .append(" | to: " + FenParser.indexToAlgebraic(to))
                 .append(" | piece: " + Piece.pieceCodeToPiece[piece])
                 .append(" | promotionPiece: " + Piece.pieceCodeToPiece[promotionPiece])
                 .append(" | doublePush: " + doublePushFlag)

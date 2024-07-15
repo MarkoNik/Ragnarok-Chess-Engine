@@ -3,7 +3,7 @@ package uci.command;
 import app.Constants;
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
-import engine.util.bits.BitboardFenParser;
+import engine.util.bits.FenParser;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -25,9 +25,9 @@ public class PositionCommand implements Command {
 
     @Override
     public int execute(EngineState engineState) {
-        GameState newState = BitboardFenParser.parseFEN(position);
+        GameState newState = FenParser.parseFEN(position);
         if (moves != null) {
-            newState.playUciMoves(Arrays.stream(moves).map(BitboardFenParser::parseUciMove).collect(Collectors.toList()));
+            newState.playUciMoves(Arrays.stream(moves).map(FenParser::parseUciMove).collect(Collectors.toList()));
         }
         newState.logState();
         engineState.setGameState(newState);

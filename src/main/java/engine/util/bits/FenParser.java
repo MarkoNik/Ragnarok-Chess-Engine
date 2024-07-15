@@ -8,7 +8,7 @@ import engine.core.state.GameState;
 
 import static app.Constants.*;
 
-public class BitboardFenParser {
+public class FenParser {
     public static GameState parseFEN(String fenString) {
         String[] parts = fenString.split(" ");
 
@@ -98,10 +98,10 @@ public class BitboardFenParser {
         // Check for pawn promotion
         if (move.length() == 5) {
             char promotionPieceChar = move.charAt(4);
-            if (promotionPieceChar == 'q') promotionPiece = Piece.Queen;
-            if (promotionPieceChar == 'r') promotionPiece = Piece.Rook;
-            if (promotionPieceChar == 'b') promotionPiece = Piece.Bishop;
-            if (promotionPieceChar == 'n') promotionPiece = Piece.Knight;
+            if (promotionPieceChar == 'q') promotionPiece = Piece.QUEEN;
+            if (promotionPieceChar == 'r') promotionPiece = Piece.ROOK;
+            if (promotionPieceChar == 'b') promotionPiece = Piece.BISHOP;
+            if (promotionPieceChar == 'n') promotionPiece = Piece.KNIGHT;
         }
 
         return new UciMove(from, to, castlesFlag, potentialDoublePushFlag, promotionPiece);
@@ -129,16 +129,16 @@ public class BitboardFenParser {
         String promotionPiece = "";
         int promotionPieceCode = MoveEncoder.extractPromotionPiece(move);
         if (MoveEncoder.extractPromotionPiece(move) != 0) {
-            if (promotionPieceCode == Piece.WhiteQueen || promotionPieceCode == Piece.BlackQueen) {
+            if (promotionPieceCode == Piece.WHITE_QUEEN || promotionPieceCode == Piece.BLACK_QUEEN) {
                 promotionPiece = "q";
             }
-            if (promotionPieceCode == Piece.WhiteRook || promotionPieceCode == Piece.BlackRook) {
+            if (promotionPieceCode == Piece.WHITE_ROOK || promotionPieceCode == Piece.BLACK_ROOK) {
                 promotionPiece = "r";
             }
-            if (promotionPieceCode == Piece.WhiteBishop || promotionPieceCode == Piece.BlackBishop) {
+            if (promotionPieceCode == Piece.WHITE_BISHOP || promotionPieceCode == Piece.BLACK_BISHOP) {
                 promotionPiece = "b";
             }
-            if (promotionPieceCode == Piece.WhiteKnight || promotionPieceCode == Piece.BlackKnight) {
+            if (promotionPieceCode == Piece.WHITE_KNIGHT || promotionPieceCode == Piece.BLACK_KNIGHT) {
                 promotionPiece = "n";
             }
         }

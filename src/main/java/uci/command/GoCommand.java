@@ -1,7 +1,7 @@
 package uci.command;
 
 import engine.core.state.EngineState;
-import engine.util.bits.BitboardFenParser;
+import engine.util.bits.FenParser;
 import uci.Cli;
 
 import java.util.Arrays;
@@ -89,7 +89,7 @@ public class GoCommand implements Command {
         if (goCommandWrapper.perftDepth != -1) return 0;
 
         int bestMove = engineState.getBestMove();
-        Cli.sendCommand("bestmove " + BitboardFenParser.moveToAlgebraic(bestMove));
+        Cli.sendCommand("bestmove " + FenParser.moveToAlgebraic(bestMove));
         return 0;
     }
 }

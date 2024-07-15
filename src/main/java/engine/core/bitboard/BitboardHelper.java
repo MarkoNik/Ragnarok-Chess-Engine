@@ -53,8 +53,9 @@ public class BitboardHelper {
     public final long[][] bishopAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
     public final long[][] rookAttacksWithBlockers = new long[BOARD_SIZE][MAXIMUM_BLOCKING_PIECES_MASK];
 
-    public final MagicContainer[] bishopMagics = new MagicContainer[BOARD_SIZE];
-    public final MagicContainer[] rookMagics = new MagicContainer[BOARD_SIZE];
+    public record MagicRecord(long magicNumber, long[] attackMap) {}
+    public final MagicRecord[] bishopMagics = new MagicRecord[BOARD_SIZE];
+    public final MagicRecord[] rookMagics = new MagicRecord[BOARD_SIZE];
 
     public BitboardHelper() {
         fillAttackTables();
@@ -90,15 +91,15 @@ public class BitboardHelper {
         //generateMagics();
 
         // Fill in magic containers from hardcoded magic constants
-        fillMagicContainers();
+        initializeMagicRecords();
     }
 
 
     private int magicHash(int square, long relevantOccupancy, int relevantBits, byte piece) {
-        if (piece == Piece.Bishop) {
+        if (piece == Piece.BISHOP) {
             return (int)((relevantOccupancy * MagicConstants.bishopMagics[square]) >>> (BOARD_SIZE - relevantBits));
         }
-        else if (piece == Piece.Rook) {
+        else if (piece == Piece.ROOK) {
             return (int)((relevantOccupancy * MagicConstants.rookMagics[square]) >>> (BOARD_SIZE - relevantBits));
         }
         else {
@@ -111,25 +112,25 @@ public class BitboardHelper {
      * This function is used to read the magic constants from the MagicConstants class,
      * and to fill in attack maps for bishops and rooks using the said constants.
      */
-    private void fillMagicContainers() {
+    private void initializeMagicRecords() {
         for (int square = 0; square < BOARD_SIZE; square++) {
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             int relevantBits = Long.bitCount(bishopAttacks[square]);
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
-                int magicIndex = magicHash(square, bishopOccupancies[square][i], relevantBits, Piece.Bishop);
+                int magicIndex = magicHash(square, bishopOccupancies[square][i], relevantBits, Piece.BISHOP);
                 attackMap[magicIndex] = bishopAttacksWithBlockers[square][i];
             }
-            bishopMagics[square] = new MagicContainer(MagicConstants.bishopMagics[square], attackMap);
+            bishopMagics[square] = new MagicRecord(MagicConstants.bishopMagics[square], attackMap);
         }
 
         for (int square = 0; square < BOARD_SIZE; square++) {
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             int relevantBits = Long.bitCount(rookAttacks[square]);
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
-                int magicIndex = magicHash(square, rookOccupancies[square][i], relevantBits, Piece.Rook);
+                int magicIndex = magicHash(square, rookOccupancies[square][i], relevantBits, Piece.ROOK);
                 attackMap[magicIndex] = rookAttacksWithBlockers[square][i];
             }
-            rookMagics[square] = new MagicContainer(MagicConstants.rookMagics[square], attackMap);
+            rookMagics[square] = new MagicRecord(MagicConstants.rookMagics[square], attackMap);
         }
 //        System.out.println("Bishop magics");
 //        for (int square = 0; square < 64; square++) {
@@ -153,11 +154,11 @@ public class BitboardHelper {
         }
         System.out.println("Bishop magics");
         for (int square = 0; square < 64; square++) {
-            System.out.println(bishopMagics[square].getMagicNumber()+"L,");
+            System.out.println(bishopMagics[square].magicNumber()+"L,");
         }
         System.out.println("\nRook magics");
         for (int square = 0; square < 64; square++) {
-            System.out.println(rookMagics[square].getMagicNumber()+"L,");
+            System.out.println(rookMagics[square].magicNumber()+"L,");
         }
     }
 
@@ -166,7 +167,7 @@ public class BitboardHelper {
      * @param square The square that the bishop is on
      * @return The class containing the magic constant
      */
-    public MagicContainer generateBishopMagic(int square) {
+    public MagicRecord generateBishopMagic(int square) {
         Random random = new Random();
         int relevantBits = Long.bitCount(bishopAttacks[square]);
 
@@ -186,7 +187,7 @@ public class BitboardHelper {
             }
 
             if (!badCollision) {
-                return new MagicContainer(magicCandidate, attackMap);
+                return new MagicRecord(magicCandidate, attackMap);
             }
         }
         EngineLogger.error("Could not find magic number.");
@@ -198,7 +199,7 @@ public class BitboardHelper {
      * @param square The square that the rook is on
      * @return The class containing the magic constant
      */
-    private MagicContainer generateRookMagic(int square) {
+    private MagicRecord generateRookMagic(int square) {
         Random random = new Random();
         int relevantBits = Long.bitCount(rookAttacks[square]);
 
@@ -218,7 +219,7 @@ public class BitboardHelper {
             }
 
             if (!badCollision) {
-                return new MagicContainer(magicCandidate, attackMap);
+                return new MagicRecord(magicCandidate, attackMap);
             }
         }
         EngineLogger.error("Could not find magic number.");
@@ -466,8 +467,8 @@ public class BitboardHelper {
     public long generateBishopAttacksWithMagics(int square, long occupancy) {
         int relevantBits = Long.bitCount(bishopAttacks[square]);
         long relevantOccupancy = occupancy & bishopAttacks[square];
-        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.Bishop);
-        return bishopMagics[square].getAttackMap()[magicKey];
+        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.BISHOP);
+        return bishopMagics[square].attackMap()[magicKey];
     }
 
     /**
@@ -482,8 +483,8 @@ public class BitboardHelper {
     public long generateRookAttacksWithMagics(int square, long occupancy) {
         int relevantBits = Long.bitCount(rookAttacks[square]);
         long relevantOccupancy = occupancy & rookAttacks[square];
-        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.Rook);
-        return rookMagics[square].getAttackMap()[magicKey];
+        int magicKey = magicHash(square, relevantOccupancy, relevantBits, Piece.ROOK);
+        return rookMagics[square].attackMap()[magicKey];
     }
 
     /**
@@ -496,13 +497,13 @@ public class BitboardHelper {
     public long generateQueenAttacksWithMagics(int square, long occupancy) {
         int bishopRelevantBits = Long.bitCount(bishopAttacks[square]);
         long bishopRelevantOccupancy = occupancy & bishopAttacks[square];
-        int bishopMagicKey = magicHash(square, bishopRelevantOccupancy, bishopRelevantBits, Piece.Bishop);
+        int bishopMagicKey = magicHash(square, bishopRelevantOccupancy, bishopRelevantBits, Piece.BISHOP);
 
         int rookRelevantBits = Long.bitCount(rookAttacks[square]);
         long rookRelevantOccupancy = occupancy & rookAttacks[square];
-        int rookMagicKey = magicHash(square, rookRelevantOccupancy, rookRelevantBits, Piece.Rook);
+        int rookMagicKey = magicHash(square, rookRelevantOccupancy, rookRelevantBits, Piece.ROOK);
 
-        return bishopMagics[square].getAttackMap()[bishopMagicKey] | rookMagics[square].getAttackMap()[rookMagicKey];
+        return bishopMagics[square].attackMap()[bishopMagicKey] | rookMagics[square].attackMap()[rookMagicKey];
     }
 
 

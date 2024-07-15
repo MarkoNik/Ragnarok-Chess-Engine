@@ -2,7 +2,7 @@ package app;
 
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
-import engine.util.bits.BitboardFenParser;
+import engine.util.bits.FenParser;
 import engine.util.bits.MoveEncoder;
 
 import java.util.Scanner;
@@ -16,7 +16,7 @@ public class Perft {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         String fen = scanner.nextLine();
-        gameState = BitboardFenParser.parseFEN(fen);
+        gameState = FenParser.parseFEN(fen);
         engineState = new EngineState();
         engineState.setGameState(gameState);
         try {
