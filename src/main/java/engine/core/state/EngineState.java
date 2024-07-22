@@ -10,6 +10,7 @@ import engine.util.PerftDriver;
 import engine.util.bits.FenParser;
 import uci.command.GoCommandWrapper;
 
+import java.util.List;
 import java.util.Map;
 
 import static app.Constants.INF;
@@ -22,12 +23,14 @@ public class EngineState {
     private int bestMove;
     private final MoveGenerator moveGenerator;
     private final Minimax minimax;
+    private final TranspositionTable transpositionTable;
 
     public EngineState() {
         BitboardHelper bitboardHelper = new BitboardHelper();
         moveGenerator = new MoveGenerator(bitboardHelper);
         Evaluator evaluator = new Evaluator();
-        minimax = new Minimax(moveGenerator, evaluator);
+        transpositionTable = new TranspositionTable();
+        minimax = new Minimax(moveGenerator, evaluator, transpositionTable);
         gameState = FenParser.parseFEN(Constants.INITIAL_FEN);
     }
 
@@ -37,12 +40,23 @@ public class EngineState {
             perftDriver.runPerftTest(goCommandWrapper.perftDepth);
             return;
         }
+        int depth = goCommandWrapper.depth;
+        if (depth == -1) depth = 5;
 
         moveGenerator.setBitboard(gameState.getBitboard());
         minimax.setBitboard(gameState.getBitboard());
-        int eval = minimax.search(5, -INF, INF, gameState.isWhiteTurn());
-        System.out.println("info score cp " + eval);
-        bestMove = minimax.getBestMove();
+
+        int eval = minimax.search(depth, -INF, INF, gameState.isWhiteTurn());
+        System.out.print("info score cp " + eval + " ");
+
+        List<Integer> pv = minimax.getPrincipalVariation(gameState.isWhiteTurn());
+        System.out.print("pv ");
+        for (int move : pv) {
+            System.out.print(FenParser.moveToAlgebraic(move) + " ");
+        }
+        System.out.println();
+
+        bestMove = pv.get(0);
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
     }
