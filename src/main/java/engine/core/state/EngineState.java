@@ -1,11 +1,13 @@
 package engine.core.state;
 
+import app.Constants;
 import app.UciLogger;
 import engine.core.bitboard.BitboardHelper;
 import engine.search.Evaluator;
 import engine.search.Minimax;
 import engine.search.MoveGenerator;
-import engine.util.perft.PerftDriver;
+import engine.util.PerftDriver;
+import engine.util.bits.FenParser;
 import uci.command.GoCommandWrapper;
 
 import java.util.Map;
@@ -18,16 +20,15 @@ public class EngineState {
     // TODO make a set of available configuration parameters and their values
     private Map<String, String> configMap;
     private int bestMove;
-    private BitboardHelper bitboardHelper;
-    private MoveGenerator moveGenerator;
-    private Evaluator evaluator;
-    private Minimax minimax;
+    private final MoveGenerator moveGenerator;
+    private final Minimax minimax;
 
     public EngineState() {
-        bitboardHelper = new BitboardHelper();
+        BitboardHelper bitboardHelper = new BitboardHelper();
         moveGenerator = new MoveGenerator(bitboardHelper);
-        evaluator = new Evaluator();
+        Evaluator evaluator = new Evaluator();
         minimax = new Minimax(moveGenerator, evaluator);
+        gameState = FenParser.parseFEN(Constants.INITIAL_FEN);
     }
 
     public void search(GoCommandWrapper goCommandWrapper) {
@@ -39,7 +40,8 @@ public class EngineState {
 
         moveGenerator.setBitboard(gameState.getBitboard());
         minimax.setBitboard(gameState.getBitboard());
-        minimax.search(6, -INF, INF, gameState.isWhiteTurn());
+        int eval = minimax.search(5, -INF, INF, gameState.isWhiteTurn());
+        System.out.println("info score cp " + eval);
         bestMove = minimax.getBestMove();
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
@@ -47,8 +49,7 @@ public class EngineState {
 
     public int[] generateLegalMoves() {
         moveGenerator.setBitboard(gameState.getBitboard());
-        int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
-        return legalMoves;
+        return moveGenerator.generateLegalMoves(gameState.isWhiteTurn());
     }
 
     public int getMoveCounter() {

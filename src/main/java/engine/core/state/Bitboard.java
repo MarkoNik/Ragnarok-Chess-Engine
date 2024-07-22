@@ -3,6 +3,7 @@ package engine.core.state;
 import app.EngineLogger;
 import engine.core.entity.Piece;
 import engine.core.entity.UciMove;
+import engine.util.Zobrist;
 import engine.util.bits.BitUtils;
 import engine.util.bits.MoveEncoder;
 
@@ -23,13 +24,15 @@ public class Bitboard {
      */
     private byte castlesFlags = 0;
     private int enPassantSquare = 0;
+    private long hash;
 
-    private static final int BACKUP_STACK_SIZE = 50000;
+    private static final int BACKUP_STACK_SIZE = 1024;
 
     private final long[][] piecesBackup = new long[BACKUP_STACK_SIZE][PIECE_TYPES];
     private final long[][] occupanciesBackup = new long[BACKUP_STACK_SIZE][OCCUPANCY_TYPES];
     private final byte[] castlesFlagsBackup = new byte[BACKUP_STACK_SIZE];
     private final int[] enPassantSquareBackup = new int[BACKUP_STACK_SIZE];
+    private final long[] hashBackup = new long[BACKUP_STACK_SIZE];
     private int backupStackPointer = 0;
 
     public void setPiece(int square, char piece) {
@@ -60,10 +63,14 @@ public class Bitboard {
             pieces[piece] = BitUtils.popBit(pieces[piece], from);
             pieces[piece] = BitUtils.setBit(pieces[piece], to);
 
+            hash ^= Zobrist.pieceKeys[piece][from];
+            hash ^= Zobrist.pieceKeys[piece][to];
+
             if (isWhiteTurn) {
                 occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], from);
                 occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], to);
                 if (castlesFlags != 0) {
+                    hash ^= Zobrist.castlesFlagsKeys[castlesFlags];
                     if (from == WHITE_KINGSIDE_ROOK_POSITION) {
                         castlesFlags &= 0b1110;
                     }
@@ -79,12 +86,14 @@ public class Bitboard {
                     if (from == WHITE_KING_POSITION) {
                         castlesFlags &= 0b1100;
                     }
+                    hash ^= Zobrist.castlesFlagsKeys[castlesFlags];
                 }
             }
             else {
                 occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], from);
                 occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], to);
                 if (castlesFlags != 0) {
+                    hash ^= Zobrist.castlesFlagsKeys[castlesFlags];
                     if (from == BLACK_KINGSIDE_ROOK_POSITION) {
                         castlesFlags &= 0b1011;
                     }
@@ -100,6 +109,7 @@ public class Bitboard {
                     if (from == BLACK_KING_POSITION) {
                         castlesFlags &= 0b0011;
                     }
+                    hash ^= Zobrist.castlesFlagsKeys[castlesFlags];
                 }
             }
 
@@ -109,6 +119,7 @@ public class Bitboard {
                     for (int i = WHITE_PIECE_TYPES; i < PIECE_TYPES; i++) {
                         if (BitUtils.getBit(pieces[i], to)) {
                             pieces[i] = BitUtils.popBit(pieces[i], to);
+                            hash ^= Zobrist.pieceKeys[i][to];
                             break;
                         }
                     }
@@ -119,6 +130,7 @@ public class Bitboard {
                     for (int i = 0; i < WHITE_PIECE_TYPES; i++) {
                         if (BitUtils.getBit(pieces[i], to)) {
                             pieces[i] = BitUtils.popBit(pieces[i], to);
+                            hash ^= Zobrist.pieceKeys[i][to];
                             break;
                         }
                     }
@@ -129,6 +141,8 @@ public class Bitboard {
             if (promotionPiece != 0) {
                 pieces[piece] = BitUtils.popBit(pieces[piece], to);
                 pieces[promotionPiece] = BitUtils.setBit(pieces[promotionPiece], to);
+                hash ^= Zobrist.pieceKeys[piece][to];
+                hash ^= Zobrist.pieceKeys[promotionPiece][to];
             }
 
             if (castlesFlag != 0) {
@@ -137,24 +151,32 @@ public class Bitboard {
                     pieces[WHITE_ROOK] = BitUtils.setBit(pieces[WHITE_ROOK], WHITE_KINGSIDE_CASTLES_SQUARE - 1);
                     occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], WHITE_KINGSIDE_ROOK_POSITION);
                     occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], WHITE_KINGSIDE_CASTLES_SQUARE - 1);
+                    hash ^= Zobrist.pieceKeys[WHITE_ROOK][WHITE_KINGSIDE_ROOK_POSITION];
+                    hash ^= Zobrist.pieceKeys[WHITE_ROOK][WHITE_KINGSIDE_CASTLES_SQUARE - 1];
                 }
                 if (to == WHITE_QUEENSIDE_CASTLES_SQUARE) {
                     pieces[WHITE_ROOK] = BitUtils.popBit(pieces[WHITE_ROOK], WHITE_QUEENSIDE_ROOK_POSITION);
                     pieces[WHITE_ROOK] = BitUtils.setBit(pieces[WHITE_ROOK], WHITE_QUEENSIDE_CASTLES_SQUARE + 1);
                     occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], WHITE_QUEENSIDE_ROOK_POSITION);
                     occupancies[WHITE] = BitUtils.setBit(occupancies[WHITE], WHITE_QUEENSIDE_CASTLES_SQUARE + 1);
+                    hash ^= Zobrist.pieceKeys[WHITE_ROOK][WHITE_QUEENSIDE_ROOK_POSITION];
+                    hash ^= Zobrist.pieceKeys[WHITE_ROOK][WHITE_QUEENSIDE_CASTLES_SQUARE + 1];
                 }
                 if (to == BLACK_KINGSIDE_CASTLES_SQUARE) {
                     pieces[BLACK_ROOK] = BitUtils.popBit(pieces[BLACK_ROOK], BLACK_KINGSIDE_ROOK_POSITION);
                     pieces[BLACK_ROOK] = BitUtils.setBit(pieces[BLACK_ROOK], BLACK_KINGSIDE_CASTLES_SQUARE - 1);
                     occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], BLACK_KINGSIDE_ROOK_POSITION);
                     occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], BLACK_KINGSIDE_CASTLES_SQUARE - 1);
+                    hash ^= Zobrist.pieceKeys[BLACK_ROOK][BLACK_KINGSIDE_ROOK_POSITION];
+                    hash ^= Zobrist.pieceKeys[BLACK_ROOK][BLACK_KINGSIDE_CASTLES_SQUARE - 1];
                 }
                 if (to == BLACK_QUEENSIDE_CASTLES_SQUARE) {
                     pieces[BLACK_ROOK] = BitUtils.popBit(pieces[BLACK_ROOK], BLACK_QUEENSIDE_ROOK_POSITION);
                     pieces[BLACK_ROOK] = BitUtils.setBit(pieces[BLACK_ROOK], BLACK_QUEENSIDE_CASTLES_SQUARE + 1);
                     occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], BLACK_QUEENSIDE_ROOK_POSITION);
                     occupancies[BLACK] = BitUtils.setBit(occupancies[BLACK], BLACK_QUEENSIDE_CASTLES_SQUARE + 1);
+                    hash ^= Zobrist.pieceKeys[BLACK_ROOK][BLACK_QUEENSIDE_ROOK_POSITION];
+                    hash ^= Zobrist.pieceKeys[BLACK_ROOK][BLACK_QUEENSIDE_CASTLES_SQUARE + 1];
                 }
             }
 
@@ -162,20 +184,39 @@ public class Bitboard {
                 if (isWhiteTurn) {
                     pieces[BLACK_PAWN] = BitUtils.popBit(pieces[BLACK_PAWN], enPassantSquare);
                     occupancies[BLACK] = BitUtils.popBit(occupancies[BLACK], enPassantSquare);
+                    hash ^= Zobrist.pieceKeys[BLACK_PAWN][enPassantSquare];
                 }
                 else {
                     pieces[WHITE_PAWN] = BitUtils.popBit(pieces[WHITE_PAWN], enPassantSquare);
                     occupancies[WHITE] = BitUtils.popBit(occupancies[WHITE], enPassantSquare);
+                    hash ^= Zobrist.pieceKeys[WHITE_PAWN][enPassantSquare];
                 }
             }
 
             if (doublePushFlag != 0) {
+                if (enPassantSquare != -1) {
+                    hash ^= Zobrist.enPassantKeys[enPassantSquare];
+                }
                 enPassantSquare = to;
+                hash ^= Zobrist.enPassantKeys[enPassantSquare];
             } else {
-                enPassantSquare = -1;
+                if (enPassantSquare != -1) {
+                    hash ^= Zobrist.enPassantKeys[enPassantSquare];
+                    enPassantSquare = -1;
+                }
             }
 
             occupancies[BOTH] = occupancies[WHITE] | occupancies[BLACK];
+            hash ^= Zobrist.sidesKey;
+
+//            // check if incremental Zobrist hash is correct
+//            long fullHash = Zobrist.generateHash(this, !isWhiteTurn);
+//            if (hash != fullHash) {
+//                logBoardState();
+//                MoveEncoder.logMove(move);
+//                EngineLogger.error("Incremental hash: " + hash + " should be: " + fullHash);
+//                Zobrist.logError(hash, fullHash);
+//            }
         }
     }
 
@@ -240,6 +281,7 @@ public class Bitboard {
         occupanciesBackup[backupStackPointer] = occupancies.clone();
         castlesFlagsBackup[backupStackPointer] = castlesFlags;
         enPassantSquareBackup[backupStackPointer] = enPassantSquare;
+        hashBackup[backupStackPointer] = hash;
         backupStackPointer++;
     }
 
@@ -249,6 +291,7 @@ public class Bitboard {
         occupancies = occupanciesBackup[backupStackPointer];
         castlesFlags = castlesFlagsBackup[backupStackPointer];
         enPassantSquare = enPassantSquareBackup[backupStackPointer];
+        hash = hashBackup[backupStackPointer];
     }
 
     public void logBoardState() {
@@ -272,6 +315,7 @@ public class Bitboard {
             sb.append("\n");
         }
         sb.append("\n       a b c d e f g h\n");
+        sb.append("\nHash: ").append(hash).append("\n");
         EngineLogger.debug(sb.toString());
 //        logBitboards();
     }
@@ -281,6 +325,14 @@ public class Bitboard {
             EngineLogger.debug("Piece bitboard: " + Piece.pieceCodeToPiece[i]);
             BitUtils.logBitboard(pieces[i]);
         }
+    }
+
+    public void generateHash(boolean isWhiteTurn) {
+        hash = Zobrist.generateHash(this, isWhiteTurn);
+    }
+
+    public long getHash() {
+        return hash;
     }
 
     public long[] getPieces() {

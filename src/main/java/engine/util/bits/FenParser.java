@@ -47,6 +47,9 @@ public class FenParser {
         // Fullmove number
         int fullmoveNumber = parts.length < 6 ? INF : Integer.parseInt(parts[5]);
 
+        // Generate Zobrist hash
+        bitboard.generateHash(isWhiteTurn);
+
         return new GameState(bitboard, isWhiteTurn, halfmoveClock, fullmoveNumber);
     }
 

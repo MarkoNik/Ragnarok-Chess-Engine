@@ -43,5 +43,5 @@ public class Constants {
     // white occupancies, black occupancies, both occupancies
     public static final int OCCUPANCY_TYPES = 3;
 
-    public static final boolean USE_LOGGER = false;
+    public static final boolean USE_LOGGER = true;
 }

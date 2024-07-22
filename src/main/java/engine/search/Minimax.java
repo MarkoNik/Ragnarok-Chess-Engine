@@ -20,7 +20,8 @@ public class Minimax {
 
     public int search(int depth, int alpha, int beta, boolean isWhiteTurn) {
         if (depth == 0) {
-            return (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+            int eval = (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+            return eval;
         }
 
         int previousAlpha = alpha;
@@ -51,13 +52,13 @@ public class Minimax {
             }
         }
 
-        // checkmate and stalemate handling
         boolean check = moveGenerator.isKingInCheck(isWhiteTurn);
         if (moveCounter == 0) {
             if (check) {
                 return -CHECKMATE_VALUE + ply;
+            } else {
+                return 0;
             }
-            else return 0;
         }
 
         if (previousAlpha != alpha) {

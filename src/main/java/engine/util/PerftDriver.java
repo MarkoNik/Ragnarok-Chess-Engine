@@ -1,17 +1,15 @@
-package engine.util.perft;
+package engine.util;
 
 import engine.core.state.EngineState;
 import engine.core.state.GameState;
-import engine.util.bits.FenParser;
 import engine.search.MoveGenerator;
+import engine.util.bits.FenParser;
 
 public class PerftDriver {
     private long nodes = 0;
     private EngineState engineState;
     private GameState gameState;
     private MoveGenerator moveGenerator;
-//    private int[] moveStack = new int[10000];
-//    private int moveStackTop = 0;
 
     public PerftDriver(EngineState engineState, GameState gameState, MoveGenerator moveGenerator) {
         this.engineState = engineState;
@@ -21,10 +19,12 @@ public class PerftDriver {
 
     public void runPerftTest(int depth) {
         long startTime = System.currentTimeMillis();
+
         moveGenerator.setBitboard(gameState.getBitboard());
         int[] legalMoves = moveGenerator.generateLegalMoves(gameState.isWhiteTurn()).clone();
         int moveCount = moveGenerator.getMoveCounter();
         moveGenerator.clearMoves();
+
         long total = 0;
         for (int i = 0; i < moveCount; i++) {
             gameState.getBitboard().backupState();
@@ -36,6 +36,7 @@ public class PerftDriver {
             gameState.getBitboard().restoreState();
             gameState.switchPlayer();
         }
+
         System.out.println("\nTotal nodes searched: " + total);
         long endTime = System.currentTimeMillis();
         double elapsedTime = (double) (endTime - startTime) / 1000;
@@ -51,11 +52,6 @@ public class PerftDriver {
 
         int[] moves = engineState.generateLegalMoves().clone();
         int moveCounter = engineState.getMoveCounter();
-//        System.out.println("moveStackTop: " + moveStackTop);
-//        for (int i = 0; i < moveStackTop; i++) {
-//            MoveEncoder.logMove(moveStack[i]);
-//        }
-//        System.out.println();
         engineState.clearMoves();
 
 //        if (depth == 1) {
@@ -64,13 +60,25 @@ public class PerftDriver {
 //        }
 
         for (int i = 0; i < moveCounter; i++) {
-//            moveStack[moveStackTop++] = moves[i];
+
             gameState.getBitboard().backupState();
             gameState.playMove(moves[i]);
 
+//            long incrementalHash = gameState.getBitboard().getHash();
+//            gameState.getBitboard().generateHash(gameState.isWhiteTurn());
+//            long fullHash = gameState.getBitboard().getHash();
+//
+//            if (incrementalHash != fullHash) {
+//                EngineLogger.error("Incremental hashing error!"
+//                        + "\nIncremental hash: " + incrementalHash
+//                        + "\nFull hash: " + fullHash
+//                        + "\nDepth: " + depth);
+//                MoveEncoder.logMove(moves[i]);
+//                Zobrist.logError(incrementalHash, fullHash);
+//            }
+
             search(depth -1);
 
-//            moveStackTop--;
             gameState.getBitboard().restoreState();
             gameState.switchPlayer();
         }
