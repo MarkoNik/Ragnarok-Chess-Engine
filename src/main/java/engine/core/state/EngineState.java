@@ -6,6 +6,7 @@ import engine.core.bitboard.BitboardHelper;
 import engine.search.Evaluator;
 import engine.search.Minimax;
 import engine.search.MoveGenerator;
+import engine.search.MoveOrderer;
 import engine.util.PerftDriver;
 import engine.util.bits.FenParser;
 import uci.command.GoCommandWrapper;
@@ -30,33 +31,51 @@ public class EngineState {
         moveGenerator = new MoveGenerator(bitboardHelper);
         Evaluator evaluator = new Evaluator();
         transpositionTable = new TranspositionTable();
-        minimax = new Minimax(moveGenerator, evaluator, transpositionTable);
+        MoveOrderer moveOrderer = new MoveOrderer();
+        minimax = new Minimax(moveGenerator, evaluator, transpositionTable, moveOrderer);
         gameState = FenParser.parseFEN(Constants.INITIAL_FEN);
     }
 
     public void search(GoCommandWrapper goCommandWrapper) {
+        // run perft test
         if (goCommandWrapper.perftDepth != -1) {
             PerftDriver perftDriver = new PerftDriver(this, gameState, moveGenerator);
             perftDriver.runPerftTest(goCommandWrapper.perftDepth);
             return;
         }
-        int depth = goCommandWrapper.depth;
-        if (depth == -1) depth = 5;
 
         moveGenerator.setBitboard(gameState.getBitboard());
         minimax.setBitboard(gameState.getBitboard());
 
-        int eval = minimax.search(depth, -INF, INF, gameState.isWhiteTurn());
+        int depth = goCommandWrapper.depth;
+        if (depth == -1) {
+            depth = INF;
+        }
+
+        // interrupt search in 3 seconds
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000);
+                minimax.interruptSearch();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+        var searchStats = minimax.initiateSearch(depth, gameState.isWhiteTurn());
+        searchStats.logSearchStats();
+
+        int eval = minimax.getBestEval();
         System.out.print("info score cp " + eval + " ");
 
-        List<Integer> pv = minimax.getPrincipalVariation(gameState.isWhiteTurn());
+        List<Integer> pv = minimax.getPrincipalVariation(depth, gameState.isWhiteTurn());
         System.out.print("pv ");
         for (int move : pv) {
             System.out.print(FenParser.moveToAlgebraic(move) + " ");
         }
         System.out.println();
 
-        bestMove = pv.get(0);
+        bestMove = minimax.getBestMove();
+        gameState.getBitboard().backupState();
         gameState.playMove(bestMove);
         moveGenerator.clearMoves();
     }
@@ -90,5 +109,17 @@ public class EngineState {
 
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public GameState getGameState() {
+        return gameState;
+    }
+
+    public void logTTEntry() {
+        transpositionTable.logTTEntry(gameState.getBitboard().getHash());
+    }
+
+    public void clearTT() {
+        transpositionTable.clear();
     }
 }

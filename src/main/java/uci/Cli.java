@@ -10,9 +10,9 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class Cli implements Runnable {
-    private static BufferedReader cliInput = new BufferedReader(new InputStreamReader(System.in));
-    private static PrintWriter cliOutput = new PrintWriter(new OutputStreamWriter(System.out), true);
-    private EngineState engineState;
+    private static final BufferedReader cliInput = new BufferedReader(new InputStreamReader(System.in));
+    private static final PrintWriter cliOutput = new PrintWriter(new OutputStreamWriter(System.out), true);
+    private final EngineState engineState;
 
     public Cli(EngineState engineState) {
         this.engineState = engineState;
@@ -69,6 +69,12 @@ public class Cli implements Runnable {
         }
         else if (line.startsWith("quit")) {
             command = new QuitCommand();
+        }
+        else if (line.startsWith("make")) {
+            command = new MakeMoveCommand(line);
+        }
+        else if (line.startsWith("unmake")) {
+            command = new UnmakeMoveCommand();
         }
         return command.execute(engineState);
     }

@@ -8,9 +8,10 @@ import engine.util.bits.BitUtils;
 import java.util.Random;
 
 import static app.Constants.*;
+import static engine.core.entity.Piece.PIECE_TYPES;
 
 public class Zobrist {
-    private static final long seed = 1938572522059324482L;
+    private static final long seed = 0;
     public static final long[][] pieceKeys = new long[PIECE_TYPES][BOARD_SIZE];
     public static final long[] enPassantKeys = new long[BOARD_SIZE];
     public static final long[] castlesFlagsKeys = new long[ALL_CASTLES_MASK + 1];

@@ -20,24 +20,26 @@ public class Piece {
     public static final int ROOK_VALUE = 500;
     public static final int QUEEN_VALUE = 900;
     public static final int KING_VALUE = 40000;
+    public static final int CHECKMATE_VALUE = KING_VALUE + 10 * QUEEN_VALUE;
 
     // Pieces
-    public static final byte WHITE_PAWN = 0;      // 1
-    public static final byte WHITE_KNIGHT = 1;  // 2
-    public static final byte WHITE_BISHOP = 2;  // 3
-    public static final byte WHITE_ROOK = 3;      // 4
-    public static final byte WHITE_QUEEN = 4;    // 5
-    public static final byte WHITE_KING = 5;      // 6
+    public static final byte WHITE_PAWN = 0;
+    public static final byte WHITE_KNIGHT = 1;
+    public static final byte WHITE_BISHOP = 2;
+    public static final byte WHITE_ROOK = 3;
+    public static final byte WHITE_QUEEN = 4;
+    public static final byte WHITE_KING = 5;
 
-    public static final byte BLACK_PAWN = 6;      // 9
-    public static final byte BLACK_KNIGHT = 7;  // 10
-    public static final byte BLACK_BISHOP = 8;  // 11
-    public static final byte BLACK_ROOK = 9;      // 12
-    public static final byte BLACK_QUEEN = 10;    // 13
-    public static final byte BLACK_KING = 11;      // 14
-    public static final byte MAX_PIECE = 12;
+    public static final byte BLACK_PAWN = 6;
+    public static final byte BLACK_KNIGHT = 7;
+    public static final byte BLACK_BISHOP = 8;
+    public static final byte BLACK_ROOK = 9;
+    public static final byte BLACK_QUEEN = 10;
+    public static final byte BLACK_KING = 11;
+    public static final int WHITE_PIECE_TYPES = 6;
+    public static final int PIECE_TYPES = 12;
 
-    public static String[] pieceCodeToPiece = new String[MAX_PIECE];
+    public static String[] pieceCodeToPiece = new String[PIECE_TYPES];
 
     public static Map<Character, Integer> pieceMap = new HashMap<>();
 

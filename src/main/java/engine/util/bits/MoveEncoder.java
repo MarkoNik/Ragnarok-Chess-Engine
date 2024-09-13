@@ -18,6 +18,8 @@ public class MoveEncoder {
 
      */
 
+    private static final int CAPTURE_FLAG = 1 << 27;
+
     public static int encodeMove(int from,
                            int to,
                            int piece,
@@ -109,5 +111,9 @@ public class MoveEncoder {
                 .append(" | promotions: " + promotions)
                 .append("\n");
         EngineLogger.debug(sb.toString());
+    }
+
+    public static boolean isMoveCapture(int move) {
+        return (move & CAPTURE_FLAG) != 0;
     }
 }

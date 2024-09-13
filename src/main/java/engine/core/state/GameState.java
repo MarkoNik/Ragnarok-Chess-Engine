@@ -23,12 +23,6 @@ public class GameState {
         }
     }
 
-    public void playUciMoves(List<UciMove> moves) {
-        for (UciMove move : moves) {
-            playUciMove(move);
-        }
-    }
-
     public void playMove(int move) {
         bitboard.makeMove(move, isWhiteTurn, false);
         isWhiteTurn = !isWhiteTurn;
@@ -36,6 +30,19 @@ public class GameState {
 
     public void playUciMove(UciMove move) {
         bitboard.makeUciMove(move, isWhiteTurn);
+        isWhiteTurn = !isWhiteTurn;
+    }
+
+    public void makeUciDebugMove(UciMove move) {
+        bitboard.backupState();
+        bitboard.makeUciMove(move, isWhiteTurn);
+        bitboard.logBoardState();
+        isWhiteTurn = !isWhiteTurn;
+    }
+
+    public void unmakeUciDebugMove() {
+        bitboard.restoreState();
+        bitboard.logBoardState();
         isWhiteTurn = !isWhiteTurn;
     }
 

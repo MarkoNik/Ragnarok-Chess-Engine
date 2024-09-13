@@ -8,8 +8,6 @@ public class Constants {
     public static final int WHITE = 0;
     public static final int BLACK = 1;
     public static final int BOTH = 2;
-    public static final int WHITE_PIECE_TYPES = 6;
-    public static final int PIECE_TYPES = 12;
     public static final long RANK_5 = 0x00000000FF000000L;
     public static final long RANK_4 = 0x000000FF00000000L;
     public static final long RANK_8_END_SQUARE = 7;

@@ -6,10 +6,10 @@ import engine.core.state.GameState;
 import engine.util.bits.FenParser;
 
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class PositionCommand implements Command {
     private String[] moves = null;
+
     // in case fen is not found in the string, we just default to starting position
     private String position = Constants.INITIAL_FEN;
     public PositionCommand(String params) {
@@ -27,7 +27,9 @@ public class PositionCommand implements Command {
     public int execute(EngineState engineState) {
         GameState newState = FenParser.parseFEN(position);
         if (moves != null) {
-            newState.playUciMoves(Arrays.stream(moves).map(FenParser::parseUciMove).collect(Collectors.toList()));
+            Arrays.stream(moves)
+                    .map(FenParser::parseUciMove)
+                    .forEach(newState::playUciMove);
         }
         newState.logState();
         engineState.setGameState(newState);

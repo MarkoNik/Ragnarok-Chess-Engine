@@ -26,7 +26,7 @@ public class Bitboard {
     private int enPassantSquare = 0;
     private long hash;
 
-    private static final int BACKUP_STACK_SIZE = 1024;
+    private static final int BACKUP_STACK_SIZE = 100000;
 
     private final long[][] piecesBackup = new long[BACKUP_STACK_SIZE][PIECE_TYPES];
     private final long[][] occupanciesBackup = new long[BACKUP_STACK_SIZE][OCCUPANCY_TYPES];
@@ -218,6 +218,12 @@ public class Bitboard {
 //                Zobrist.logError(hash, fullHash);
 //            }
         }
+        else {
+            // ensure only capture moves are made
+            if (MoveEncoder.isMoveCapture(move)) {
+                makeMove(move, isWhiteTurn, false);
+            }
+        }
     }
 
     public void makeUciMove(UciMove uciMove, boolean isWhiteTurn) {
@@ -254,7 +260,7 @@ public class Bitboard {
         int enPassantFlag = 0;
         if (enPassantSquare != -1) {
             if ((isWhiteTurn && piece == Piece.WHITE_PAWN && to == enPassantSquare - 8)
-                    || (!isWhiteTurn && pieces[piece] == Piece.BLACK_PAWN && to == enPassantSquare + 8)) {
+                    || (!isWhiteTurn && piece == Piece.BLACK_PAWN && to == enPassantSquare + 8)) {
                 enPassantFlag = 1;
             }
         }
@@ -315,7 +321,9 @@ public class Bitboard {
             sb.append("\n");
         }
         sb.append("\n       a b c d e f g h\n");
-        sb.append("\nHash: ").append(hash).append("\n");
+        sb.append("\nHash: ").append(hash);
+        sb.append("\nCastles flags: ").append(castlesFlags);
+        sb.append("\nEn passant square: ").append(enPassantSquare).append("\n");
         EngineLogger.debug(sb.toString());
 //        logBitboards();
     }

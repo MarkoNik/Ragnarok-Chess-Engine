@@ -1,14 +1,12 @@
 package engine.core.bitboard;
 
-import app.Constants;
 import app.EngineLogger;
 import engine.core.entity.Piece;
 import engine.util.bits.BitUtils;
 
 import java.util.Random;
 
-import static app.Constants.BLACK;
-import static app.Constants.WHITE;
+import static app.Constants.*;
 
 public class BitboardHelper {
     /**
@@ -30,8 +28,6 @@ public class BitboardHelper {
      * Bitmask where every bit is set apart from bits on the HG files (first and second column)
      */
     private final long NOT_HG_FILE_MASK = 4557430888798830399L;
-
-    private final int BOARD_SIZE = Constants.BOARD_SIZE;
 
     /**
      * The maximum number of pieces that can block a sliding piece's attack
@@ -203,9 +199,9 @@ public class BitboardHelper {
         Random random = new Random();
         int relevantBits = Long.bitCount(rookAttacks[square]);
 
-        for (int iterations = 0; iterations < 1e9; iterations++) {
+        for (int iterations = 0; iterations < INF; iterations++) {
             long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
-            long[] attackMap = new long[4096];
+            long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             boolean badCollision = false;
 
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {

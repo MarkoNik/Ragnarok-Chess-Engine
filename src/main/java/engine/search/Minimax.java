@@ -2,55 +2,136 @@ package engine.search;
 
 import engine.core.state.Bitboard;
 import engine.core.state.TranspositionTable;
+import engine.util.bits.MoveEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static engine.core.entity.Piece.KING_VALUE;
-import static engine.core.entity.Piece.QUEEN_VALUE;
+import static app.Constants.INF;
+import static engine.core.entity.Piece.CHECKMATE_VALUE;
+import static java.lang.Math.max;
 
 public class Minimax {
     private Bitboard bitboard;
     private final MoveGenerator moveGenerator;
     private final Evaluator evaluator;
     private final TranspositionTable transpositionTable;
+    private final MoveOrderer moveOrderer;
     private int ply;
+    private boolean interrupted = false;
+    private SearchStats searchStats;
+    private int bestMoveThisIteration;
+    private int bestScoreThisIteration;
+    private int bestMove;
+    private int bestEval;
 
-    private final int CHECKMATE_VALUE = KING_VALUE + 10 * QUEEN_VALUE;
-    public Minimax(MoveGenerator moveGenerator, Evaluator evaluator, TranspositionTable transpositionTable) {
+    public Minimax(MoveGenerator moveGenerator, Evaluator evaluator, TranspositionTable transpositionTable, MoveOrderer moveOrderer) {
         this.moveGenerator = moveGenerator;
         this.evaluator = evaluator;
         this.transpositionTable = transpositionTable;
+        this.moveOrderer = moveOrderer;
     }
 
+    /**
+     * Runs iterative deepening search.
+     * @param depth maximum depth
+     * @param isWhiteTurn
+     * @return Search stats (debugging info)
+     */
+    public SearchStats initiateSearch(int depth, boolean isWhiteTurn) {
+        searchStats = new SearchStats();
+        interrupted = false;
+        for (int i = 1; i <= depth; i++) {
+            if (interrupted) {
+                return searchStats;
+            }
+            search(i, -INF, INF, isWhiteTurn);
+            searchStats.recordDepthIncreased();
+            bestMove = bestMoveThisIteration;
+            bestEval = bestScoreThisIteration;
+        }
+        return searchStats;
+    }
+
+    /**
+     * Negamax search with alpha beta pruning, transposition table and quiescence search.
+     * @param depth search depth
+     * @param alpha best move for current player so far
+     * @param beta best move for opposing player so far
+     * @param isWhiteTurn
+     * @return
+     */
     public int search(int depth, int alpha, int beta, boolean isWhiteTurn) {
+        if (interrupted) {
+            return 0;
+        }
+
+        // dp style lookup
         TranspositionTable.TTEntry entry = transpositionTable.get(bitboard.getHash());
         if (entry != null && entry.key() == bitboard.getHash() && entry.depth() >= depth) {
-            if (entry.flag() == transpositionTable.EXACT_FLAG) {
+            if (entry.flag() == transpositionTable.EXACT) {
+                searchStats.recordExact();
+                if (ply == 0) {
+                    bestMoveThisIteration = entry.bestMove();
+                    bestScoreThisIteration = entry.score();
+                }
                 return entry.score();
             }
-            else if (entry.flag() == transpositionTable.ALPHA_FLAG) {
-                alpha = Math.max(alpha, entry.score());
+            else if (entry.flag() == transpositionTable.LOWER_BOUND) {
+                searchStats.recordLowerBound();
+                alpha = max(alpha, entry.score());
             }
-            else if (entry.flag() == transpositionTable.BETA_FLAG) {
+            else if (entry.flag() == transpositionTable.UPPER_BOUND) {
+                searchStats.recordUpperBound();
                 beta = Math.min(beta, entry.score());
             }
-            if (alpha >= beta) {
+            if (alpha >= beta && ply > 0) {
+                searchStats.recordTTCutoff();
+                if (ply == 0) {
+                    bestMoveThisIteration = entry.bestMove();
+                    bestScoreThisIteration = entry.score();
+                }
                 return entry.score();
             }
         }
 
+        searchStats.recordNodeSearched();
+
+        // recursion base case
         if (depth == 0) {
-            int eval = (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
-            return eval;
+            return quiescenceSearch(alpha, beta, isWhiteTurn, 4);
+//            return (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
         }
 
-        int previousAlpha = alpha;
-        int bestMove = -1;
-
+        // generate move list
         int[] moves = moveGenerator.generateLegalMoves(isWhiteTurn).clone();
         int moveCounter = moveGenerator.getMoveCounter();
         moveGenerator.clearMoves();
+
+        // checkmate and stalemate handling
+        boolean check = moveGenerator.isKingInCheck(isWhiteTurn);
+        if (moveCounter == 0) {
+            if (check) {
+                searchStats.recordCheckmate();
+                return -CHECKMATE_VALUE + ply;
+            } else {
+                searchStats.recordStalemate();
+                return 0;
+            }
+        }
+
+        int bestMoveThisPosition = moves[0];
+        // search best move from previous iteration first
+        if (transpositionTable.get(bitboard.getHash()) != null) {
+            bestMoveThisPosition = transpositionTable.get(bitboard.getHash()).bestMove();
+            moveOrderer.sortPVFirst(moves, moveCounter, bestMoveThisPosition);
+            bestMoveThisPosition = moves[0];
+        }
+
+        // in case best move is not found in this node, we only store upper bound
+        int ttFlag = transpositionTable.UPPER_BOUND;
+
+        // iterate through moves and search recursively
         for (int i = 0; i < moveCounter; i++) {
             bitboard.backupState();
             bitboard.makeMove(moves[i], isWhiteTurn, false);
@@ -61,36 +142,106 @@ public class Minimax {
             ply--;
             bitboard.restoreState();
 
+            // if the search was interrupted, just return before updating TT
+            if (interrupted) {
+                return 0;
+            }
+
+            // beta cutoff
             if (score >= beta) {
-                if (moves[i] == -1) System.out.println("No best move found beta?");
-                transpositionTable.put(bitboard.getHash(), moves[i], beta, depth, transpositionTable.BETA_FLAG);
+                searchStats.recordBetaCutoff();
+                transpositionTable.put(bitboard.getHash(), moves[i], beta, depth, transpositionTable.LOWER_BOUND);
                 return beta;
             }
 
+            // new alpha
             if (score > alpha) {
+                searchStats.recordBestMove();
                 alpha = score;
-                bestMove = moves[i];
+                bestMoveThisPosition = moves[i];
+                ttFlag = transpositionTable.EXACT;
+
+                if (ply == 0) {
+                    bestMoveThisIteration = bestMoveThisPosition;
+                    bestScoreThisIteration = score;
+                }
             }
         }
 
-        boolean check = moveGenerator.isKingInCheck(isWhiteTurn);
-        if (moveCounter == 0) {
-            if (check) {
-                return -CHECKMATE_VALUE + ply;
-            } else {
-                return 0;
-            }
-        }
-
-        transpositionTable.put(bitboard.getHash(), bestMove, alpha, depth, transpositionTable.ALPHA_FLAG);
+        transpositionTable.put(bitboard.getHash(), bestMoveThisPosition, alpha, depth, ttFlag);
         return alpha;
     }
 
-    public List<Integer> getPrincipalVariation(boolean isWhiteTurn) {
+    private int quiescenceSearch(int alpha, int beta, boolean isWhiteTurn, int depth) {
+        if (interrupted) {
+            return 0;
+        }
+
+        // recursion base case
+        if (depth == 0) {
+            return (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+        }
+
+        int standPat = (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+        if (standPat >= beta) {
+            return beta;
+        }
+        if (standPat > alpha) {
+            alpha = standPat;
+        }
+
+        // generate move list
+        int[] moves = moveGenerator.generateLegalMoves(isWhiteTurn).clone();
+        int moveCounter = moveGenerator.getMoveCounter();
+        moveGenerator.clearMoves();
+
+        // filter out captures only
+        List<Integer> captures = new ArrayList<>();
+        for (int i = 0; i < moveCounter; i++) {
+            if (!MoveEncoder.isMoveCapture(moves[i])) {
+                continue;
+            }
+            captures.add(moves[i]);
+        }
+        // sort captures
+        moveOrderer.sortCaptures(captures, bitboard);
+
+        // try every capture
+        for (int capture :  captures) {
+            bitboard.backupState();
+            bitboard.makeMove(capture, isWhiteTurn, true);
+            ply++;
+//            bitboard.logBoardState();
+//            System.out.println(ply);
+
+            int score = -quiescenceSearch(-beta, -alpha, !isWhiteTurn, depth - 1);
+
+            ply--;
+            bitboard.restoreState();
+
+            // beta cutoff
+            if (score >= beta) {
+                return beta;
+            }
+
+            // new alpha
+            if (score > alpha) {
+                alpha = score;
+            }
+        }
+
+        return alpha;
+    }
+
+    public List<Integer> getPrincipalVariation(int depth, boolean isWhiteTurn) {
         List<Integer> pv = new ArrayList<>();
-        while (true) {
+        int maxDepth = 10;
+        while (depth-- > 0) {
             TranspositionTable.TTEntry entry = transpositionTable.get(bitboard.getHash());
             if (entry == null || entry.bestMove() == -1) {
+                break;
+            }
+            if (maxDepth-- == 0) {
                 break;
             }
             pv.add(entry.bestMove());
@@ -107,5 +258,17 @@ public class Minimax {
     public void setBitboard(Bitboard bitboard) {
         this.bitboard = bitboard;
         ply = 0;
+    }
+
+    public void interruptSearch() {
+        interrupted = true;
+    }
+
+    public int getBestMove() {
+        return bestMove;
+    }
+
+    public int getBestEval() {
+        return bestEval;
     }
 }
