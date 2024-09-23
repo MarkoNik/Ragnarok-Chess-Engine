@@ -5,7 +5,6 @@ import engine.core.entity.Piece;
 
 public class MoveEncoder {
     /*
-
        - Move structure:
        0000 0000 0000 0000 0000 1111 1111 - from
        0000 0000 0000 1111 1111 0000 0000 - to
@@ -15,7 +14,6 @@ public class MoveEncoder {
        0010 0000 0000 0000 0000 0000 0000 - castles flag
        0100 0000 0000 0000 0000 0000 0000 - en passant flag
        1000 0000 0000 0000 0000 0000 0000 - capture flag
-
      */
 
     private static final int CAPTURE_FLAG = 1 << 27;

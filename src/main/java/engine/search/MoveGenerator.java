@@ -47,17 +47,20 @@ public class MoveGenerator {
     public void generateSinglePawnPushMoves() {
         int move;
         if (isWhiteTurn) {
+            // find white pawn targets (diagonal opposing pieces)
             long whitePawnTargets = (bitboard.getPieces()[WHITE_PAWN] >>> 8) & ~bitboard.getOccupancies()[BOTH];
             while (whitePawnTargets != 0) {
                 int toSquare = BitUtils.getLs1bIndex(whitePawnTargets);
                 int fromSquare = toSquare + 8;
 
+                // normal pawn push
                 if (toSquare > RANK_8_END_SQUARE) {
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WHITE_PAWN,
                             0, 0, 0, 0, 0);
                     addMove(move);
                 }
 
+                // promotion
                 else {
                     move = MoveEncoder.encodeMove(fromSquare, toSquare, WHITE_PAWN,
                             WHITE_QUEEN, 0, 0, 0, 0);
@@ -115,6 +118,7 @@ public class MoveGenerator {
     public void generateDoublePawnPushMoves() {
         int move;
         if (isWhiteTurn) {
+            // only make double push if both squares in front of the pawn are empty
             long whiteSinglePushTargets = (bitboard.getPieces()[WHITE_PAWN] >>> 8) & ~bitboard.getOccupancies()[BOTH];
             long whiteDoublePushTargets = (whiteSinglePushTargets >>> 8) & ~bitboard.getOccupancies()[BOTH] & RANK_4;
             while (whiteDoublePushTargets != 0) {
@@ -152,6 +156,7 @@ public class MoveGenerator {
                 int fromSquare = BitUtils.getLs1bIndex(whitePawns);
                 long toSquares = bitboardHelper.pawnAttacks[WHITE][fromSquare] & bitboard.getOccupancies()[BLACK];
 
+                // handle en passant
                 if (bitboard.getEnPassantSquare() != -1
                         && (bitboardHelper.pawnAttacks[WHITE][fromSquare] & (1L << (bitboard.getEnPassantSquare() - 8))) != 0) {
                     move = MoveEncoder.encodeMove(fromSquare, bitboard.getEnPassantSquare() - 8, WHITE_PAWN,
@@ -159,6 +164,7 @@ public class MoveGenerator {
                     addMove(move);
                 }
 
+                // add all 4 possible promotions resulting from captures
                 if (fromSquare >= RANK_7_START_SQUARE && fromSquare <= RANK_7_END_SQUARE) {
                     while (toSquares != 0) {
                         int toSquare = BitUtils.getLs1bIndex(toSquares);
@@ -183,6 +189,7 @@ public class MoveGenerator {
                     }
                 }
 
+                // handle normal capture
                 else {
                     while (toSquares != 0) {
                         int toSquare = BitUtils.getLs1bIndex(toSquares);

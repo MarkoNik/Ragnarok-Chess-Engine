@@ -100,7 +100,6 @@ public class Minimax {
         // recursion base case
         if (depth == 0) {
             return quiescenceSearch(alpha, beta, isWhiteTurn, 4);
-//            return (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
         }
 
         // generate move list
@@ -179,10 +178,10 @@ public class Minimax {
 
         // recursion base case
         if (depth == 0) {
-            return (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+            return (isWhiteTurn ? 1 : -1) * evaluator.evaluateAdvanced(bitboard);
         }
 
-        int standPat = (isWhiteTurn ? 1 : -1) * evaluator.evaluate(bitboard);
+        int standPat = (isWhiteTurn ? 1 : -1) * evaluator.evaluateAdvanced(bitboard);
         if (standPat >= beta) {
             return beta;
         }
@@ -233,15 +232,19 @@ public class Minimax {
         return alpha;
     }
 
+    /**
+     * Find all PV moves up to a max depth.
+     * @param depth max depth
+     * @param isWhiteTurn
+     * @return list of PV moves
+     */
     public List<Integer> getPrincipalVariation(int depth, boolean isWhiteTurn) {
         List<Integer> pv = new ArrayList<>();
-        int maxDepth = 10;
-        while (depth-- > 0) {
+        // limit the max depth to 10 to avoid infinite recursion in case of key collisions
+        int maxDepth = max(depth, 10);
+        while (maxDepth-- > 0) {
             TranspositionTable.TTEntry entry = transpositionTable.get(bitboard.getHash());
             if (entry == null || entry.bestMove() == -1) {
-                break;
-            }
-            if (maxDepth-- == 0) {
                 break;
             }
             pv.add(entry.bestMove());

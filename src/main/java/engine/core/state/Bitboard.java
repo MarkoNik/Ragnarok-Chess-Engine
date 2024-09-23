@@ -35,6 +35,12 @@ public class Bitboard {
     private final long[] hashBackup = new long[BACKUP_STACK_SIZE];
     private int backupStackPointer = 0;
 
+    /**
+     * This function is used to set the bit
+     * corresponding to the given square for the given piece.
+     * @param square
+     * @param piece
+     */
     public void setPiece(int square, char piece) {
         // set the piece bitboard
         long bitboard = 1L << square;
@@ -50,6 +56,12 @@ public class Bitboard {
         occupancies[BOTH] |= bitboard;
     }
 
+    /**
+     * Play a move on the board and update the state
+     * @param move
+     * @param isWhiteTurn
+     * @param capturesOnly
+     */
     public void makeMove(int move, boolean isWhiteTurn, boolean capturesOnly) {
         if (!capturesOnly) {
             int from = MoveEncoder.extractFrom(move);
@@ -300,6 +312,10 @@ public class Bitboard {
         hash = hashBackup[backupStackPointer];
     }
 
+    /**
+     * Function used for outputting the board state.
+     * The function aggregates each individual piece bitboard.
+     */
     public void logBoardState() {
         char[] output = new char[BOARD_SIZE];
         Arrays.fill(output, ' ');

@@ -168,11 +168,14 @@ public class BitboardHelper {
         int relevantBits = Long.bitCount(bishopAttacks[square]);
 
         for (int iterations = 0; iterations < 1e8; iterations++) {
+            // generate a number with low popcount
             long magicCandidate = random.nextLong() & random.nextLong() & random.nextLong();
             long[] attackMap = new long[MAXIMUM_BLOCKING_PIECES_MASK];
             boolean badCollision = false;
 
+            // try out every possible blocking configuration
             for (int i = 0; i < MAXIMUM_BLOCKING_PIECES_MASK; i++) {
+                // hash formula
                 int magicIndex = (int)((bishopOccupancies[square][i] * magicCandidate) >>> (64 - relevantBits));
                 if (attackMap[magicIndex] == 0L) {
                     attackMap[magicIndex] = bishopAttacksWithBlockers[square][i];
@@ -297,7 +300,7 @@ public class BitboardHelper {
      * @param square Bishop square
      * @return bishop attack bitboard
      */
-    private long generateBishopAttacks(int square) {
+    private static long generateBishopAttacks(int square) {
         long attacks = 0L;
         int tr = square / 8;
         int tf = square % 8;
@@ -500,8 +503,6 @@ public class BitboardHelper {
         return bishopMagics[square].attackMap()[bishopMagicKey] | rookMagics[square].attackMap()[rookMagicKey];
     }
 
-
-
     /**
      * This function is used to get an occupancy bitboard for the given attack mask.
      * If a bit is set in the attack mask, this bit will either be on or off in our occupancy mask.
@@ -512,7 +513,7 @@ public class BitboardHelper {
      * @param attackMask The mask of the squares attacked by the piece
      * @return
      */
-    private long getOccupancy(int index, long attackMask) {
+    private static long getOccupancy(int index, long attackMask) {
         long occupancy = 0L;
         int bitCount = Long.bitCount(attackMask);
         for (int i = 0; i < bitCount; i++) {
@@ -523,5 +524,10 @@ public class BitboardHelper {
             }
         }
         return occupancy;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getOccupancy(245, generateBishopAttacks(36)));
+        BitUtils.logBitboard(getOccupancy(245, generateBishopAttacks(36)));
     }
 }
